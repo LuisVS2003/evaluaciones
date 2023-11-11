@@ -52,6 +52,8 @@ CALL spu_alternativas_registrar(1, 'Claude Monet', 'F');
 
 SELECT * FROM usuarios;
 SELECT * FROM inscritos;
+SELECT * FROM preguntas;
+SELECT * FROM alternativas;
 -- Continuarías con el patrón para el resto de preguntas
 DELETE FROM usuarios;
 ALTER TABLE usuarios AUTO_INCREMENT 1;

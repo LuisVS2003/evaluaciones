@@ -39,7 +39,7 @@ function enviarEmail($correo,$tokens){
       $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
   
       //Recipients => RECEPTORES
-      $mail->setFrom('sistema@gmail.com', 'APP-STORE');       // MUESTRA EN JMAIL
+      $mail->setFrom('sistema@gmail.com', 'Sistema de Evaluaciones');       // MUESTRA EN JMAIL
       //$mail->addAddress('1392696@senati.pe', 'Joe User');     //Add a recipient
       $mail->addAddress($correo);               //Name is optional => A quien se envía
       //$mail->addReplyTo('info@example.com', 'Information'); // RESPUESTA

@@ -22,7 +22,7 @@
             <input type="password" class="form-control mt-3" id="claveacceso" placeholder="Contraseña">
             <button class="btn btn-primary mt-3" type="submit">Login</button>
             <!--Para mas estilos hacer un evento click-->
-            <a href="recuperar.php">Ingrear para recuperar</a>
+            <a href="recuperar.php">Ingresar para recuperar</a>
           </form>
         </div>
       </div>

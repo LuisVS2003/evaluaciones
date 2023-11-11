@@ -34,7 +34,7 @@ BEGIN
 END $$
 
 CALL spu_registrar_usuario(1, 'Muñoz', 'Alonso', 'alonsomunoz263@gamil.com', '12345');
-CALL spu_registrar_usuario(2, 'Martinez', 'Alfonso', 'alonsomredick@gmail.com', '12345');
+CALL spu_registrar_usuario(2, 'Martinez', 'Alberto', 'albert@gmail.com', '12345');
 
 -- -------------------------------------------------------------------------------------------------
 -- -------------------------------------------------------------------------------------------------
@@ -59,9 +59,11 @@ BEGIN
 	INSERT INTO inscritos (idusuario)
     VALUES
     (_idusuario);
+    
+    SELECT @@last_insert_id 'idinscrito';
 END $$
 
-CALL spu_inscritos_registrar (2);
+CALL spu_inscritos_registrar (3);
 
 
 
@@ -69,6 +71,19 @@ CALL spu_inscritos_registrar (2);
 
 -- -------------------------------------------------------------------------------------------------
 -- -------------------------------------------------------------------------------------------------
+DELIMITER $$
+CREATE PROCEDURE spu_user_listar()
+BEGIN
+	SELECT 
+		idusuario,
+		 nombres FROM usuarios
+		WHERE inactive_at IS NULL;
+END $$
+
+CALL spu_user_listar();
+
+DELIMITER $$
+CREATE PROCEDURE 
 
 DELIMITER $$
 CREATE PROCEDURE spu_evaluaciones_registrar(
@@ -87,7 +102,7 @@ BEGIN
     SELECT @@last_insert_id 'idevaluacion';
 END $$
 
-CALL spu_evaluaciones_registrar(2, 1, 'Inglés','2023-11-9','2023-11-10');
+CALL spu_evaluaciones_registrar(3, 2, 'Seminario','2023-11-9','2023-11-10');
 
 SELECT * FROM usuarios;
 SELECT * FROM inscritos
@@ -107,7 +122,18 @@ END $$
 CALL spu_listar_preguntas();
 
 
+-- ------------------------------------------------------------------
+-- ------------------------------------------------------------------
+DELIMITER $$
+CREATE PROCEDURE spu_evaluacion_listar()
+BEGIN
+	SELECT 
+		idevaluacion,
+		 nombre_evaluacion FROM evaluaciones
+		WHERE inactive_at IS NULL;
+END $$
 
+CALL spu_evaluacion_listar();
 
 
 DELIMITER $$
@@ -178,6 +204,7 @@ BEGIN
 END $$
 
 CALL spu_listar_inscritos();
+
 
 
 
