@@ -66,7 +66,7 @@
                   <td>${registro.fechainicio}</td>
                   <td>${registro.fechafin}</td>
                   <td>
-                    <a href="evaluacion.php?idevaluacion=${registro.idevaluacion}" class="btn btn-primary">Rendir</a>
+                    <a href="./listapreguntas.php?id=${registro.idevaluacion}" class="btn btn-primary">Rendir</a>
                   </td>
                 </tr>
               `;

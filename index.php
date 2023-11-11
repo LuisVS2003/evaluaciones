@@ -1,3 +1,11 @@
+<?php
+  session_start();
+
+  if(isset($_SESSION["status"]) && $_SESSION["status"]){
+    header("Location:./views/");
+  }
+?>
+
 <!doctype html>
 <html lang="es">
 
@@ -29,26 +37,7 @@
     </div>
 
     <!--Alerta de bienvenida-->
-    <script>
-      function bienvenida(mensaje){
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener('mouseenter', Swal.stopTimer)
-          toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-      })
-
-      Toast.fire({
-        icon: 'success',
-        title: mensaje
-          })
-        }
-    </script>
+    <script src="javascript/sweetalert.js"></script>
 
     <script>
       document.addEventListener("DOMContentLoaded",()=>{
@@ -77,7 +66,7 @@
               if(data.acceso == true){
                 bienvenida(`¡Inicio de session Exitoso!`);
                 setTimeout(function(){
-                  window.location.href = './views/index.php'
+                  window.location.href = './views/'
                 },2000);               
               }
               
