@@ -65,7 +65,7 @@
         const parametros = new FormData();
         parametros.append("operacion", "listarEvaluacion");
 
-        fetch(`../../controllers/formulario.controller.php`, {
+        fetch(`../controllers/formulario.controller.php`, {
           method: "POST",
           body: parametros
         })
@@ -91,7 +91,7 @@
         parametros.append("idevaluacion",$("#evaluacion").value);
         parametros.append("pregunta",$("#pregunta").value)
 
-        fetch(`../../controllers/formulario.controller.php`, {
+        fetch(`../controllers/formulario.controller.php`, {
           method: "POST",
           body: parametros
         })

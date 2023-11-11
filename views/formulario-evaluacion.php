@@ -86,7 +86,7 @@
         const parametros = new FormData();
         parametros.append("operacion", "listarUsuario");
 
-        fetch(`../../controllers/formulario.controller.php`, {
+        fetch(`../controllers/formulario.controller.php`, {
           method: "POST",
           body: parametros
         })
@@ -110,7 +110,7 @@
         const parametros = new FormData();
         parametros.append("operacion", "listarInscritos");
 
-        fetch(`../../controllers/formulario.controller.php`, {
+        fetch(`../controllers/formulario.controller.php`, {
           method: "POST",
           body: parametros
         })
@@ -139,7 +139,7 @@
         parametros.append("fechainicio",$("#fechainicio").value);
         parametros.append("fechafin",$("#fechafin").value)
 
-        fetch(`../../controllers/formulario.controller.php`, {
+        fetch(`../controllers/formulario.controller.php`, {
           method: "POST",
           body: parametros
         })

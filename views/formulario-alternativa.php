@@ -16,18 +16,28 @@
 <body>
   
 <div class="container mt-3">
-    <form action="" autocomplete="off" id="form-inscrito">
+    <form action="" autocomplete="off" id="form-alternativa">
       <div class="card">
         <div class="card-header">
-          <div>Registro de Inscritos</div>
+          <div>Registro de Alternativas</div>
         </div>
         <div class="card-body">
-          <!-- CAMPO USUARIOS -->
+          <!-- CAMPO IDPREGUNTA -->
           <div class="mb-3">
-            <label for="usuario" class="form-label">Usuarios:</label>
-            <select name="" id="usuario" class="form-select" required autofocus>
+            <label for="pregunta" class="form-label">Preguntas:</label>
+            <select name="" id="pregunta" class="form-select" required autofocus>
               <option value="">Seleccione:</option>
             </select>
+          </div>
+          <!-- CAMPO ALTERNATIVA -->
+          <div class="mb-3">
+              <label for="alternativa" class="form-label">Alternativas:</label>
+              <input type="text" class="form-control" id="alternativa" required>
+          </div>
+          <!-- CAMPO VALIDACION -->
+          <div class="mb-3">
+              <label for="validacion" class="form-label">Validació:</label>
+              <input type="text" class="form-control" id="validacion" required>
           </div>
           
           
@@ -38,7 +48,6 @@
       </div> <!-- FIN DEL CARD -->
     </form> <!-- FIN DEL FORMULARIO-->
   </div> <!-- FIN DEL CONTAINER -->
-  
   <!-- Bootstrap JavaScript Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
     integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
@@ -55,11 +64,13 @@
         return document.querySelector(id);
       }
 
-      function getUser(){
-        const parametros = new FormData();
-        parametros.append("operacion", "listarUsuario");
+      
 
-        fetch(`../../controllers/formulario.controller.php`, {
+      function getPreguntas(){
+        const parametros = new FormData();
+        parametros.append("operacion", "listarPregunta");
+
+        fetch(`../controllers/formulario.controller.php`, {
           method: "POST",
           body: parametros
         })
@@ -68,10 +79,10 @@
             // console.log(datos)
             datos.forEach(element => {
               const etiqueta = document.createElement("option");
-              etiqueta.value = element.idusuario;
-              etiqueta.innerHTML = element.nombres;
+              etiqueta.value = element.idpregunta;
+              etiqueta.innerHTML = element.pregunta;
 
-              $("#usuario").appendChild(etiqueta);
+              $("#pregunta").appendChild(etiqueta);
             });
           })
           .catch(e => {
@@ -79,21 +90,22 @@
           });
       }
 
-      
-      function registrarInscrito(){
+      function registrarAlternativa(){
         const parametros = new FormData();
-        parametros.append("operacion","registrarInscrito");
-        parametros.append("idusuario",$("#usuario").value)
+        parametros.append("operacion","registrarAlternativa");
+        parametros.append("idpregunta",$("#pregunta").value);
+        parametros.append("alternativa",$("#alternativa").value);
+        parametros.append("validacion",$("#validacion").value)
 
-        fetch(`../../controllers/formulario.controller.php`, {
+        fetch(`../controllers/formulario.controller.php`, {
           method: "POST",
           body: parametros
         })
           .then(respuesta => respuesta.json())
           .then(datos =>{
-            if(datos.idinscrito > 0){
-              alert(`Usuario insrito registrado con el ID: ${datos.idinscrito}`)
-              $("#form-inscrito").reset();
+            if(datos.idalternativa > 0){
+              alert(`Alternativa registrado con el ID: ${datos.idalternativa}`)
+              $("#form-alternativa").reset();
             }
           })
           .catch(e => {
@@ -101,20 +113,17 @@
           });
       }
 
-      $("#form-inscrito").addEventListener("submit", (event) => {
+      $("#form-alternativa").addEventListener("submit", (event) => {
         event.preventDefault();
 
         if(confirm("¿Está seguro de registrar?")){
-          registrarInscrito();
+          registrarAlternativa();
         }
       });
 
-
       
-
-
       // Funciones de carga automática
-      getUser();
+      getPreguntas();
     });
   </script>
 </body>  
