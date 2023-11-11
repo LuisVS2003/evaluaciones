@@ -27,11 +27,11 @@
               <div class="row">
                   <div class="col-md-6 mb-3">
                       <label for="correo" class="form-label">Email</label>
-                      <input type="email" class="form-control" id="correo" name="correo">
+                      <input type="email" class="form-control" id="correo" name="correo" required>
                   </div>
                   <div class="col-md-6 mb-3">
                       <label for="token" class="form-label">Token</label>
-                      <input type="text" class="form-control" id="token" name="email" placeholder="El token se le envio al correo">
+                      <input type="text" class="form-control" id="token" name="email" placeholder="El token se le envio al correo" required>
                   </div>
 
                   <button type="submit" class="btn btn-success" id="submit">Validar</button>

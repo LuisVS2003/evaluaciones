@@ -8,6 +8,21 @@ class Restablecer extends Conexion{
     public function __CONSTRUCT(){
       $this->conexion = parent::getConexion();
     }
+
+    public function buscarCorreo($datos = []){
+      try {
+        $consulta = $this->conexion->prepare("CALL spu_buscar_correo(?)");
+        $consulta->execute(
+          array(
+            $datos['correo']
+          )
+        );
+        return $consulta->fetch(PDO::FETCH_ASSOC);
+      }
+      catch(Exception $e){
+        die($e->getMessage());
+      }
+    }
   
     public function registrarToken($datos = []){
       try {

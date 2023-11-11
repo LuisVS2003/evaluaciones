@@ -22,8 +22,8 @@
             <form action="#" class="col-3" method="POST" id="form-rest">
                 <h2>Enviar codigo - Email</h2>
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email">
+                    <label for="correo" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="correo" name="correo">
                 </div>
 
                 <button type="submit" class="btn btn-primary" id="submit">Restablecer</button>
@@ -43,9 +43,9 @@
 
   <!--Fuciones de SweetAlert-->
   <script>
-    function notificar(titulo, mensaje, tiempo){
+    function notificar(icon,titulo, mensaje, tiempo){
       Swal.fire({
-        icon: 'success',
+        icon: icon,
         title: titulo,
         text: mensaje,
         confirmButtonColor: '#2E86C1',
@@ -81,20 +81,46 @@
         return document.querySelector(id);
       }
   
-      function registraTokens(){
-        const email = $("#email").value; // Obtener el valor del campo de correo electrónico
+      /*function buscarCorreo(){
+        const correo = $("#correo").value; // Obtener el valor del campo de correo
 
         const parametros = new FormData();
-        parametros.append("operacion","registrartoken");
-        parametros.append("email",email); // Enviar el valor del campo de correo
+        parametros.append("operacion","buscarCorreo");
+        parametros.append("correo",correo)
 
-        fetch("./controllers/EnviarTokens.php", {
+        fetch("./controllers/reset.controller.php",{
           method: "POST",
           body: parametros
         })
-          .then(respuesta => respuesta.text())
+          .then(respuesta => respuesta.json())
           .then(data =>{
-              //console.log(data);
+            if(data.length > 0) {
+              notificar('success','Se encontro el Correo','Se encontrado en la base de datos',2)
+              registraTokens();
+            }else{
+              notificar('error','Encontrado','Registro encontrado en la base de datos',2);
+            }
+
+          })
+          .catch(e =>{
+            console.error(e);
+          });
+      }*/
+      
+      function registraTokens(){
+        const correo = $("#correo").value; // Obtener el valor del campo de correo electrónico
+
+        const parametros = new FormData();
+        parametros.append("operacion","registrartoken");
+        parametros.append("correo",correo); // Enviar el valor del campo de correo
+
+        fetch("./include/EnviarTokens.php", {
+          method: "POST",
+          body: parametros
+        })
+          .then(respuesta => respuesta.json())
+          .then(data =>{
+              console.log(`Status: Enviado<=Verificar Correo ${correo}`);
 
             })
           .catch(e =>{
@@ -102,16 +128,16 @@
           });
       }
 
+      //buscarCorreo();
+
       $("#form-rest").addEventListener("submit", (event) => {
           event.preventDefault();
           mostrarPregunta("Recuperacion", "¿Está seguro de enviar el token de recuperacion?").then((result) => { 
             if (result.isConfirmed) {
               registraTokens();
-              notificar("Recuperacion", "Verificar su Correo", 3);
+              notificar("success","Recuperacion", "Verificar su Correo", 3);
               $("#form-rest").reset()
-
             }
-
           });
         });
 

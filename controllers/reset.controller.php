@@ -25,6 +25,13 @@ if (isset($_POST['operacion'])) {
   $restablecer = new Restablecer(); // Crear una instancia del modelo
 
   switch ($_POST['operacion']) {
+      case 'buscarCorreo':
+        $datosEnviar =[
+          'correo' => $_POST['correo']
+        ];
+          echo json_encode($restablecer->buscarCorreo($datosEnviar));
+        break;
+
       case 'buscarToken':
           $datosEnviar =[
             'correo' => $_POST['correo'],
