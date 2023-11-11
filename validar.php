@@ -60,37 +60,7 @@
   </script>
 
   <!--Fuciones de SweetAlert-->
-  <script>
-    function notificar(icon,titulo, mensaje, tiempo){
-      Swal.fire({
-        icon: icon,
-        title: titulo,
-        text: mensaje,
-        confirmButtonColor: '#2E86C1',
-        confirmButtonText: 'Aceptar',
-        footer: 'App Store - 2023',
-        timerProgressBar: true,
-        timer: (tiempo * 1000)
-      })
-    }
-
-
-    function mostrarPregunta(titulo, mensaje) {
-    return Swal.fire({
-        title: titulo,
-        text: mensaje,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Aceptar',
-        cancelButtonText: 'Cancelar',
-        confirmButtonColor: '#2E86C1',
-        cancelButtonColor: '#797D7F',
-        footer: 'App Store - 2023'
-      }).then((result) => {
-        return result;
-      });
-    }
-  </script>
+  <script src="javascript/sweetalert.js"></script>
 
 
   <script>
