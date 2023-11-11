@@ -3,14 +3,14 @@
 session_start();
 
 $permisos = [
-  "1" => ["evaluaciones"], // ESTUDIANTE
-  "2" => ["matriculados", "evaluaciones"], // DOCENTE
+  "1" => ["matriculados", "evaluaciones"], // DOCENTE
+  "2" => ["evaluaciones"], // ESTUDIANTE
 ];
 
 
 
 if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
-  header("Location:../../index.php");
+  header("Location: ../index.php");
   exit();
 }
 ?>
@@ -27,6 +27,8 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
   <!-- Bootstrap CSS v5.2.1 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+  <link rel="icon" type="image/png"  href="../images/icon-web.png">
 
   <style>
     .nav-item{
@@ -50,7 +52,7 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
             foreach($permisos[$_SESSION["idrol"]] as $permiso){
                 echo "
                   <li class='nav-item'>
-                    <a class='nav-link' href='../{$permiso}.php'>$permiso</a>
+                    <a class='nav-link' href='./{$permiso}.php'>$permiso</a>
                   </li>
                 ";
               }
@@ -66,7 +68,7 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
             (<?= $_SESSION["idrol"] ?>)
           </a>
           <div class="dropdown-menu" aria-labelledby="dropdownId">
-            <a class="dropdown-item" href="../../controllers/usuario.controller.php?operacion=destroy">Cerrar Sessión</a>
+            <a class="dropdown-item" href="../controllers/usuario.controller.php?operacion=destroy">Cerrar Sessión</a>
             <a class="dropdown-item" href="#">Cambiar contraseña</a>
           </div>
         </li>
@@ -76,9 +78,5 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
   </div>
 </nav>
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
-  </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
-  </script>
 

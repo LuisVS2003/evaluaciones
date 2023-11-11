@@ -49,10 +49,14 @@ CREATE TABLE evaluaciones(
     create_at		DATETIME		DEFAULT NOW(),
     update_at		DATETIME		NULL,
     inactive_at		DATETIME		NULL,
-    CONSTRAINT	fk_idusuario_eval	FOREIGN KEY (idusuario)	REFERENCES usuarios(idusuario)
+    CONSTRAINT	fk_idusuario_eval	FOREIGN KEY (idusuario)	REFERENCES usuarios(idusuario),
+    CONSTRAINT	fk_idinscrito_eval	FOREIGN KEY	(idinscrito) REFERENCES inscritos(idinscrito)
 )ENGINE = INNODB;
 
-
+ALTER TABLE evaluaciones
+ADD CONSTRAINT fk_idinscrito_eval
+FOREIGN KEY (idinscrito)
+REFERENCES inscritos(idinscrito);
 
 CREATE TABLE preguntas(
 	idpregunta		INT PRIMARY KEY AUTO_INCREMENT,
