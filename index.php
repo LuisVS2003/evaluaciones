@@ -1,3 +1,11 @@
+<?php
+  session_start();
+
+  if(isset($_SESSION["status"]) && $_SESSION["status"]){
+    header("Location:./views/");
+  }
+?>
+
 <!doctype html>
 <html lang="es">
 
@@ -77,7 +85,7 @@
               if(data.acceso == true){
                 bienvenida(`¡Inicio de session Exitoso!`);
                 setTimeout(function(){
-                  window.location.href = './views/index.php'
+                  window.location.href = './views/'
                 },2000);               
               }
               

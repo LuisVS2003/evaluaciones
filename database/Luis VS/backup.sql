@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-11-2023 a las 02:57:46
+-- Tiempo de generación: 11-11-2023 a las 17:01:12
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -25,6 +25,14 @@ DELIMITER $$
 --
 -- Procedimientos
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_actualizar_pass` (IN `_correo` VARCHAR(100), IN `_token` VARCHAR(6), IN `_claveacceso` VARCHAR(90))   begin
+	update usuarios set
+    claveacceso = _claveacceso,
+    token_estado = 'C',
+    token = null
+    where correo = _correo and token = _token;
+end$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_alternativas_registrar` (IN `_idpregunta` INT, IN `_alternativa` TEXT, IN `_validacion` CHAR(1))   BEGIN
 	INSERT INTO alternativas
     (idpregunta, alternativa, validacion)
@@ -32,6 +40,29 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_alternativas_registrar` (IN `_i
     (_idpregunta, _alternativa, _validacion);
     
     SELECT @@last_insert_id 'idalternativa';
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_buscar_correo` (IN `_correo` VARCHAR(100))   BEGIN
+    SELECT *
+    FROM usuarios
+    WHERE correo = _correo;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_buscar_token` (IN `_correo` VARCHAR(100), IN `_token` VARCHAR(6))   BEGIN
+    SELECT *
+    FROM usuarios
+    WHERE correo = _correo AND token = _token;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_preguntas_listar` (IN `_idevaluacion` INT)   BEGIN
+	SELECT 
+		EVA.idevaluacion, EVA.idusuario,
+        PRE.idpregunta, PRE.pregunta,
+        ALT.alternativa, ALT.validacion
+	FROM evaluaciones EVA
+    INNER JOIN preguntas PRE ON PRE.idevaluacion = EVA.idevaluacion
+    INNER JOIN alternativas ALT ON ALT.idpregunta = PRE.idpregunta
+    WHERE EVA.idevaluacion = _idevaluacion;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_registrar` (IN `_idusuario` INT, IN `_idinscrito` INT, IN `_nombre_evaluacion` VARCHAR(45), IN `_fechainicio` DATETIME, IN `_fechafin` DATETIME)   BEGIN
@@ -133,6 +164,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_registrar_usuario` (IN `_idrol`
     SELECT @@last_insert_id 'idusuario';
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_registra_token` (IN `_correo` VARCHAR(100), IN `_token` VARCHAR(6))   begin
+	update usuarios set
+    token_estado = 'P', 
+    token = _token,
+    fechatoken = now()
+    where _correo = correo;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_roles_listar` ()   BEGIN
 	SELECT 
 		idrol,
@@ -171,7 +210,22 @@ INSERT INTO `alternativas` (`idalternativa`, `idpregunta`, `alternativa`, `valid
 (7, 5, '1914', 'V', '2023-11-10 15:15:53', NULL, NULL),
 (8, 6, '1918', 'F', '2023-11-10 15:15:53', NULL, NULL),
 (9, 7, '1939', 'F', '2023-11-10 15:15:53', NULL, NULL),
-(10, 8, '1945', 'F', '2023-11-10 15:15:53', NULL, NULL);
+(10, 8, '1945', 'F', '2023-11-10 15:15:53', NULL, NULL),
+(11, 13, 'París', '1', '2023-11-11 09:40:51', NULL, NULL),
+(12, 13, 'Londres', '0', '2023-11-11 09:40:51', NULL, NULL),
+(13, 13, 'Madrid', '0', '2023-11-11 09:40:51', NULL, NULL),
+(14, 14, 'George Orwell', '1', '2023-11-11 09:40:51', NULL, NULL),
+(15, 14, 'J.K. Rowling', '0', '2023-11-11 09:40:51', NULL, NULL),
+(16, 14, 'Stephen King', '0', '2023-11-11 09:40:51', NULL, NULL),
+(17, 15, '1492', '1', '2023-11-11 09:40:51', NULL, NULL),
+(18, 15, '1776', '0', '2023-11-11 09:40:51', NULL, NULL),
+(19, 15, '1812', '0', '2023-11-11 09:40:51', NULL, NULL),
+(20, 16, 'Au', '1', '2023-11-11 09:40:51', NULL, NULL),
+(21, 16, 'Ag', '0', '2023-11-11 09:40:51', NULL, NULL),
+(22, 16, 'Fe', '0', '2023-11-11 09:40:51', NULL, NULL),
+(23, 17, 'Océano Pacífico', '1', '2023-11-11 09:40:51', NULL, NULL),
+(24, 17, 'Océano Atlántico', '0', '2023-11-11 09:40:51', NULL, NULL),
+(25, 17, 'Océano Índico', '0', '2023-11-11 09:40:51', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -262,7 +316,22 @@ INSERT INTO `preguntas` (`idpregunta`, `idevaluacion`, `pregunta`, `create_at`, 
 (9, 3, '¿Quién escribió \"El Quijote\"?', '2023-11-10 15:14:18', NULL, NULL),
 (10, 3, '¿Cuál es el metal más abundante en la corteza terrestre?', '2023-11-10 15:14:18', NULL, NULL),
 (11, 3, '¿Cuál es la montaña más alta del mundo?', '2023-11-10 15:14:18', NULL, NULL),
-(12, 3, '¿Quién fue el primer presidente de los Estados Unidos?', '2023-11-10 15:14:18', NULL, NULL);
+(12, 3, '¿Quién fue el primer presidente de los Estados Unidos?', '2023-11-10 15:14:18', NULL, NULL),
+(13, 15, '¿Cuál es la capital de Francia?', '2023-11-11 09:33:00', NULL, NULL),
+(14, 15, '¿Quién escribió el libro \"1984\"?', '2023-11-11 09:33:00', NULL, NULL),
+(15, 15, '¿En qué año se descubrió América?', '2023-11-11 09:33:00', NULL, NULL),
+(16, 15, '¿Cuál es el símbolo químico del oro?', '2023-11-11 09:33:00', NULL, NULL),
+(17, 15, '¿Cuál es el océano más grande del mundo?', '2023-11-11 09:33:00', NULL, NULL),
+(18, 16, '¿Cuál es el autor de la pintura \"La última cena\"?', '2023-11-11 09:33:00', NULL, NULL),
+(19, 16, '¿En qué año se fundó la ciudad de Roma?', '2023-11-11 09:33:00', NULL, NULL),
+(20, 16, '¿Cuál es el río más largo del mundo?', '2023-11-11 09:33:00', NULL, NULL),
+(21, 16, '¿Quién escribió el libro \"Don Quijote de la Mancha\"?', '2023-11-11 09:33:00', NULL, NULL),
+(22, 16, '¿Cuál es el país más poblado del mundo?', '2023-11-11 09:33:00', NULL, NULL),
+(23, 17, '¿En qué año se firmó la Declaración de Independencia de Estados Unidos?', '2023-11-11 09:33:00', NULL, NULL),
+(24, 17, '¿Cuál es el lago más profundo del mundo?', '2023-11-11 09:33:00', NULL, NULL),
+(25, 17, '¿Quién pintó la obra \"La Noche Estrellada\"?', '2023-11-11 09:33:00', NULL, NULL),
+(26, 17, '¿Cuál es el planeta más grande del sistema solar?', '2023-11-11 09:33:00', NULL, NULL),
+(27, 17, '¿Cuál es el autor de la canción \"Imagine\"?', '2023-11-11 09:33:00', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -303,17 +372,19 @@ CREATE TABLE `usuarios` (
   `token_estado` char(1) DEFAULT NULL,
   `create_at` datetime DEFAULT current_timestamp(),
   `update_at` datetime DEFAULT NULL,
-  `inactive_at` datetime DEFAULT NULL
+  `inactive_at` datetime DEFAULT NULL,
+  `fechatoken` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`idusuario`, `idrol`, `apellidos`, `nombres`, `correo`, `claveacceso`, `token`, `token_estado`, `create_at`, `update_at`, `inactive_at`) VALUES
-(2, 1, 'Muñoz', 'Alonso', 'alonsomunoz263@gamil.com', '12345', NULL, NULL, '2023-11-09 14:57:42', NULL, NULL),
-(3, 2, 'Villegas Salazar', 'Luis', 'villegasalazar08@gmail.com', '$2y$10$S9MFiUr.GHShWVx/klSp.uUeiv4pr0XEq9uyusC4diSqLpdGBxzWm', NULL, NULL, '2023-11-09 15:23:18', NULL, NULL),
-(4, 2, 'Martinez', 'Alfonso', 'alonsomredick@gmail.com', '12345', NULL, NULL, '2023-11-10 14:50:32', NULL, NULL);
+INSERT INTO `usuarios` (`idusuario`, `idrol`, `apellidos`, `nombres`, `correo`, `claveacceso`, `token`, `token_estado`, `create_at`, `update_at`, `inactive_at`, `fechatoken`) VALUES
+(2, 1, 'Muñoz', 'Alonso', 'alonsomunoz263@gamil.com', '$2y$10$JrWpvfajT/tVlC6C4f3q7eYYHVaOcG1MK/sIc0mqGPBGJ5dHM/P12', NULL, NULL, '2023-11-09 14:57:42', NULL, NULL, NULL),
+(3, 2, 'Villegas Salazar', 'Luis', 'villegasalazar08@gmail.com', '$2y$10$wmuTazpPzTLuIzuxwpIdjON3uUIEIT/cN3E.XJcA6wiix0dpzMJD6', '498554', 'P', '2023-11-09 15:23:18', NULL, NULL, '2023-11-11 08:34:42'),
+(4, 2, 'Martinez', 'Alfonso', 'alonsomredick@gmail.com', '$2y$10$JrWpvfajT/tVlC6C4f3q7eYYHVaOcG1MK/sIc0mqGPBGJ5dHM/P12', NULL, NULL, '2023-11-10 14:50:32', NULL, NULL, NULL),
+(5, 2, 'Quispe Napa', 'Harold', 'efrainqn16@gmail.com', '$2y$10$JrWpvfajT/tVlC6C4f3q7eYYHVaOcG1MK/sIc0mqGPBGJ5dHM/P12', '581667', 'P', '2023-11-10 22:57:47', NULL, NULL, '2023-11-11 00:29:32');
 
 --
 -- Índices para tablas volcadas
@@ -369,7 +440,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `alternativas`
 --
 ALTER TABLE `alternativas`
-  MODIFY `idalternativa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idalternativa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `evaluaciones`
@@ -387,7 +458,7 @@ ALTER TABLE `inscritos`
 -- AUTO_INCREMENT de la tabla `preguntas`
 --
 ALTER TABLE `preguntas`
-  MODIFY `idpregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `idpregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -399,7 +470,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `idusuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idusuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas

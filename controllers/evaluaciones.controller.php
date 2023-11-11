@@ -13,5 +13,13 @@ if (isset($_POST['operacion'])) {
 
       echo json_encode($evaluacion->listarEvaluaciones($datos));
       break;
+
+    case 'preguntasAlternativas':
+      $datos = [
+        'idevaluacion' => $_POST['idevaluacion']
+      ];
+
+      echo json_encode($evaluacion->preguntasAlternativas($datos));
+      break;
   }
 }

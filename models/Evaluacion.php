@@ -34,5 +34,19 @@ class Evaluacion extends Conexion{
     }
   }
 
+  public function preguntasAlternativas($datos = []){
+    try {
+      $consulta = $this->conexion->prepare("CALL spu_evaluaciones_preguntas_listar(?)");
+      $consulta->execute(
+        array(
+          $datos['idevaluacion']
+        )
+      );
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
 }
 

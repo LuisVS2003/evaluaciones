@@ -4,13 +4,14 @@ session_start();
 
 $permisos = [
   "1" => ["matriculados", "evaluaciones"], // DOCENTE
-  "2" => ["evaluaciones"], // ESTUDIANTE
+  "2" => ["evaluaciones", "listapreguntas"], // ESTUDIANTE
 ];
 
 
 
 if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
   header("Location: ../index.php");
+  echo "<h1>ACCESO NO AUTORIZADO</h1>";
   exit();
 }
 ?>
@@ -47,7 +48,6 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
     </button>
     <div class="collapse navbar-collapse" id="collapsibleNavId">
       <ul class="navbar-nav me-auto mt-2 mt-lg-0">
-
         <?php
             foreach($permisos[$_SESSION["idrol"]] as $permiso){
                 echo "
@@ -57,8 +57,6 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
                 ";
               }
         ?>
-
-
       </ul>
       </ul>
       <ul class="navbar-nav">
@@ -73,10 +71,6 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
           </div>
         </li>
       </ul>
-
     </div>
   </div>
 </nav>
-
-
-

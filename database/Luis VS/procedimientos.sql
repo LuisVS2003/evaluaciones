@@ -14,5 +14,27 @@ BEGIN
     WHERE USR.idusuario = _idusuario;
 END $$
 
-SELECT * FROM evaluaciones;
-CALL spu_evaluaciones_usuario_listar(2)
+CALL spu_evaluaciones_usuario_listar(3);
+select * from evaluaciones
+
+
+DELIMITER $$
+CREATE PROCEDURE spu_evaluaciones_preguntas_listar(IN _idevaluacion INT)
+BEGIN
+	SELECT 
+		EVA.idevaluacion, EVA.idusuario,
+        PRE.idpregunta, PRE.pregunta,
+        ALT.alternativa
+	FROM evaluaciones EVA
+    INNER JOIN preguntas PRE ON PRE.idevaluacion = EVA.idevaluacion
+    INNER JOIN alternativas ALT ON ALT.idpregunta = PRE.idpregunta
+    WHERE EVA.idevaluacion = _idevaluacion;
+END $$
+
+CALL spu_evaluaciones_preguntas_listar(15);
+
+
+Select * from evaluaciones;
+select * from alternativas;
+select * from preguntas;
+
