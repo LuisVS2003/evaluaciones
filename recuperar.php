@@ -42,37 +42,7 @@
   </script>
 
   <!--Fuciones de SweetAlert-->
-  <script>
-    function notificar(icon,titulo, mensaje, tiempo){
-      Swal.fire({
-        icon: icon,
-        title: titulo,
-        text: mensaje,
-        confirmButtonColor: '#2E86C1',
-        confirmButtonText: 'Aceptar',
-        footer: 'App Store - 2023',
-        timerProgressBar: true,
-        timer: (tiempo * 1000)
-      })
-    }
-
-
-    function mostrarPregunta(titulo, mensaje) {
-    return Swal.fire({
-        title: titulo,
-        text: mensaje,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Aceptar',
-        cancelButtonText: 'Cancelar',
-        confirmButtonColor: '#2E86C1',
-        cancelButtonColor: '#797D7F',
-        footer: 'App Store - 2023'
-      }).then((result) => {
-        return result;
-      });
-    }
-  </script>
+  <script src="javascript/sweetalert.js"></script>
 
 
   <script>
@@ -81,7 +51,7 @@
         return document.querySelector(id);
       }
   
-      /*function buscarCorreo(){
+      function buscarCorreo(){
         const correo = $("#correo").value; // Obtener el valor del campo de correo
 
         const parametros = new FormData();
@@ -94,18 +64,26 @@
         })
           .then(respuesta => respuesta.json())
           .then(data =>{
-            if(data.length > 0) {
-              notificar('success','Se encontro el Correo','Se encontrado en la base de datos',2)
+            //console.log(data);
+            /**
+             *  data.usuario = 1 si se encontro el correo
+             *  dara.usuario = 0 si no se encontro
+             */
+            if(data.idusuario > 0) {
+              notificar('success','Se encontro el Correo',`Porfavor verificar el token en su  correo:${data.correo}`,3)
               registraTokens();
+              $("#form-rest").reset()
+
             }else{
-              notificar('error','Encontrado','Registro encontrado en la base de datos',2);
+              notificar('error','No encontrado','El correo no se encuentra registrado',2);
+              $("#form-rest").reset()
             }
 
           })
           .catch(e =>{
             console.error(e);
           });
-      }*/
+      }
       
       function registraTokens(){
         const correo = $("#correo").value; // Obtener el valor del campo de correo electrónico
@@ -120,7 +98,10 @@
         })
           .then(respuesta => respuesta.json())
           .then(data =>{
-              console.log(`Status: Enviado<=Verificar Correo ${correo}`);
+            /**
+            console.log(`Status: Enviado<=Verificar Correo ${correo}`);
+             * 
+             */
 
             })
           .catch(e =>{
@@ -129,16 +110,15 @@
       }
 
       //buscarCorreo();
-
       $("#form-rest").addEventListener("submit", (event) => {
           event.preventDefault();
-          mostrarPregunta("Recuperacion", "¿Está seguro de enviar el token de recuperacion?").then((result) => { 
-            if (result.isConfirmed) {
-              registraTokens();
-              notificar("success","Recuperacion", "Verificar su Correo", 3);
-              $("#form-rest").reset()
-            }
-          });
+          buscarCorreo();
+          // mostrarPregunta("Recuperacion", "¿Está seguro de enviar el token de recuperacion?").then((result) => { 
+          //   if (result.isConfirmed) {
+          //     //notificar("success","Recuperacion", "Verificar su Correo", 3);
+          //     $("#form-rest").reset()
+          //   }
+          // });
         });
 
 
