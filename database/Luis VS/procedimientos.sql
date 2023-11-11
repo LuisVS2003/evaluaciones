@@ -6,9 +6,8 @@ BEGIN
 	SELECT
 		EVA.idevaluacion, USR.idusuario,
         CONCAT(USR.apellidos, " ", USR.nombres) 'nombre_completo',
-        EVA.nombre_evaluacion,
+        EVA.nombre_evaluacion, EVA.nota,
         EVA.fechainicio, EVA.fechafin
-        
     FROM evaluaciones EVA
     INNER JOIN usuarios USR ON USR.idusuario = EVA.idusuario
     WHERE USR.idusuario = _idusuario;
@@ -24,7 +23,7 @@ BEGIN
 	SELECT 
 		EVA.idevaluacion, EVA.idusuario,
         PRE.idpregunta, PRE.pregunta,
-        ALT.alternativa
+        ALT.idalternativa, ALT.alternativa, ALT.validacion
 	FROM evaluaciones EVA
     INNER JOIN preguntas PRE ON PRE.idevaluacion = EVA.idevaluacion
     INNER JOIN alternativas ALT ON ALT.idpregunta = PRE.idpregunta
@@ -34,7 +33,16 @@ END $$
 CALL spu_evaluaciones_preguntas_listar(15);
 
 
-Select * from evaluaciones;
-select * from alternativas;
-select * from preguntas;
+DELIMITER $$
+CREATE PROCEDURE spu_nota_actualizar(
+	IN _idevaluacion INT,
+	IN _nota		TINYINT
+)
+BEGIN
+	UPDATE evaluaciones
+		SET nota = _nota
+    WHERE idevaluacion = _idevaluacion;
+END $$
+
+CALL spu_nota_actualizar(15, 20)
 

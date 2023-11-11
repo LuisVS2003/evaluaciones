@@ -21,5 +21,14 @@ if (isset($_POST['operacion'])) {
 
       echo json_encode($evaluacion->preguntasAlternativas($datos));
       break;
+
+    case 'asignarNota':
+      $datos = [
+        'idevaluacion' => $_POST['idevaluacion'],
+        'nota' => $_POST['nota']
+      ];
+
+      echo json_encode($evaluacion->asignarNota($datos));
+      break;
   }
 }

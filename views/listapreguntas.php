@@ -11,11 +11,11 @@ $id = $arregloURL[1];
       <div class="col-md-6">
         <h2 class="text-center mb-4">Evaluación de Preguntas</h2>
 
-        <form action="#" id="form-evaluacion">
+        <form id="form-evaluacion">
           <ol>
 
           </ol>
-          <button type="submit" class="btn btn-primary">Enviar Respuestas</button>
+          <button type="submit" class="btn btn-primary" id="enviar-examen">Enviar Respuestas</button>
         </form>
       </div>
     </div>
@@ -41,6 +41,8 @@ $id = $arregloURL[1];
       }
 
       const formPA = $('#form-evaluacion ol');
+      let altCorrecto = [];
+      let altMarcadas = [];
 
       function preguntasAlternativas(){
         const parametros = new FormData();
@@ -53,8 +55,11 @@ $id = $arregloURL[1];
         })
           .then(respuesta => respuesta.json())
           .then(datos => {
-            formPA.innerHTML = '';
-            nPregunta = 1;
+            datos.forEach(registro => {
+              if (registro.validacion == '1') {
+                altCorrecto.push(registro.idalternativa);                
+              }
+            });
             almacenarPreguntas(datos);
           })
           .catch(e => {
@@ -62,38 +67,56 @@ $id = $arregloURL[1];
           });
       }
 
-      function almacenarPreguntas(data){        
+      function almacenarPreguntas(data) {
         const preguntasAgrupadas = {};
-
         data.forEach((dato) => {
-          const { pregunta, alternativa } = dato;
-
+          const { pregunta, alternativa, idalternativa } = dato;
           if (!preguntasAgrupadas[pregunta]) {
             preguntasAgrupadas[pregunta] = [];
           }
-          preguntasAgrupadas[pregunta].push(alternativa);
+          preguntasAgrupadas[pregunta].push({ alternativa, idalternativa });
         });
-
         for (const pregunta in preguntasAgrupadas) {
           const alternativas = preguntasAgrupadas[pregunta];
-
           const preguntaHTML = `<div>
-                        <li>${pregunta}</li>`;
-          const alternativasHTML = alternativas.map((alternativa, index) => {
-            const opcionId = `opcion${index + 1}`;
-            const opcionValue = `opcion${index + 1}`;
+                                  <li>${pregunta}</li>`;
+          const alternativasHTML = alternativas.map((opcion, idalternativa) => {
+            const { alternativa, idalternativa: opcionId } = opcion;
+            
             return `<div class="form-check">
-                      <input class="form-check-input" type="radio" name="${pregunta}" value="${opcionValue}" id="${opcionId}">
-                      <label class="form-check-label" for="${opcionId}">${alternativa}</label>
+                      <input data-idalternativa="${opcionId}" class="form-check-input" type="radio" name="${pregunta}" id="${opcionId}">
+                      <label  class="form-check-label" for="${opcionId}">${alternativa}</label>
                     </div>`;
           }).join('\n');
-
           const divCierreHTML = '</div>';
           formPA.innerHTML += preguntaHTML + alternativasHTML + divCierreHTML;
         }
       }
 
+      function examenRevisar() {
+        let datas = document.querySelectorAll(".form-check-input:checked");
+        datas.forEach((data) => {
+          altMarcadas.push(data.dataset.idalternativa);
+        });
 
+        contador = 0;
+        altCorrecto.forEach((correcta) => {
+          altMarcadas.forEach((marcada) => {
+            if (correcta == marcada) {
+              contador++;
+            }
+          })
+        })
+        contador *= 4
+        alert("Tu puntaje es: " + contador);
+      }
+
+      $("#form-evaluacion").addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (confirm('¿Desea enviar el examen?')) {
+          examenRevisar();
+        }
+      })
       preguntasAlternativas();
     })
 
