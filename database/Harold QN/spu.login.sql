@@ -92,6 +92,10 @@ SELECT  * FROM usuarios;
 -- Clave = prueba
 UPDATE usuarios SET
 	claveacceso = '$2y$10$JrWpvfajT/tVlC6C4f3q7eYYHVaOcG1MK/sIc0mqGPBGJ5dHM/P12';
+	
+SELECT * FROM usuarios;
+
+-- --------------------------------------------------------------------------------------
 
 
 

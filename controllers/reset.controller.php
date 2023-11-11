@@ -30,7 +30,9 @@ if (isset($_POST['operacion'])) {
           'correo' => $_POST['correo']
         ];
           echo json_encode($restablecer->buscarCorreo($datosEnviar));
-        break;
+
+          break;
+
 
       case 'buscarToken':
           $datosEnviar =[

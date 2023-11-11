@@ -72,53 +72,54 @@
       }
   
       function ValidarTokens() {
-        const div = document.querySelector("#cambiarpass");
+    const div = document.querySelector("#cambiarpass");
 
-        const parametros = new FormData();
-        parametros.append("operacion", "buscarToken");
-        parametros.append("correo", $("#correo").value);
-        parametros.append("token", $("#token").value);
+    const parametros = new FormData();
+    parametros.append("operacion", "buscarToken");
+    parametros.append("correo", $("#correo").value);
+    parametros.append("token", $("#token").value);
 
-        fetch("./controllers/reset.controller.php", {
-          method: "POST",
-          body: parametros
-        })
+    fetch("./controllers/reset.controller.php", {
+        method: "POST",
+        body: parametros
+    })
         .then(respuesta => respuesta.json())
         .then(data => {
             if (data.length > 0) {
                 //console.log(data);
+                
 
                 // Verificar la expiración del token
-              const fechaTokenString = data[0].fechatoken;
-              const fechaToken = new Date(fechaTokenString);
-              const ahora = new Date();
-              const tiempoExpiracion = 1 * 60 * 1000; // 1 minuto en milisegundos
+                const fechaTokenString = data[0].fechatoken;
+                const fechaToken = new Date(fechaTokenString);
+                const ahora = new Date();
+                const tiempoExpiracion = 1 * 60 * 1000; // 1 minuto en milisegundos
 
                 // Calcular la diferencia en milisegundos
-              const diferenciaTiempo = ahora - fechaToken;
+                const diferenciaTiempo = ahora - fechaToken;
 
-              if (diferenciaTiempo > tiempoExpiracion) {
+                if (diferenciaTiempo > tiempoExpiracion) {
                     // El token ha expirado
                     //console.log("Token expirado");
-                notificar('warning', 'Token expirado', 'El token ha expirado', 2);
-              } else {
+                    notificar('warning', 'Token expirado', 'El token ha expirado', 2);
+                } else {
                         // Bloqueo los input para que no se puedan cambiar
-                $("#correo").setAttribute("readonly", "true");
-                $("#token").setAttribute("readonly", "true");
+                    $("#correo").setAttribute("readonly", "true");
+                    $("#token").setAttribute("readonly", "true");
                     // El token está dentro del límite de 1 minuto
-                notificar('success', 'Encontrado', 'Registro encontrado en la base de datos', 2);
+                    notificar('success', 'Encontrado', 'Registro encontrado en la base de datos', 2);
 
                     // Yo pensé en hacer una renderización 
-                nuevaContraseña = `
-                  <label for="cambiarpass">Nueva Contraseña:</label>
-                  <input type="text" class="form-control" id="claveacceso" placeholder="COLOCA UN PASSWORD SUPER SECRETO">
-                  <button type="click" class="btn btn-primary mt-3" id="cambiarpass">Cambiar Contraseña</button>
-                `;
-                div.innerHTML += nuevaContraseña;
+                    nuevaContraseña = `
+                        <label for="cambiarpass">Nueva Contraseña:</label>
+                        <input type="text" class="form-control" id="claveacceso" placeholder="COLOCA UN PASSWORD SUPER SECRETO">
+                        <button type="click" class="btn btn-primary mt-3" id="cambiarpass">Cambiar Contraseña</button>
+                    `;
+                    div.innerHTML += nuevaContraseña;
 
                     // Ocultar el botón de "Validar"
-                $("#submit").style.display = "none";
-              }
+                    $("#submit").style.display = "none";
+                }
             } else {
                 notificar('warning', 'No se encontró', 'No encontrado en la base de datos', 2);
             }
@@ -126,7 +127,7 @@
         .catch(e => {
             console.error(e);
         });
-      }
+}
 
 
 
