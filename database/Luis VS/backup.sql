@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-11-2023 a las 17:01:12
+-- Tiempo de generación: 12-11-2023 a las 00:58:32
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -58,7 +58,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_preguntas_listar` 
 	SELECT 
 		EVA.idevaluacion, EVA.idusuario,
         PRE.idpregunta, PRE.pregunta,
-        ALT.alternativa, ALT.validacion
+        ALT.idalternativa, ALT.alternativa, ALT.validacion
 	FROM evaluaciones EVA
     INNER JOIN preguntas PRE ON PRE.idevaluacion = EVA.idevaluacion
     INNER JOIN alternativas ALT ON ALT.idpregunta = PRE.idpregunta
@@ -79,8 +79,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_usuario_listar` (I
 		EVA.idevaluacion, USR.idusuario,
         CONCAT(USR.apellidos, " ", USR.nombres) 'nombre_completo',
         EVA.nombre_evaluacion,
+        EVA.nota,
         EVA.fechainicio, EVA.fechafin
-        
     FROM evaluaciones EVA
     INNER JOIN usuarios USR ON USR.idusuario = EVA.idusuario
     WHERE USR.idusuario = _idusuario;
@@ -144,6 +144,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_login` (IN `_correo` VARCHAR(90
 	FROM usuarios
     WHERE correo = _correo AND
 		inactive_at IS NULL;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_nota_actualizar` (IN `_idevaluacion` INT, IN `_nota` TINYINT)   BEGIN
+	UPDATE evaluaciones
+		SET nota = _nota
+    WHERE idevaluacion = _idevaluacion;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_preguntas_registrar` (IN `_idevaluacion` INT, IN `_pregunta` TEXT)   BEGIN
@@ -242,28 +248,29 @@ CREATE TABLE `evaluaciones` (
   `fechafin` datetime DEFAULT NULL,
   `create_at` datetime DEFAULT current_timestamp(),
   `update_at` datetime DEFAULT NULL,
-  `inactive_at` datetime DEFAULT NULL
+  `inactive_at` datetime DEFAULT NULL,
+  `nota` tinyint(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `evaluaciones`
 --
 
-INSERT INTO `evaluaciones` (`idevaluacion`, `idusuario`, `idinscrito`, `nombre_evaluacion`, `fechainicio`, `fechafin`, `create_at`, `update_at`, `inactive_at`) VALUES
-(3, 2, 1, 'Inglés', '2023-11-09 00:00:00', '2023-11-10 00:00:00', '2023-11-10 14:53:14', NULL, NULL),
-(5, 2, 1, 'Evaluación 1', '2023-11-09 00:00:00', '2023-11-10 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(6, 2, 1, 'Evaluación 2', '2023-11-10 00:00:00', '2023-11-11 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(7, 2, 1, 'Evaluación 3', '2023-11-11 00:00:00', '2023-11-12 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(8, 2, 1, 'Evaluación 4', '2023-11-12 00:00:00', '2023-11-13 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(9, 2, 1, 'Evaluación 5', '2023-11-13 00:00:00', '2023-11-14 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(10, 2, 1, 'Evaluación 6', '2023-11-14 00:00:00', '2023-11-15 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(11, 2, 1, 'Evaluación 7', '2023-11-15 00:00:00', '2023-11-16 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(12, 2, 1, 'Evaluación 8', '2023-11-16 00:00:00', '2023-11-17 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(13, 2, 1, 'Evaluación 9', '2023-11-17 00:00:00', '2023-11-18 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(14, 2, 1, 'Evaluación 10', '2023-11-18 00:00:00', '2023-11-19 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(15, 3, 1, 'Evaluación 1', '2023-11-09 00:00:00', '2023-11-10 00:00:00', '2023-11-10 20:36:24', NULL, NULL),
-(16, 3, 1, 'Evaluación 2', '2023-11-10 00:00:00', '2023-11-11 00:00:00', '2023-11-10 20:36:24', NULL, NULL),
-(17, 3, 1, 'Evaluación 3', '2023-11-11 00:00:00', '2023-11-12 00:00:00', '2023-11-10 20:36:24', NULL, NULL);
+INSERT INTO `evaluaciones` (`idevaluacion`, `idusuario`, `idinscrito`, `nombre_evaluacion`, `fechainicio`, `fechafin`, `create_at`, `update_at`, `inactive_at`, `nota`) VALUES
+(3, 2, 1, 'Inglés', '2023-11-09 00:00:00', '2023-11-10 00:00:00', '2023-11-10 14:53:14', NULL, NULL, NULL),
+(5, 2, 1, 'Evaluación 1', '2023-11-09 00:00:00', '2023-11-10 00:00:00', '2023-11-10 15:13:04', NULL, NULL, NULL),
+(6, 2, 1, 'Evaluación 2', '2023-11-10 00:00:00', '2023-11-11 00:00:00', '2023-11-10 15:13:04', NULL, NULL, NULL),
+(7, 2, 1, 'Evaluación 3', '2023-11-11 00:00:00', '2023-11-12 00:00:00', '2023-11-10 15:13:04', NULL, NULL, NULL),
+(8, 2, 1, 'Evaluación 4', '2023-11-12 00:00:00', '2023-11-13 00:00:00', '2023-11-10 15:13:04', NULL, NULL, NULL),
+(9, 2, 1, 'Evaluación 5', '2023-11-13 00:00:00', '2023-11-14 00:00:00', '2023-11-10 15:13:04', NULL, NULL, NULL),
+(10, 2, 1, 'Evaluación 6', '2023-11-14 00:00:00', '2023-11-15 00:00:00', '2023-11-10 15:13:04', NULL, NULL, NULL),
+(11, 2, 1, 'Evaluación 7', '2023-11-15 00:00:00', '2023-11-16 00:00:00', '2023-11-10 15:13:04', NULL, NULL, NULL),
+(12, 2, 1, 'Evaluación 8', '2023-11-16 00:00:00', '2023-11-17 00:00:00', '2023-11-10 15:13:04', NULL, NULL, NULL),
+(13, 2, 1, 'Evaluación 9', '2023-11-17 00:00:00', '2023-11-18 00:00:00', '2023-11-10 15:13:04', NULL, NULL, NULL),
+(14, 2, 1, 'Evaluación 10', '2023-11-18 00:00:00', '2023-11-19 00:00:00', '2023-11-10 15:13:04', NULL, NULL, NULL),
+(15, 3, 1, 'Evaluación 1', '2023-11-09 00:00:00', '2023-11-10 00:00:00', '2023-11-10 20:36:24', NULL, NULL, 15),
+(16, 3, 1, 'Evaluación 2', '2023-11-10 00:00:00', '2023-11-11 00:00:00', '2023-11-10 20:36:24', NULL, NULL, NULL),
+(17, 3, 1, 'Evaluación 3', '2023-11-11 00:00:00', '2023-11-12 00:00:00', '2023-11-10 20:36:24', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -382,7 +389,7 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`idusuario`, `idrol`, `apellidos`, `nombres`, `correo`, `claveacceso`, `token`, `token_estado`, `create_at`, `update_at`, `inactive_at`, `fechatoken`) VALUES
 (2, 1, 'Muñoz', 'Alonso', 'alonsomunoz263@gamil.com', '$2y$10$JrWpvfajT/tVlC6C4f3q7eYYHVaOcG1MK/sIc0mqGPBGJ5dHM/P12', NULL, NULL, '2023-11-09 14:57:42', NULL, NULL, NULL),
-(3, 2, 'Villegas Salazar', 'Luis', 'villegasalazar08@gmail.com', '$2y$10$wmuTazpPzTLuIzuxwpIdjON3uUIEIT/cN3E.XJcA6wiix0dpzMJD6', '498554', 'P', '2023-11-09 15:23:18', NULL, NULL, '2023-11-11 08:34:42'),
+(3, 1, 'Villegas Salazar', 'Luis', 'villegasalazar08@gmail.com', '$2y$10$AaCdm7c6RXAeb0S7rbL7tOyK3jgkW.8EVx4o6OLsF4RK0ra8RQrrm', NULL, 'C', '2023-11-09 15:23:18', NULL, NULL, '2023-11-11 18:40:00'),
 (4, 2, 'Martinez', 'Alfonso', 'alonsomredick@gmail.com', '$2y$10$JrWpvfajT/tVlC6C4f3q7eYYHVaOcG1MK/sIc0mqGPBGJ5dHM/P12', NULL, NULL, '2023-11-10 14:50:32', NULL, NULL, NULL),
 (5, 2, 'Quispe Napa', 'Harold', 'efrainqn16@gmail.com', '$2y$10$JrWpvfajT/tVlC6C4f3q7eYYHVaOcG1MK/sIc0mqGPBGJ5dHM/P12', '581667', 'P', '2023-11-10 22:57:47', NULL, NULL, '2023-11-11 00:29:32');
 
