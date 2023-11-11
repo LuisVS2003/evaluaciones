@@ -1,4 +1,10 @@
-<?= require_once "./navbar.php"; ?>
+<?php require_once "./navbar.php";
+
+$url = $_SERVER['REQUEST_URI'];
+$arregloURL = explode("=", $url);
+$id = $arregloURL[1];
+
+?>
 
   <div class="container mt-4">
     <div class="row justify-content-center">
@@ -9,11 +15,6 @@
           <ol>
 
           </ol>
-
-
-
-          <!-- Agrega más preguntas según sea necesario -->
-
           <button type="submit" class="btn btn-primary">Enviar Respuestas</button>
         </form>
       </div>
@@ -44,7 +45,7 @@
       function preguntasAlternativas(){
         const parametros = new FormData();
         parametros.append('operacion', 'preguntasAlternativas');
-        parametros.append('idevaluacion', '15')
+        parametros.append('idevaluacion', '<?= $id ?>');
 
         fetch('../controllers/evaluaciones.controller.php', {
           method: 'POST',
