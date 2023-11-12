@@ -41,6 +41,8 @@ CREATE TABLE evaluaciones(
 	idevaluacion	INT PRIMARY KEY AUTO_INCREMENT,
     idcurso			INT				NOT NULL,
     nombre_evaluacion	VARCHAR(90)	NOT NULL,
+    fechainicio		DATETIME		NULL,
+    fechafin		DATETIME		NULL,
     create_at		DATETIME		DEFAULT NOW(),
     update_at		DATETIME		NULL,
     inactive_at		DATETIME		NULL,

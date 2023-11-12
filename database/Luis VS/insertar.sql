@@ -26,11 +26,11 @@ CALL spu_usuario_registrar(2, 'Díaz', 'Carlos', 'carlos.diaz@example.com', 'cla
 
 -- ##########################################################################################################################
 -- EVALUACIONES
-CALL spu_evaluaciones_registrar(1, 'Evaluación 1 Electricidad Industrial');
-CALL spu_evaluaciones_registrar(1, 'Evaluación 2 Electricidad Industrial');
-CALL spu_evaluaciones_registrar(3, 'Evaluación 1 Ing. de Software con IA');
-CALL spu_evaluaciones_registrar(3, 'Evaluación 2 Ing. de Software con IA');
-CALL spu_evaluaciones_registrar(3, 'Evaluación 3 Ing. de Software con IA');
+CALL spu_evaluaciones_registrar(1, 'Evaluación 1 Electricidad Industrial', '2023-11-12 10:00:00', '2023-11-15 18:00:00');
+CALL spu_evaluaciones_registrar(1, 'Evaluación 2 Electricidad Industrial', '2023-11-13 10:00:00', '2023-11-16 18:00:00');
+CALL spu_evaluaciones_registrar(3, 'Evaluación 1 Ing. de Software con IA', '2023-11-14 10:00:00', '2023-11-17 18:00:00');
+CALL spu_evaluaciones_registrar(3, 'Evaluación 2 Ing. de Software con IA', '2023-11-15 10:00:00', '2023-11-17 18:00:00');
+CALL spu_evaluaciones_registrar(3, 'Evaluación 3 Ing. de Software con IA', '2023-11-16 10:00:00', '2023-11-18 18:00:00');
 
 -- CALL spu_evaluaciones_listar();
 
@@ -87,5 +87,8 @@ CALL spu_alternativas_registrar(8, 'boolean flag = true;', 'N');
 CALL spu_alternativas_registrar(9, 'True', 'N');
 CALL spu_alternativas_registrar(9, 'False', 'S');
 CALL spu_alternativas_registrar(9, 'Null', 'N');
+
+
+
 
 CALL spu_alternativas_listar();

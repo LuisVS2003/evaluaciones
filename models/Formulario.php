@@ -33,11 +33,13 @@ class Evaluacion extends Conexion{
 
   public function registrarEvaluacion($datos = []){
     try {
-      $consulta = $this->evaluacion->prepare("CALL spu_evaluaciones_registrar(?,?)");
+      $consulta = $this->evaluacion->prepare("CALL spu_evaluaciones_registrar(?,?,?,?)");
       $consulta->execute(
         array(
           $datos['idcurso'],
-          $datos['nombre_evaluacion']
+          $datos['nombre_evaluacion'],
+          $datos['fechainicio'],
+          $datos['fechafin']
         )
       );
       return $consulta->fetch(PDO::FETCH_ASSOC);
