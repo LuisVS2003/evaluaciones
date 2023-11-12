@@ -1,3 +1,4 @@
+use evaluaciones;
 DELIMITER $$
 CREATE PROCEDURE spu_login (IN _correo VARCHAR(90))
 BEGIN
@@ -42,5 +43,7 @@ BEGIN
     INNER JOIN alternativas ALT ON ALT.idpregunta = PRE.idpregunta
     WHERE EVA.idevaluacion = _idevaluacion;
 END $$
+
+SELECT * FROM usuarios;
 
 -- CALL spu_evaluaciones_preguntas_listar(3)

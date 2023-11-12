@@ -1,3 +1,4 @@
+USE evaluaciones;
 -- ROLES
 INSERT INTO roles(rol) VALUES ('Docente'),('Estudiante');
 

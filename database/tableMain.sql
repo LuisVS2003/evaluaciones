@@ -1,4 +1,4 @@
--- DROP DATABASE evaluaciones
+
 CREATE DATABASE evaluaciones;
 USE evaluaciones;
 

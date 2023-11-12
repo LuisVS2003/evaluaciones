@@ -96,6 +96,6 @@ BEGIN
 	WHERE USU.inactive_at IS NULL;
 END $$
 
--- CALL spu_listar_usuario();
+-- CALL spu_usuario_listar();
 
 

@@ -18,11 +18,8 @@ if (isset($_POST['operacion'])){
 
     case 'registrarEvaluacion':
     $datosEnviar = [
-        'idusuario'           => $_POST['idusuario'],
-        'idinscrito'          => $_POST['idinscrito'],
-        'nombre_evaluacion'   => $_POST['nombre_evaluacion'],
-        'fechainicio'         => $_POST['fechainicio'],
-        'fechafin'            => $_POST['fechafin']
+        'idcurso'              => $_POST['idcurso'],
+        'nombre_evaluacion'    => $_POST['nombre_evaluacion']
     ];
   
         echo json_encode($evaluacion->registrarEvaluacion($datosEnviar));
@@ -43,7 +40,10 @@ if (isset($_POST['operacion'])){
 
     case 'registrarInscrito':
         $datosEnviar = [
-            'idusuario'           => $_POST['idusuario']
+            'idusuario'           => $_POST['idusuario'],
+            'idevaluacion'        => $_POST['idevaluacion'],
+            'fechainicio'         => $_POST['fechainicio'],
+            'fechafin'            => $_POST['fechafin']
         ];
         
             echo json_encode($evaluacion->registrarInscrito($datosEnviar));
@@ -57,7 +57,7 @@ if (isset($_POST['operacion'])){
         $datosEnviar = [
             'idpregunta'            => $_POST['idpregunta'],
             'alternativa'           => $_POST['alternativa'],
-            'validacion'            => $_POST['validacion']
+            'escorrecto'            => $_POST['escorrecto']
         ];
         
             echo json_encode($evaluacion->registrarAlternativa($datosEnviar));
