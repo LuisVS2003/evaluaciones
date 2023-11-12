@@ -3,7 +3,7 @@ SELECT * FROM usuarios;
 
 DESCRIBE usuarios;
 
-ALTER TABLE usuarios ADD fechatoken DATETIME NULL;
+-- ALTER TABLE usuarios ADD fechatoken DATETIME NULL;
 
 /*
 	PROCEDIMIENTO PARA BUSCAR EL CORREO ANTES DE ENVIARLO;
@@ -11,7 +11,7 @@ ALTER TABLE usuarios ADD fechatoken DATETIME NULL;
 */
 DELIMITER $$
 CREATE PROCEDURE spu_buscar_correo(
-    IN _correo VARCHAR(100)
+    IN _correo VARCHAR(90)
 )
 BEGIN
     SELECT *
@@ -34,7 +34,7 @@ CALL spu_registrar_usuario(2, 'Quispe Napa', 'Harold', 'efrainqn16@gmail.com', '
 */
 DELIMITER $$
 CREATE PROCEDURE spu_registra_token(
-	IN _correo VARCHAR(100),
+	IN _correo VARCHAR(90),
     IN _token VARCHAR(6)
 )
 BEGIN
@@ -55,7 +55,7 @@ CALL spu_registra_token('efrainqn16@gmail.com',999999);
 
 DELIMITER $$
 CREATE PROCEDURE spu_buscar_token(
-    IN _correo VARCHAR(100),
+    IN _correo VARCHAR(90),
     IN _token VARCHAR(6)
 )
 BEGIN
@@ -73,7 +73,7 @@ CALL spu_buscar_token('efrainqn16@gmail.com','999999')
 */
 DELIMITER $$
 CREATE PROCEDURE spu_actualizar_pass(
-	IN _correo VARCHAR(100),
+	IN _correo VARCHAR(90),
 	IN _token VARCHAR(6),
 	IN _claveacceso VARCHAR(90)
 )

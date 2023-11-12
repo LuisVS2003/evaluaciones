@@ -1,3 +1,4 @@
+-- DROP DATABASE evaluaciones
 CREATE DATABASE evaluaciones;
 USE evaluaciones;
 
@@ -9,7 +10,14 @@ CREATE TABLE roles(
 	inactive_at		DATETIME	NULL
 )ENGINE = INNODB;
 
-insert into roles (rol) values('Docente'),('Estudiante');
+
+CREATE TABLE cursos(
+	idcurso			INT PRIMARY KEY AUTO_INCREMENT,
+    curso			VARCHAR(50)	NOT NULL,
+	create_at		DATETIME	DEFAULT NOW(),
+    update_at		DATETIME	NULL,
+	inactive_at		DATETIME	NULL
+)ENGINE = INNODB;
 
 
 CREATE TABLE usuarios(
@@ -21,6 +29,7 @@ CREATE TABLE usuarios(
     claveacceso		VARCHAR(90)	NOT NULL,
     token			CHAR(6)		NULL,
     token_estado	CHAR(1)		NULL,
+    fechatoken		DATETIME	NULL,
     create_at		DATETIME	DEFAULT NOW(),
     update_at		DATETIME	NULL,
 	inactive_at		DATETIME	NULL,
@@ -28,34 +37,27 @@ CREATE TABLE usuarios(
 )ENGINE = INNODB;
 
 
-CREATE TABLE inscritos(
-    idinscrito      INT PRIMARY KEY AUTO_INCREMENT,
-	idusuario		INT			NOT NULL,
-    create_at		DATETIME	DEFAULT NOW(),
-    update_at		DATETIME	NULL,
-	inactive_at		DATETIME	NULL,
-	CONSTRAINT	fk_iduser_ins	FOREIGN KEY (idusuario) REFERENCES usuarios (idusuario),
-    CONSTRAINT	un_iduser_ins	UNIQUE (idusuario)
-)ENGINE = INNODB;
-
-
 CREATE TABLE evaluaciones(
 	idevaluacion	INT PRIMARY KEY AUTO_INCREMENT,
-    idusuario		INT				NOT NULL,
-    idinscrito		INT				NOT NULL,
-    nombre_evaluacion	VARCHAR(45)	NOT NULL,
-    fechainicio		DATETIME		NULL,
-    fechafin		DATETIME		NULL,
+    idcurso			INT				NOT NULL,
+    nombre_evaluacion	VARCHAR(90)	NOT NULL,
     create_at		DATETIME		DEFAULT NOW(),
     update_at		DATETIME		NULL,
     inactive_at		DATETIME		NULL,
-    nota			TINYINT			NULL,
-    CONSTRAINT	fk_idusuario_eval	FOREIGN KEY (idusuario)	REFERENCES usuarios(idusuario),
-    CONSTRAINT	fk_idinscrito_eval	FOREIGN KEY	(idinscrito) REFERENCES inscritos(idinscrito)
+    CONSTRAINT	fk_idcurso_eval	FOREIGN KEY (idcurso)	REFERENCES cursos(idcurso)
 )ENGINE = INNODB;
 
 
-
+CREATE TABLE inscritos(
+    idinscrito      INT PRIMARY KEY AUTO_INCREMENT,
+	idusuario		INT			NOT NULL,
+    idevaluacion	INT			NOT NULL,
+    fechainicio		DATETIME		NULL,
+    fechafin		DATETIME		NULL,
+	CONSTRAINT	fk_iduser_ins	FOREIGN KEY (idusuario) REFERENCES usuarios (idusuario),
+    CONSTRAINT	fk_idevaluacion_ins	FOREIGN KEY	(idevaluacion) REFERENCES evaluaciones(idevaluacion)
+)ENGINE = INNODB;
+-- CONSTRAINT	un_iduser_ins	UNIQUE (idusuario)
 
 CREATE TABLE preguntas(
 	idpregunta		INT PRIMARY KEY AUTO_INCREMENT,
@@ -72,7 +74,7 @@ CREATE TABLE alternativas(
 	idalternativa	INT PRIMARY KEY AUTO_INCREMENT,
     idpregunta		INT				NOT NULL,
     alternativa		TEXT        	NOT NULL,
-    validacion		CHAR(1)			NOT NULL,
+    escorrecto		CHAR(1)			NOT NULL,
 	create_at		DATETIME	    DEFAULT NOW(),
     update_at		DATETIME	    NULL,
 	inactive_at		DATETIME	    NULL,

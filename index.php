@@ -68,6 +68,8 @@
                 setTimeout(function(){
                   window.location.href = './views/'
                 },2000);               
+              }else{
+                alert("Acceso denegado");
               }
               
             })

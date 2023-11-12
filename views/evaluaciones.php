@@ -54,6 +54,7 @@
         })
           .then(respuesta => respuesta.json())
           .then(datos => {
+            console.log(datos);
             listar.innerHTML = '';
             nFila = 1;
 
@@ -73,6 +74,10 @@
               listar.innerHTML += nuevaFila;
               nFila++; 
             });
+
+            if (datos.length == 0) {
+              $("#form-evaluaciones").innerHTML = '<h3>No tienes evaluaciones Asignadas</h3>';
+            }
           })
           .catch(e => {
             console.error(e);

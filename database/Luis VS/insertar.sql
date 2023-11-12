@@ -1,41 +1,90 @@
--- USUARIO LUIS VS
+-- ROLES
+INSERT INTO roles(rol) VALUES ('Docente'),('Estudiante');
+
+-- CALL spu_roles_listar();
+
+-- ##########################################################################################################################
+-- CURSOS
+CALL spu_cursos_registrar('Electricidad Industrial');
+CALL spu_cursos_registrar('Mecánica Automotriz');
+CALL spu_cursos_registrar('Ing. de Software con IA');
+CALL spu_cursos_registrar('Soldadura Avanzada');
+CALL spu_cursos_registrar('Gestión de Proyectos');
+
+-- CALL spu_cursos_listar();
+
+-- ##########################################################################################################################
+-- USUARIOS
+CALL spu_usuario_registrar(1, 'González', 'Juan', 'juan.gonzalez@example.com', 'clavejuan');
+CALL spu_usuario_registrar(2, 'Martínez', 'Ana', 'ana.martinez@example.com', 'claveana');
+CALL spu_usuario_registrar(2, 'Rodríguez', 'Pedro', 'pedro.rodriguez@example.com', 'clavepedro');
+CALL spu_usuario_registrar(2, 'Sánchez', 'Laura', 'laura.sanchez@example.com', 'clavelaura');
+CALL spu_usuario_registrar(2, 'Díaz', 'Carlos', 'carlos.diaz@example.com', 'clavecarlos');
+
+-- CALL spu_usuario_listar();
+
+-- ##########################################################################################################################
+-- EVALUACIONES
+CALL spu_evaluaciones_registrar(1, 'Evaluación 1 Electricidad Industrial');
+CALL spu_evaluaciones_registrar(1, 'Evaluación 2 Electricidad Industrial');
+CALL spu_evaluaciones_registrar(3, 'Evaluación 1 Ing. de Software con IA');
+CALL spu_evaluaciones_registrar(3, 'Evaluación 2 Ing. de Software con IA');
+CALL spu_evaluaciones_registrar(3, 'Evaluación 3 Ing. de Software con IA');
+
+-- CALL spu_evaluaciones_listar();
+
+-- ##########################################################################################################################
+-- INSCRITO
+CALL spu_inscritos_registrar(1, 1, '2023-11-12 10:00:00', '2023-11-15 18:00:00');
+CALL spu_inscritos_registrar(2, 1, '2023-11-13 11:30:00', '2023-11-16 20:30:00');
+CALL spu_inscritos_registrar(3, 2, '2023-11-14 09:45:00', '2023-11-17 17:45:00');
+CALL spu_inscritos_registrar(1, 3, '2023-11-15 13:15:00', '2023-11-18 22:15:00');
+CALL spu_inscritos_registrar(2, 3, '2023-11-16 14:45:00', '2023-11-19 23:45:00');
+
+CALL spu_inscritos_listar();
+
+-- ##########################################################################################################################
 -- PREGUNTAS
-CALL spu_preguntas_registrar(15, '¿Cuál es la capital de Francia?');
-CALL spu_preguntas_registrar(15, '¿Quién escribió el libro "1984"?');
-CALL spu_preguntas_registrar(15, '¿En qué año se descubrió América?');
-CALL spu_preguntas_registrar(15, '¿Cuál es el símbolo químico del oro?');
-CALL spu_preguntas_registrar(15, '¿Cuál es el océano más grande del mundo?');
+CALL spu_preguntas_registrar(1, '¿Cuál es el concepto clave en Electricidad Industrial?');
+CALL spu_preguntas_registrar(1, '¿Cómo se llama el componente que almacena energía en un circuito eléctrico?');
+CALL spu_preguntas_registrar(1, '¿Cuál es la unidad de medida de la corriente eléctrica?');
+CALL spu_preguntas_registrar(2, '¿Cuáles son los componentes esenciales de un sistema de escape en un automóvil?');
+CALL spu_preguntas_registrar(2, '¿Qué tipo de combustible utiliza un motor diésel?');
+CALL spu_preguntas_registrar(2, '¿Cuál es la función principal del sistema de frenos en un automóvil?');
+CALL spu_preguntas_registrar(3, '¿Cuáles son los principios de la programación orientada a objetos?');
+CALL spu_preguntas_registrar(3, '¿Qué significa JVM en el contexto de Java?');
+CALL spu_preguntas_registrar(3, '¿Cómo se declara una variable en Java?');
 
-CALL spu_preguntas_registrar(16, '¿Cuál es el autor de la pintura "La última cena"?');
-CALL spu_preguntas_registrar(16, '¿En qué año se fundó la ciudad de Roma?');
-CALL spu_preguntas_registrar(16, '¿Cuál es el río más largo del mundo?');
-CALL spu_preguntas_registrar(16, '¿Quién escribió el libro "Don Quijote de la Mancha"?');
-CALL spu_preguntas_registrar(16, '¿Cuál es el país más poblado del mundo?');
+CALL spu_preguntas_listar();
 
-CALL spu_preguntas_registrar(17, '¿En qué año se firmó la Declaración de Independencia de Estados Unidos?');
-CALL spu_preguntas_registrar(17, '¿Cuál es el lago más profundo del mundo?');
-CALL spu_preguntas_registrar(17, '¿Quién pintó la obra "La Noche Estrellada"?');
-CALL spu_preguntas_registrar(17, '¿Cuál es el planeta más grande del sistema solar?');
-CALL spu_preguntas_registrar(17, '¿Cuál es el autor de la canción "Imagine"?');
-
-
+-- ##########################################################################################################################
 -- ALTERNATIVAS
-CALL spu_alternativas_registrar(13, 'París', '1');
-CALL spu_alternativas_registrar(13, 'Londres', '0');
-CALL spu_alternativas_registrar(13, 'Madrid', '0');
+CALL spu_alternativas_registrar(1, 'Corriente', 'N');
+CALL spu_alternativas_registrar(1, 'Resistencia', 'N');
+CALL spu_alternativas_registrar(1, 'Voltaje', 'S');
+CALL spu_alternativas_registrar(2, 'Condensador', 'N');
+CALL spu_alternativas_registrar(2, 'Resistor', 'S');
+CALL spu_alternativas_registrar(2, 'Inductor', 'N');
+CALL spu_alternativas_registrar(3, 'Amperio', 'S');
+CALL spu_alternativas_registrar(3, 'Ohmio', 'N');
+CALL spu_alternativas_registrar(3, 'Voltio', 'N');
+CALL spu_alternativas_registrar(4, 'Gasolina', 'N');
+CALL spu_alternativas_registrar(4, 'Diesel', 'S');
+CALL spu_alternativas_registrar(4, 'Etanol', 'N');
+CALL spu_alternativas_registrar(5, 'Propulsor', 'N');
+CALL spu_alternativas_registrar(5, 'Frenos', 'N');
+CALL spu_alternativas_registrar(5, 'Escape', 'S');
+CALL spu_alternativas_registrar(6, 'Herencia', 'S');
+CALL spu_alternativas_registrar(6, 'Polimorfismo', 'N');
+CALL spu_alternativas_registrar(6, 'Encapsulamiento', 'N');
+CALL spu_alternativas_registrar(7, 'Java Virtual Machine', 'S');
+CALL spu_alternativas_registrar(7, 'Java Virtual Memory', 'N');
+CALL spu_alternativas_registrar(7, 'Java Variable Method', 'N');
+CALL spu_alternativas_registrar(8, 'int x = 10;', 'S');
+CALL spu_alternativas_registrar(8, 'String name = "John";', 'N');
+CALL spu_alternativas_registrar(8, 'boolean flag = true;', 'N');
+CALL spu_alternativas_registrar(9, 'True', 'N');
+CALL spu_alternativas_registrar(9, 'False', 'S');
+CALL spu_alternativas_registrar(9, 'Null', 'N');
 
-CALL spu_alternativas_registrar(14, 'George Orwell', '1');
-CALL spu_alternativas_registrar(14, 'J.K. Rowling', '0');
-CALL spu_alternativas_registrar(14, 'Stephen King', '0');
-
-CALL spu_alternativas_registrar(15, '1492', '1');
-CALL spu_alternativas_registrar(15, '1776', '0');
-CALL spu_alternativas_registrar(15, '1812', '0');
-
-CALL spu_alternativas_registrar(16, 'Au', '1');
-CALL spu_alternativas_registrar(16, 'Ag', '0');
-CALL spu_alternativas_registrar(16, 'Fe', '0');
-
-CALL spu_alternativas_registrar(17, 'Océano Pacífico', '1');
-CALL spu_alternativas_registrar(17, 'Océano Atlántico', '0');
-CALL spu_alternativas_registrar(17, 'Océano Índico', '0');
+CALL spu_alternativas_listar();

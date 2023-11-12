@@ -22,7 +22,7 @@ class Evaluacion extends Conexion{
 
   public function listarEvaluaciones($datos = []){
     try {
-      $consulta = $this->conexion->prepare("CALL spu_evaluaciones_usuario_listar(?)");
+      $consulta = $this->conexion->prepare("CALL spu_evaluaciones_estudiante_listar(?)");
       $consulta->execute(
         array(
           $datos['idusuario']

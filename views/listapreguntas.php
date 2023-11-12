@@ -55,8 +55,9 @@ $id = $arregloURL[1];
         })
           .then(respuesta => respuesta.json())
           .then(datos => {
+            console.log(datos);
             datos.forEach(registro => {
-              if (registro.validacion == '1') {
+              if (registro.escorrecto == 'S') {
                 altCorrecto.push(registro.idalternativa);                
               }
             });
@@ -76,6 +77,7 @@ $id = $arregloURL[1];
           }
           preguntasAgrupadas[pregunta].push({ alternativa, idalternativa });
         });
+        console.log(preguntasAgrupadas);
         for (const pregunta in preguntasAgrupadas) {
           const alternativas = preguntasAgrupadas[pregunta];
           const preguntaHTML = `<div>
@@ -84,7 +86,7 @@ $id = $arregloURL[1];
             const { alternativa, idalternativa: opcionId } = opcion;
             
             return `<div class="form-check">
-                      <input data-idalternativa="${opcionId}" class="form-check-input" type="radio" name="${pregunta}" id="${opcionId}">
+                      <input data-idalternativa="${opcionId}" class="form-check-input" type="radio" name="${pregunta}" id="${opcionId}" required>
                       <label  class="form-check-label" for="${opcionId}">${alternativa}</label>
                     </div>`;
           }).join('\n');
