@@ -19,7 +19,9 @@ if (isset($_POST['operacion'])){
     case 'registrarEvaluacion':
     $datosEnviar = [
         'idcurso'              => $_POST['idcurso'],
-        'nombre_evaluacion'    => $_POST['nombre_evaluacion']
+        'nombre_evaluacion'    => $_POST['nombre_evaluacion'],
+        'fechainicio'         => $_POST['fechainicio'],
+        'fechafin'            => $_POST['fechafin']
     ];
   
         echo json_encode($evaluacion->registrarEvaluacion($datosEnviar));

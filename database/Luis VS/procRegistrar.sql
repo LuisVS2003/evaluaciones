@@ -29,13 +29,15 @@ END $$
 DELIMITER $$
 CREATE PROCEDURE spu_evaluaciones_registrar(
     IN _idcurso			INT,
-    IN _nombre_evaluacion	VARCHAR(90)
+    IN _nombre_evaluacion	VARCHAR(90),
+    IN _fechainicio		DATETIME,
+    IN _fechafin		DATETIME
 )
 BEGIN
 	INSERT INTO evaluaciones
-		(idcurso, nombre_evaluacion)
+		(idcurso, nombre_evaluacion, fechainicio, fechafin)
     VALUES
-		(_idcurso, _nombre_evaluacion);
+		(_idcurso, _nombre_evaluacion, _fechainicio, _fechafin);
     SELECT @@last_insert_id 'idevaluacion';
 END $$
 
