@@ -14,10 +14,12 @@
   <!-- SweetAlert -->
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+  <link rel="stylesheet" href="./css/styles.css">
+
 </head>
 
 <body>
-    <div class="container">
+    <!-- <div class="container">
         <div class="row justify-content-md-center" style="margin-top:15%;">
             <form action="#" class="col-3" method="POST" id="form-rest">
                 <h2>Enviar codigo - Email</h2>
@@ -29,7 +31,43 @@
                 <button type="submit" class="btn btn-primary" id="submit">Restablecer</button>
             </form>
         </div>
+    </div> -->
+
+  <div class="login-container">
+    <div class="login-form-container">
+      <div class="login-form-header">
+        <h2>Recuperar Contraseña</h2>
+      </div>
+      <form id="form-rest">
+        <div class="input-group">
+          <label for="correo">Correo Electrónico</label>
+          <input type="email" id="correo" name="email" placeholder="Ingresa tu correo electrónico" required>
+        </div>
+        <button type="submit" id="submit">Enviar Verificación</button>
+      </form>
+      <form id="form-cambiar">
+        <div class="input-group" id="ingresartoken">
+          <!--Hacemos una renderizacion-->
+        </div>
+      </form>
+      <form action="" id="form-cambiarpass">
+        <div class="input-group" id="cambiarpass">
+          <!--Haremos la renderizacion para cambiar la contraseña-->
+        </div>
+      </form>
+      <div class="additional-options">
+        <a href="index.php">Volver al inicio de sesión</a>
+      </div>
     </div>
+    <div class="login-image-container">
+      <div class="login-image-text">
+        <h1>Recuperar Cuenta</h1>
+        <p>Recuperar tu cuenta con unos simples pasos,verifica tu correo.</p>
+      </div>
+    </div>
+  </div>
+
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -47,6 +85,15 @@
 
   <script>
     document.addEventListener("DOMContentLoaded",()=>{
+
+      /**
+       * @div = Constantes para hacer la renderizacion y manejarlo con el formualrio-ingresartoken
+       * @div2 = Constantes para hacer la renderizacion y manejarlo con el formualrio-cambiarpass
+       */
+      const div = document.querySelector("#ingresartoken");
+      const div2 = document.querySelector("#cambiarpass"); 
+      const boton = document.querySelector("#submit");
+
       function $(id){
         return document.querySelector(id);
       }
@@ -64,15 +111,25 @@
         })
           .then(respuesta => respuesta.json())
           .then(data =>{
-            //console.log(data);
             /**
              *  data.usuario = 1 si se encontro el correo
              *  dara.usuario = 0 si no se encontro
              */
             if(data.idusuario > 0) {
-              notificar('success','Se encontro el Correo',`Porfavor verificar el token en su  correo:${data.correo}`,3)
+              notificar('success','Se encontro el Correo',`Porfavor verificar el token en su  correo: ${data.correo}`,3)
               registraTokens();
-              $("#form-rest").reset()
+
+              $("#correo").setAttribute("readonly", "true");
+
+              ingresarToken = `
+                <label for="token">Clave de Verificacion</label>
+                <input type="text" id="token" name="token" placeholder="Ingresa tu token" required maxlength="6">
+                <button type="submit" id="validartoken" class="mt-3">Validar Token</button>
+              `;
+              div.innerHTML = ingresarToken;
+              boton.innerHTML = "Validar Token";
+
+              $("#submit").style.display = "none";
 
             }else{
               notificar('error','No encontrado','El correo no se encuentra registrado',2);
@@ -83,8 +140,7 @@
           .catch(e =>{
             console.error(e);
           });
-      }
-      
+      }   
       function registraTokens(){
         const correo = $("#correo").value; // Obtener el valor del campo de correo electrónico
 
@@ -108,20 +164,98 @@
             console.error(e);
           });
       }
+      function ValidarTokens(){
 
-      //buscarCorreo();
-      $("#form-rest").addEventListener("submit", (event) => {
+        const parametros = new FormData();
+        parametros.append("operacion","buscarToken");
+        parametros.append("correo",$("#correo").value);
+        parametros.append("token",$("#token").value);
+
+        fetch("./controllers/reset.controller.php",{
+          method: "POST",
+          body: parametros
+        })
+          .then(respuesta =>respuesta.json())
+          .then(data =>{
+            if(data.length > 0){
+
+              // Verificar la expiración del token
+              const fechaTokenString = data[0].fechatoken;
+              const fechaToken = new Date(fechaTokenString);
+              const ahora = new Date();
+              const tiempoExpiracion = 1 * 60 * 1000; // 1 minuto en milisegundos
+
+                // Calcular la diferencia en milisegundos
+              const diferenciaTiempo = ahora - fechaToken;
+
+              if(diferenciaTiempo > tiempoExpiracion){
+                // El token ha expirado
+                notificar('warning','Token expirado','El token ha expirado',2);
+              }else{
+                $("#token").setAttribute("readonly", "true");
+                //console.log(data)
+                notificar('success','Encontrado','Registro encontrado en la base de datos',2);
+  
+                //Yo pense en hacer una renderizacion 
+                nuevaContraseña = `
+                  <label for="claveacceso">Nueva Contraseña</label>
+                  <input type="text" id="claveacceso" name="claveacceso" placeholder="Ingrese su nueva clave" required>
+                  <button type="submit" id="cambiarpass" class="mt-3">Cambiar Contraseña</button>
+                  `;
+                div2.innerHTML += nuevaContraseña;
+  
+                // Ocultar el botón de "Validar"
+                $("#validartoken").style.display = "none";
+
+              }
+            }else{
+              notificar('warning','No se encontro','No encontrado en la base de datos',2)
+            }
+          })
+          .catch(e =>{
+            console.error(e);
+          })
+
+        }
+
+        function CambiarPass(){
+          const parametros = new FormData();
+          parametros.append("operacion","cambiarpass");
+          parametros.append("correo",$("#correo").value);
+          parametros.append("token",$("#token").value);
+          parametros.append("claveacceso",$("#claveacceso").value);
+
+          fetch("./controllers/reset.controller.php",{
+            method: "POST",
+            body: parametros
+          })
+            .then(respuesta =>respuesta.json())
+            .then(data =>{
+              //console.log(data);
+            })
+            .catch(e =>{
+              console.error(e);
+            })
+        }
+      
+        //buscarCorreo();
+      
+        $("#form-rest").addEventListener("submit", (event) => {
           event.preventDefault();
           buscarCorreo();
-          // mostrarPregunta("Recuperacion", "¿Está seguro de enviar el token de recuperacion?").then((result) => { 
-          //   if (result.isConfirmed) {
-          //     //notificar("success","Recuperacion", "Verificar su Correo", 3);
-          //     $("#form-rest").reset()
-          //   }
-          // });
         });
-
-
+      $("#form-cambiar").addEventListener("submit", (event) => {
+          event.preventDefault();
+          ValidarTokens();
+        });
+      $("#form-cambiarpass").addEventListener("submit", (event) => {
+          event.preventDefault();
+          CambiarPass();
+          notificar('info','Cambiaste tu contraseña','Ahora ya puedes hacer Login',3);
+          setTimeout(function(){
+            window.location.href = 'index.php';
+          },3000);
+        });
 
     });
 

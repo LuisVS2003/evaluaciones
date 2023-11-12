@@ -54,11 +54,10 @@ function enviarEmail($correo,$tokens){
       $mail->isHTML(true);                                  //Set email format to HTML
       $mail->Subject = 'CLAVE DE RECUPERACION';
       $mail->Body    = "
-        <h1><strong>Token</strong></h1> 
+        <h1><strong>Token:</strong></h1> 
         <p>Este es tu codigo para restablecer tu cuenta:</p> 
-        <h2>$tokens</h2>
-        <a href='http://localhost/evaluaciones/validar.php'>!Verificar su Token aqui¡</a>
-        <h3>Si no solicito esta operacion porfavor ignorar este correo</h3>";
+        <h1>$tokens</h1>
+        <h3>Si no solicito esta operacion porfavor omitir este correo.</h3>";
       $mail->AltBody = 'Tu correo no soporta formato HTML, por favor comunicarse... ';
   
       $mail->send();

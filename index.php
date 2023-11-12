@@ -22,19 +22,40 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6">
-          <form action="" id="frm-login">
-            <input type="email" class="form-control mt-3" id="email" placeholder="Email">
-            <input type="password" class="form-control mt-3" id="claveacceso" placeholder="Contraseña">
-            <button class="btn btn-primary mt-3" type="submit">Login</button>
-            <!--Para mas estilos hacer un evento click-->
-            <a href="recuperar.php">Ingresar para recuperar</a>
-          </form>
+  <link rel="stylesheet" href="./css/styles.css">
+
+
+
+    <div class="login-container">
+      <div class="login-form-container">
+        <div class="login-form-header">
+          <h2>Iniciar Sesión</h2>
+        </div>
+        <form id="frm-login">
+          <div class="input-group">
+            <label for="email">Correo</label>
+            <input type="email" id="email" name="username" placeholder="Ingresa tu correo" required>
+          </div>
+          <div class="input-group">
+            <label for="claveacceso">Contraseña</label>
+            <input type="password" id="claveacceso" name="claveacceso" placeholder="Ingresa tu contraseña" required>
+          </div>
+          <button type="submit">Iniciar Sesión</button>
+        </form>
+        <div class="additional-options">
+          <a href="recuperar.php">¿Olvidaste tu contraseña?</a>
+          <span>|</span>
+          <!--Por si queremos hacer que el usuarios se registres solo-->
+          <!-- <a href="#">Registrarse</a> -->
         </div>
       </div>
-    </div>
+      <div class="login-image-container">
+          <div class="login-image-text">
+            <h1>Sistema de Evaluaciones</h1>
+            <p>¡Bienvenido al sistema de evaluaciones! Inicia sesión para continuar.</p>
+          </div>
+      </div>
+  </div>
 
     <!--Alerta de bienvenida-->
     <script src="javascript/sweetalert.js"></script>
@@ -69,7 +90,8 @@
                   window.location.href = './views/'
                 },2000);               
               }else{
-                alert("Acceso denegado");
+                //alert("Acceso denegado");
+                notificar('error','Acceso denegado','Vuelva a intentarlo',2);
               }
               
             })
