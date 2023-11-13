@@ -66,6 +66,9 @@ if(isset($_POST['operacion'])){
       enviarMail($_POST['correo'], "Código de recuperación", $mensaje);
       break;
 
+    case 'estudiantesListar':
+      echo json_encode($usuario->estudiantesListar());
+      break;
 
   }
 

@@ -45,5 +45,19 @@ BEGIN
 END $$
 
 SELECT * FROM usuarios;
-
+SELECT * FROM inscritos;
 -- CALL spu_evaluaciones_preguntas_listar(3)
+
+-- ##########################################################################################################################
+DELIMITER $$
+CREATE PROCEDURE spu_estudiantes_listar()
+BEGIN
+	SELECT
+		USR.idusuario, INS.idevaluacion,
+        CONCAT(USR.apellidos, ", ", USR.nombres) 'nombre_completo'
+    FROM usuarios USR
+	INNER JOIN inscritos INS ON INS.idusuario = USR.idusuario
+    WHERE idrol = 2 AND USR.inactive_at IS NULL;
+END $$
+
+

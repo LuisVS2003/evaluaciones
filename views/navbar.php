@@ -43,7 +43,7 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
   
 <nav class="navbar navbar-expand-sm navbar-dark bg-secondary mb-3 fijado">
   <div class="container">
-    <a class="navbar-brand" href="../catalogo/">APPSTORE</a>
+    <a class="navbar-brand" href="./index.php">EVALUACIONES</a>
     <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>

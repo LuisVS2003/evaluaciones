@@ -42,5 +42,16 @@ class Usuario extends Conexion{
     }
   }
 
+  public function estudiantesListar(){
+    try {
+      $consulta = $this->conexion->prepare("CALL spu_estudiantes_listar()");
+      $consulta->execute();
+
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
 
 }

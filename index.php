@@ -10,10 +10,13 @@
 <html lang="es">
 
 <head>
-  <title>Title</title>
+  <title>Iniciar Sesión</title>
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Icono de la página -->
+  <link rel="icon" type="image/png" href="./images/icon-web.png">
 
   <!-- SweetAlert -->
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

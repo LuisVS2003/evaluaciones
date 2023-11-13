@@ -1,0 +1,61 @@
+/* Reset de estilos para eliminar márgenes y rellenos predeterminados */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilos para el contenedor principal */
+.contenedor {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Estilos para el formulario de examen */
+.form_examen {
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* Estilos para el separador horizontal */
+.separador {
+  border: 1px solid #ccc;
+  margin: 20px 0;
+}
+
+/* Estilos para los grupos de formulario */
+.form_grupo {
+  margin-bottom: 20px;
+}
+
+/* Estilos para las etiquetas de los campos de formulario */
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Estilos para los campos de texto */
+input[type="text"],
+select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Estilos para las filas de preguntas */
+.fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .pregunta-group {
+    width: 80%;
+  }
+}
+
