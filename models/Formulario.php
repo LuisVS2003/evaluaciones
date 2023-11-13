@@ -31,24 +31,6 @@ class Evaluacion extends Conexion{
     }
   }
 
-  public function registrarEvaluacion($datos = []){
-    try {
-      $consulta = $this->evaluacion->prepare("CALL spu_evaluaciones_registrar(?,?,?,?)");
-      $consulta->execute(
-        array(
-          $datos['idcurso'],
-          $datos['nombre_evaluacion'],
-          $datos['fechainicio'],
-          $datos['fechafin']
-        )
-      );
-      return $consulta->fetch(PDO::FETCH_ASSOC);
-    } 
-    catch (Exception $e) {
-      die($e->getMessage());
-    }
-  }
-
   public function listarEvaluacion(){
     try {
       $consulta = $this->evaluacion->prepare("CALL spu_evaluaciones_listar()");
@@ -57,22 +39,6 @@ class Evaluacion extends Conexion{
     }
     catch(Exception $e){
       die($e->getMessage()); //Desarrollo > Producción
-    }
-  }
-
-  public function registrarPregunta($datos = []){
-    try {
-      $consulta = $this->evaluacion->prepare("CALL spu_preguntas_registrar(?,?)");
-      $consulta->execute(
-        array(
-          $datos['idevaluacion'],
-          $datos['pregunta']
-        )
-      );
-      return $consulta->fetch(PDO::FETCH_ASSOC);
-    } 
-    catch (Exception $e) {
-      die($e->getMessage());
     }
   }
 
@@ -105,23 +71,15 @@ class Evaluacion extends Conexion{
     }
   }
 
-  public function registrarAlternativa($datos = []){
+  public function cursosListar(){
     try {
-      $consulta = $this->evaluacion->prepare("CALL spu_alternativas_registrar(?,?,?)");
-      $consulta->execute(
-        array(
-          $datos['idpregunta'],
-          $datos['alternativa'],
-          $datos['escorrecto']
-        )
-      );
-      return $consulta->fetch(PDO::FETCH_ASSOC);
-    } 
-    catch (Exception $e) {
+      $consulta = $this->evaluacion->prepare("CALL spu_cursos_listar()");
+      $consulta->execute();
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
       die($e->getMessage());
     }
   }
-
 
 }
 

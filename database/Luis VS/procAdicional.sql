@@ -60,4 +60,6 @@ BEGIN
     WHERE idrol = 2 AND USR.inactive_at IS NULL;
 END $$
 
-
+SELECT * FROM evaluaciones;
+SELECT * FROM preguntas;
+SELECT * FROM alternativas;

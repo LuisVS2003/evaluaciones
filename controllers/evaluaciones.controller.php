@@ -24,11 +24,41 @@ if (isset($_POST['operacion'])) {
 
     case 'asignarNota':
       $datos = [
-        'idevaluacion' => $_POST['idevaluacion'],
-        'nota' => $_POST['nota']
+        'idevaluacion'  => $_POST['idevaluacion'],
+        'nota'          => $_POST['nota']
       ];
 
       echo json_encode($evaluacion->asignarNota($datos));
+      break;
+
+    case 'evaluacionRegistrar':
+      $datos = [
+        'idcurso'           => $_POST['idcurso'],
+        'nombre_evaluacion' => $_POST['nombre_evaluacion'],
+        'fechainicio'       => $_POST['fechainicio'],
+        'fechafin'          => $_POST['fechafin']
+      ];
+
+      echo json_encode($evaluacion->evaluacionRegistrar($datos));
+      break;
+
+    case 'preguntasRegistrar':
+      $datos = [
+        'idevaluacion' => $_POST['idevaluacion'],
+        'pregunta'     => $_POST['pregunta']
+      ];
+
+      echo json_encode($evaluacion->preguntasRegistrar($datos));
+      break;
+    
+    case 'alternativasRegistrar':
+      $datos = [
+        'idpregunta' => $_POST['idpregunta'],
+        'alternativa' => $_POST['alternativa'],
+        'escorrecto' => $_POST['escorrecto']
+      ];
+
+      echo json_encode($evaluacion->alternativasRegistrar($datos));
       break;
   }
 }

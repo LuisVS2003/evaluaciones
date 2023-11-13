@@ -2,58 +2,91 @@
   require_once './navbar.php'
 ?>
 
-<link rel="stylesheet" href="./css/evaluacion-registrar.css">
-  
-<main class="contenedor centrar-flex">
-  <form action="crear-examen.php" class="form_examen" method="post">
-      <p class="intrucciones-examen">Asigna un nombre al examen.</p>
-      <hr class="separador">
-      
-      <div class="form_grupo">
-          <label for="titulo_examen">Nombre</label>
-          <input class="form_title" type="text" name="titulo_examen" id="titulo_examen">
-      </div>
-
-
-      <!-- Inicio Pregunta examen -->
-      <div class="form_grupo form_grupo-pregunta">
-          <div class="fila">
-            <div class="pregunta-group">
-              <label for="preg1" class="numero-pregunta">Redacta las preguntas y sus respuestas.</label>
-              <input class="pregunta" type="text" name="preg1" id="preg1">
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-10">
+      <h3 class="my-3">Registrar Evaluación</h3>
+      <form action="">
+        <div class="row">
+          <div class="col-9">
+            <div class="input-group mb-3">
+              <label for="nom-evaluacion" class="input-group-text">Nombre de la Evaluación</label>
+              <input type="text" class="form-control" id="nom-evaluacion" required>
             </div>
-            <div class="alt-correcta">
-              <label for="preg1_correcta" class="opcion-correcta">Opción correcta</label>
-              <select name="preg1_correcta" id="preg1_correcta">
+          </div>
+          <div class="col-3">
+            <div class="input-group mb-3">
+              <label class="input-group-text" for="npreguntas">Cantidad de Preguntas</label>
+              <select class="form-select" id="npreguntas" required>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <div class="input-group mb-3">
+              <label for="inicio-evaluacion" class="input-group-text">Inicio</label>
+              <input type="datetime-local" class="form-control" id="inicio-evaluacion" required>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="input-group mb-3">
+              <label for="fin-evaluacion" class="input-group-text">Fin</label>
+              <input type="datetime-local" class="form-control" id="fin-evaluacion" required>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="input-group mb-3">
+              <label class="input-group-text" for="list-curso">Curso</label>
+              <select class="form-select" id="list-curso" required>
+                <!-- <option value="1">1</option> -->
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- Pregunta -->
+        <div id="pregunta-render">
+          <div class="row">
+            <div class="col-9">
+              <div class="input-group mb-3">
+                <label for="nom-pregunta" class="input-group-text">Pregunta N° 1</label>
+                <input type="text" class="form-control" id="nom-pregunta" required>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="input-group mb-3">
+                <label class="input-group-text" for="alt-correcta">Opción Correcta</label>
+                <select class="form-select" id="alt-correcta" required>
                   <option value="A">A</option>
                   <option value="B">B</option>
                   <option value="C">C</option>
-              </select>
+                </select>
+              </div>
             </div>
-              <!-- Seleccionar opcion correcta -->
           </div>
-          <div class="input-opciones">
-              <div class="opcion">
-                  <label>A</label>
-                  <input type="text" name="preg1_opcion_a">
-              </div>
-
-              <div class="opcion">
-                  <label>B</label>
-                  <input type="text" name="preg1_opcion_b">
-              </div>
-
-              <div class="opcion">
-                  <label>C</label>
-                  <input type="text" name="preg1_opcion_c">
-              </div>
+          <!-- Alternativas -->
+          <div class="row mx-5" id="alternativas-render">
+            <div class="input-group mb-3">
+              <label for="alt-a" class="input-group-text">Alternativa: A</label>
+              <input type="text" class="form-control" id="alt-a" required>
+            </div>
+            <div class="input-group mb-3">
+              <label for="alt-b" class="input-group-text">Alternativa: B</label>
+              <input type="text" class="form-control" id="alt-b" required>
+            </div>
+            <div class="input-group mb-3">
+              <label for="alt-c" class="input-group-text">Alternativa: C</label>
+              <input type="text" class="form-control" id="alt-c" required>
+            </div>
           </div>
-      </div>
-
-
-      <button class="btn btn-primary" type="submit">Guardar</button>
-  </form>
-</main>
+        </div>
+        <button class="btn btn-primary" type="submit">Guardar Examen</button>
+      </form>
+    </div>
+  </div>
+</div>
 
 
   <!-- Bootstrap JavaScript Libraries -->
@@ -64,5 +97,96 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
     integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
   </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      function $(id) {
+        return document.querySelector(id)
+      }
+
+
+
+      function getCursos(){
+        const parametros = new FormData();
+        parametros.append('operacion', 'cursosListar');
+
+        fetch('../controllers/formulario.controller.php', {
+          method: 'POST',
+          body: parametros
+        })
+          .then(respuesta => respuesta.json())
+          .then(datos => {
+            datos.forEach(registro => {
+              const option = document.createElement('option');
+              option.value = registro.id;
+              option.innerText = registro.curso;
+              $('#list-curso').appendChild(option);
+            });
+          })
+          .catch(e => {
+            console.error(e);
+          });
+      }
+
+      function preguntasRenderEntrada(nPreguntas) {
+        $("#pregunta-render").innerHTML = '';
+
+        for(let i = 1; i <= nPreguntas; i++){
+          $("#pregunta-render").innerHTML += `
+          <div class="row">
+            <div class="col-9">
+              <div class="input-group mb-3">
+                <label for="nom-pregunta-${i}" class="input-group-text">Pregunta N° ${i}</label>
+                <input type="text" class="form-control" id="nom-pregunta-${i}" required>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="input-group mb-3">
+                <label class="input-group-text" for="alt-correcta-${i}">Opción Correcta</label>
+                <select class="form-select" id="alt-correcta-${i}" required>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-5" id="alternativas-render-${i}"></div>
+          `;
+          alternativasRenderEntrada(i);
+        }
+      }
+
+      function alternativasRenderEntrada(idAlt){
+          $(`#alternativas-render-${idAlt}`).innerHTML += `
+            <div class="input-group mb-3">
+                <label for="alt-a-${idAlt}" class="input-group-text">Alternativa: A</label>
+                <input type="text" class="form-control" id="alt-a-${idAlt}" required>
+              </div>
+              <div class="input-group mb-3">
+                <label for="alt-b-${idAlt}" class="input-group-text">Alternativa: B</label>
+                <input type="text" class="form-control" id="alt-b-${idAlt}" required>
+              </div>
+              <div class="input-group mb-3">
+                <label for="alt-c-${idAlt}" class="input-group-text">Alternativa: C</label>
+                <input type="text" class="form-control" id="alt-c-${idAlt}" required>
+              </div>
+            </div>
+          `;
+        
+
+      }
+
+      $("#npreguntas").addEventListener('change', (event) => {
+        let nPreguntas = event.target.value;
+        preguntasRenderEntrada(nPreguntas);
+      });
+
+      
+      getCursos();
+      preguntasRenderEntrada('4');
+    })
+  </script>
+
 </body>
 </html>

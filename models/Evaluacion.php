@@ -48,16 +48,50 @@ class Evaluacion extends Conexion{
     }
   }
 
-  public function asignarNota($datos = []){
+  public function evaluacionRegistrar($datos = []){
     try {
-      $consulta = $this->conexion->prepare("CALL spu_nota_actualizar(?,?)");
+      //code...
+      $consulta = $this->conexion->prepare("CALL spu_evaluaciones_registrar(?,?,?,?)");
+      $consulta->execute(
+        array(
+          $datos['idcurso'],
+          $datos['nombre_evaluacion'],
+          $datos['fechainicio'],
+          $datos['fechafin']
+        )
+      );
+      return $consulta->fetch(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function preguntasRegistrar($datos = []){
+    try {
+      $consulta = $this->conexion->prepare("CALL spu_preguntas_registrar(?, ?)");
       $consulta->execute(
         array(
           $datos['idevaluacion'],
-          $datos['nota']
+          $datos['pregunta']
         )
       );
-      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+      return $consulta->fetch(PDO::FETCH_ASSOC);
+    } catch (Exceptios $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function alternativasRegistrar($datos = []){
+    try {
+      $consulta = $this->conexion->prepare("CALL spu_alternativas_registrar(?, ?, ?)");
+      $consulta->execute(
+        array(
+          $datos['idpregunta'],
+          $datos['alternativa'],
+          $datos['escorrecto']
+        )
+      );
+      return $consulta->fetch(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       die($e->getMessage());
     }

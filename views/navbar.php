@@ -4,7 +4,7 @@ session_start();
 
 $permisos = [
   "1" => ["index","matriculados", "evaluaciones", "inscritos",
-          "evaluaciones", "preguntas", "alternativas", "formulario-evaluacion","evaluacion-registrar"], // DOCENTE
+          "evaluacion-registrar"], // DOCENTE
   "2" => ["evaluaciones","index"], // ESTUDIANTE
 ];
 
