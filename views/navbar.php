@@ -88,7 +88,7 @@ $vistaActual = $arregloURL[count($arregloURL)-1];
 
 $permitido = false;
 foreach ($permisos[$_SESSION["idrol"]] as $opcion) {
-    if ($opcion . ".php" == $vistaActual) {
+    if ($opcion . ".php" == $vistaActual)  {
         $permitido = true;
     }
 }

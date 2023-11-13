@@ -199,7 +199,7 @@
                 //Yo pense en hacer una renderizacion 
                 nuevaContraseña = `
                   <label for="claveacceso">Nueva Contraseña</label>
-                  <input type="text" id="claveacceso" name="claveacceso" placeholder="Ingrese su nueva clave" required>
+                  <input type="password" id="claveacceso" name="claveacceso" placeholder="Ingrese su nueva clave" required>
                   <button type="submit" id="cambiarpass" class="mt-3">Cambiar Contraseña</button>
                   `;
                 div2.innerHTML += nuevaContraseña;
