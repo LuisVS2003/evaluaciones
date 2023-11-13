@@ -1,4 +1,10 @@
+<<?php /*require_once "./navbar.php";
 
+$url = $_SERVER['REQUEST_URI'];
+$arregloURL = explode("=", $url);
+$id = $arregloURL[1];*/
+
+?>
 
   <div class="container mt-4">
     <div class="row justify-content-center">
