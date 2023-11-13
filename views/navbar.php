@@ -3,16 +3,15 @@
 session_start();
 
 $permisos = [
-  "1" => ["matriculados", "evaluaciones", "formulario-inscrito",
-          "formulario-evaluacion", "formulario-pregunta", "formulario-alternativa"], // DOCENTE
-  "2" => ["evaluaciones"], // ESTUDIANTE
+  "1" => ["index","matriculados", "evaluaciones", "inscritos",
+          "evaluaciones", "preguntas", "alternativas", "formulario-evaluacion","evaluacion-registrar"], // DOCENTE
+  "2" => ["evaluaciones","index"], // ESTUDIANTE
 ];
 
 
 
 if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
   header("Location: ../index.php");
-  echo "<h1>ACCESO NO AUTORIZADO</h1>";
   exit();
 }
 ?>
@@ -51,12 +50,14 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
       <ul class="navbar-nav me-auto mt-2 mt-lg-0">
         <?php
             foreach($permisos[$_SESSION["idrol"]] as $permiso){
-                echo "
+                if($permiso != "index"){
+                  echo "
                   <li class='nav-item'>
                     <a class='nav-link' href='./{$permiso}.php'>$permiso</a>
                   </li>
                 ";
               }
+            }
         ?>
       </ul>
       </ul>
@@ -75,3 +76,34 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
     </div>
   </div>
 </nav>
+
+<?php
+
+    
+    
+
+$url = $_SERVER['REQUEST_URI'];
+$arregloURL = explode("/", $url);
+$vistaActual = $arregloURL[count($arregloURL)-1];
+
+$permitido = false;
+foreach ($permisos[$_SESSION["idrol"]] as $opcion) {
+    if ($opcion . ".php" == $vistaActual) {
+        $permitido = true;
+    }
+}
+
+if (!$permitido) {
+    echo '
+        <div class="container">
+        <h3>Acceso no permitido</h3>
+        </div>
+      ';
+    exit();
+}
+
+
+    ?>
+
+</body>
+</html>

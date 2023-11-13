@@ -1,3 +1,7 @@
+<?php
+  require_once "./navbar.php";
+?>
+
 <!doctype html>
 <html lang="es">
 

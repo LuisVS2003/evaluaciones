@@ -2,7 +2,7 @@
   session_start();
 
   if(isset($_SESSION["status"]) && $_SESSION["status"]){
-    header("Location:./views/");
+    header("Location: ./views/index.php");
   }
 ?>
 
@@ -90,7 +90,7 @@
               if(data.acceso == true){
                 bienvenida(`¡Inicio de session Exitoso!`);
                 setTimeout(function(){
-                  window.location.href = './views/'
+                  window.location.href = './views/index.php'
                 },2000);               
               }else{
                 //alert("Acceso denegado");
