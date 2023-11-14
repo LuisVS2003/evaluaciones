@@ -1,4 +1,4 @@
-<<?php /*require_once "./navbar.php";
+<?php /*require_once "./navbar.php";
 
 $url = $_SERVER['REQUEST_URI'];
 $arregloURL = explode("=", $url);
@@ -20,6 +20,15 @@ $id = $arregloURL[1];*/
       </div>
     </div>
   </div>
+
+  <?php
+    $idterminator = $_GET['id']; //Encapsulndo el id en una variable (URL)
+    if(empty($idterminator)):   //Comprobamos si existe un id en la URL y si no existe mandamos "NO"
+    ?>
+
+  <p>Error en capturar el ID</p>
+
+  <?php else: ?>
 
 
 
@@ -47,7 +56,7 @@ $id = $arregloURL[1];*/
       function preguntasAlternativas(){
         const parametros = new FormData();
         parametros.append('operacion', 'preguntasAlternativas');
-        parametros.append('idevaluacion', '<?= $id ?>');
+        parametros.append('idevaluacion', '<?php echo $idterminator; ?>');
 
         fetch('../controllers/evaluaciones.controller.php', {
           method: 'POST',
@@ -123,6 +132,7 @@ $id = $arregloURL[1];*/
     })
 
   </script>
+  <?php endif; ?>
 </body>
 
 </html>
