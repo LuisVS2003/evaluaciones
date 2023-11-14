@@ -104,8 +104,6 @@
         return document.querySelector(id)
       }
 
-
-
       function getCursos(){
         const parametros = new FormData();
         parametros.append('operacion', 'cursosListar');
@@ -158,23 +156,21 @@
       }
 
       function alternativasRenderEntrada(idAlt){
-          $(`#alternativas-render-${idAlt}`).innerHTML += `
-            <div class="input-group mb-3">
-                <label for="alt-a-${idAlt}" class="input-group-text">Alternativa: A</label>
-                <input type="text" class="form-control" id="alt-a-${idAlt}" required>
-              </div>
-              <div class="input-group mb-3">
-                <label for="alt-b-${idAlt}" class="input-group-text">Alternativa: B</label>
-                <input type="text" class="form-control" id="alt-b-${idAlt}" required>
-              </div>
-              <div class="input-group mb-3">
-                <label for="alt-c-${idAlt}" class="input-group-text">Alternativa: C</label>
-                <input type="text" class="form-control" id="alt-c-${idAlt}" required>
-              </div>
+        $(`#alternativas-render-${idAlt}`).innerHTML += `
+          <div class="input-group mb-3">
+              <label for="alt-a-${idAlt}" class="input-group-text">Alternativa: A</label>
+              <input type="text" class="form-control" id="alt-a-${idAlt}" required>
             </div>
-          `;
-        
-
+            <div class="input-group mb-3">
+              <label for="alt-b-${idAlt}" class="input-group-text">Alternativa: B</label>
+              <input type="text" class="form-control" id="alt-b-${idAlt}" required>
+            </div>
+            <div class="input-group mb-3">
+              <label for="alt-c-${idAlt}" class="input-group-text">Alternativa: C</label>
+              <input type="text" class="form-control" id="alt-c-${idAlt}" required>
+            </div>
+          </div>
+        `;
       }
 
       $("#npreguntas").addEventListener('change', (event) => {
@@ -182,6 +178,64 @@
         preguntasRenderEntrada(nPreguntas);
       });
 
+      function evaluacionRegistrar(){
+        const parametros = new FormData();
+        parametros.append('operacion', 'evaluacionRegistrar');
+        parametros.append('idcurso', $('#list-curso').value);
+        parametros.append('nombre_evaluacion', $('#nom-evaluacion').value);
+        parametros.append('fechainicio', $('#inicio-evaluacion').value);
+        parametros.append('fechafin', $('#fin-evaluacion').value);
+
+        fetch('../controllers/evaluaciones.controller.php', {
+          method: 'POST',
+          body: parametros
+        })
+          .then(respuesta => respuesta.json())
+          .then(datos => {
+            console.log(datos);
+          })
+          .catch(e => {
+            console.error(e);
+          });
+      }
+
+      function preguntasRegistrar(idevaluacion){
+        const parametros = new FormData();
+        parametros.append('operacion', 'preguntasRegistrar');
+        parametros.append('idevaluacion', idevaluacion);
+        parametros.append('pregunta', $('#nom-pregunta-1').value);
+
+        fetch('../controllers/evaluaciones.controller.php', {
+          method: 'POST',
+          body: parametros
+        })
+          .then(respuesta => respuesta.json())
+          .then(datos => {
+            console.log(datos);
+          })
+          .catch(e => {
+            console.error(e);
+          });
+      }
+
+      function alternativasRegistrar(idPregunta){
+        const parametros = new FormData();
+        parametros.append('operacion', 'alternativasRegistrar');
+        parametros.append('idpregunta', idPregunta);
+        parametros.append('alternativa', $('#alt-a-1').value);
+
+        fetch('../controllers/evaluaciones.controller.php', {
+          method: 'POST',
+          body: parametros
+        })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+          console.log(datos);
+        })
+        .catch(e => {
+          console.error(e);
+        });
+      }
       
       getCursos();
       preguntasRenderEntrada('4');

@@ -67,12 +67,13 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
       <ul class="navbar-nav">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <?= $_SESSION["nombres"] ?>
             <?= $_SESSION["apellidos"] ?>
-            (<?= $_SESSION["idrol"] ?>)
+            - <?= $_SESSION["rol"] ?>
           </a>
           <div class="dropdown-menu" aria-labelledby="dropdownId">
             <a class="dropdown-item" href="../controllers/usuario.controller.php?operacion=destroy">Cerrar Sessión</a>
-            <a class="dropdown-item" href="#">Cambiar contraseña</a>
+            <a class="dropdown-item" href="cambiar-pass.php">Cambiar contraseña</a>
           </div>
         </li>
       </ul>
