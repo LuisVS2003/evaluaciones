@@ -4,8 +4,8 @@ session_start();
 
 $permisos = [
   "1" => ["index","matriculados", "evaluaciones", "inscritos",
-          "evaluacion-registrar"], // DOCENTE
-  "2" => ["evaluaciones","index"], // ESTUDIANTE
+          "evaluacion-registrar","informe"], // DOCENTE
+  "2" => ["evaluaciones","index"] // ESTUDIANTE
 ];
 
 
@@ -14,6 +14,7 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
   header("Location: ../index.php");
   exit();
 }
+
 ?>
 
 <!doctype html>
@@ -26,7 +27,9 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <!-- Bootstrap CSS v5.2.1 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
   <link rel="icon" type="image/png"  href="../images/icon-web.png">
@@ -77,33 +80,31 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
   </div>
 </nav>
 
+
 <?php
 
-    
-    
+  $url = $_SERVER['REQUEST_URI'];
+  $arregloURL = explode("/", $url);
+  $vistaActual = $arregloURL[count($arregloURL)-1];
 
-$url = $_SERVER['REQUEST_URI'];
-$arregloURL = explode("/", $url);
-$vistaActual = $arregloURL[count($arregloURL)-1];
+  $permitido = false;
+  foreach ($permisos[$_SESSION["idrol"]] as $opcion) {
+      if ($opcion . ".php" == $vistaActual)  {
+          $permitido = true;
+      }
+  }
 
-$permitido = false;
-foreach ($permisos[$_SESSION["idrol"]] as $opcion) {
-    if ($opcion . ".php" == $vistaActual)  {
-        $permitido = true;
-    }
-}
-
-if (!$permitido) {
-    echo '
-        <div class="container">
-        <h3>Acceso no permitido</h3>
-        </div>
-      ';
-    exit();
-}
+  if (!$permitido) {
+      echo '
+          <div class="container">
+          <h3>Acceso no permitido</h3>
+          </div>
+        ';
+      exit();
+  }
 
 
-    ?>
+?>
 
 </body>
 </html>

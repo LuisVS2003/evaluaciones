@@ -32,6 +32,8 @@ if(isset($_POST['operacion'])){
           $statusLogin["acceso"] = true;
           $statusLogin["mensaje"] = "La clave y el acceso son correctos";
 
+          
+          
         }else{
           $_SESSION["status"] = true;
           $statusLogin["mensaje"] = "Error en la clave";

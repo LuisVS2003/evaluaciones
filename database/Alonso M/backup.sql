@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-11-2023 a las 06:07:00
+-- Tiempo de generación: 14-11-2023 a las 22:35:15
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.0.28
 
@@ -123,6 +123,21 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_registrar` (IN `_i
     VALUES
 		(_idcurso, _nombre_evaluacion);
     SELECT @@last_insert_id 'idevaluacion';
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_informes_resumen` ()   BEGIN
+	SELECT
+		c.curso,
+		COUNT(DISTINCT CASE WHEN i.fechafin IS NOT NULL THEN e.idevaluacion END) AS evaluaciones_realizadas,
+		COUNT(DISTINCT CASE WHEN i.fechafin IS NULL THEN i.idinscrito END) AS evaluaciones_pendientes
+	FROM
+		cursos c
+	LEFT JOIN
+		evaluaciones e ON c.idcurso = e.idcurso
+	LEFT JOIN
+		inscritos i ON e.idevaluacion = i.idevaluacion
+	GROUP BY
+		c.curso;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_inscritos_listar` ()   BEGIN
