@@ -1,17 +1,19 @@
 use evaluaciones;
 DELIMITER $$
+
+-- Con esto recuperamos los datos del usuario para mostrarlos en en navbar 
 CREATE PROCEDURE spu_login (IN _correo VARCHAR(90))
 BEGIN
 	SELECT 
-		idusuario,
-        idrol,
-		apellidos,
-        nombres,
-        correo,
-        claveacceso
-	FROM usuarios
-    WHERE correo = _correo AND
-		inactive_at IS NULL;
+		usu.idusuario,
+        usu.idrol,
+        r.rol,
+		usu.apellidos,
+        usu.nombres,
+        usu.correo,
+        usu.claveacceso
+	FROM usuarios usu INNER JOIN roles r ON usu.idrol = r.idrol
+    WHERE correo = _correo AND usu.inactive_at IS NULL;
 END $$
 
 -- ##########################################################################################################################
