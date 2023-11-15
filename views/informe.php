@@ -24,7 +24,9 @@
         <canvas id="grafico"></canvas>
       </div>
     </div>
+    <a href="reporte3.php" target="_blank"><button class="btn btn-warning">Reporte PDF <i class="bi bi-file-earmark-pdf-fill"></i></button></a>
   </div>
+
 
 
   <!-- Bootstrap JavaScript Libraries -->

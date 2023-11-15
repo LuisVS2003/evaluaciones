@@ -33,6 +33,7 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
   <link rel="icon" type="image/png"  href="../images/icon-web.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
   <style>
     .nav-item{
@@ -74,7 +75,7 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
           <div class="dropdown-menu" aria-labelledby="dropdownId">
             <a class="dropdown-item" href="../controllers/usuario.controller.php?operacion=destroy">Cerrar Sessión</a>
             <a class="dropdown-item" href="cambiar-pass.php">Cambiar contraseña</a>
-            <a class="dropdown-item" href="reporte3.php">Reporte</a>
+            <!-- <a class="dropdown-item" href="reporte3.php">Reporte</a> -->
           </div>
         </li>
       </ul>

@@ -22,6 +22,7 @@ if (isset($_POST['operacion'])) {
       echo json_encode($evaluacion->preguntasAlternativas($datos));
       break;
 
+
     case 'evaluacionRegistrar':
       $datos = [
         'idcurso'           => $_POST['idcurso'],
