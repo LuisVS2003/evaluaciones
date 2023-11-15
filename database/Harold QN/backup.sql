@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-11-2023 a las 17:48:49
+-- Tiempo de generación: 15-11-2023 a las 17:53:39
 -- Versión del servidor: 10.4.24-MariaDB
 -- Versión de PHP: 8.1.6
 
@@ -157,6 +157,18 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_inscritos_registrar` (IN `_idus
     VALUES
 		(_idusuario, _idevaluacion, _fechainicio, _fechafin);
     SELECT @@last_insert_id 'idinscrito';
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_listar_usuario_estudinate` ()   BEGIN
+	SELECT
+		USU.idusuario,
+		ROL.rol,
+		USU.apellidos,
+		USU.nombres,
+		USU.correo
+	FROM usuarios USU
+		INNER JOIN roles ROL ON ROL.idrol = USU.idrol
+	WHERE rol.rol = 'Estudiante';
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_login` (IN `_correo` VARCHAR(90))   BEGIN
