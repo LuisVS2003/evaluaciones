@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-11-2023 a las 18:13:41
+-- Tiempo de generación: 15-11-2023 a las 18:51:44
 -- Versión del servidor: 10.4.24-MariaDB
 -- Versión de PHP: 8.1.6
 
@@ -159,18 +159,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_inscritos_registrar` (IN `_idus
     SELECT @@last_insert_id 'idinscrito';
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_listar_usuario_estudinate` ()   BEGIN
-	SELECT
-		USU.idusuario,
-		ROL.rol,
-		USU.apellidos,
-		USU.nombres,
-		USU.correo
-	FROM usuarios USU
-		INNER JOIN roles ROL ON ROL.idrol = USU.idrol
-	WHERE rol.rol = 'Estudiante';
-END$$
-
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_login` (IN `_correo` VARCHAR(90))   BEGIN
 	SELECT 
 		usu.idusuario,
@@ -285,7 +273,19 @@ INSERT INTO `alternativas` (`idalternativa`, `idpregunta`, `alternativa`, `escor
 (26, 9, 'False', 'S', '2023-11-12 09:07:26', NULL, NULL),
 (27, 9, 'Null', 'N', '2023-11-12 09:07:26', NULL, NULL),
 (28, 10, 'A Test Thunder', 'N', '2023-11-13 09:30:08', NULL, NULL),
-(29, 10, 'B Test Thunder', 'S', '2023-11-13 09:30:19', NULL, NULL);
+(29, 10, 'B Test Thunder', 'S', '2023-11-13 09:30:19', NULL, NULL),
+(30, 11, 'p', 'S', '2023-11-15 12:51:00', NULL, NULL),
+(31, 11, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
+(32, 11, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
+(33, 12, 'p', 'S', '2023-11-15 12:51:00', NULL, NULL),
+(34, 12, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
+(35, 13, 'p', 'S', '2023-11-15 12:51:00', NULL, NULL),
+(36, 13, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
+(37, 13, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
+(38, 14, 'p', 'S', '2023-11-15 12:51:00', NULL, NULL),
+(39, 14, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
+(40, 14, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
+(41, 12, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -339,7 +339,8 @@ INSERT INTO `evaluaciones` (`idevaluacion`, `idcurso`, `nombre_evaluacion`, `cre
 (3, 3, 'Evaluación 1 Ing. de Software con IA', '2023-11-12 08:48:46', NULL, NULL, NULL, NULL),
 (4, 3, 'Evaluación 2 Ing. de Software con IA', '2023-11-12 08:48:46', NULL, NULL, NULL, NULL),
 (5, 3, 'Evaluación 3 Ing. de Software con IA', '2023-11-12 08:48:46', NULL, NULL, NULL, NULL),
-(7, 1, 'Test Thunder', '2023-11-13 09:26:57', NULL, NULL, '2023-11-12 10:00:00', '2023-11-22 10:00:00');
+(7, 1, 'Test Thunder', '2023-11-13 09:26:57', NULL, NULL, '2023-11-12 10:00:00', '2023-11-22 10:00:00'),
+(8, 1, 'Nuevo Examen', '2023-11-15 12:51:00', NULL, NULL, '2023-11-15 12:50:00', '2023-11-16 12:50:00');
 
 -- --------------------------------------------------------
 
@@ -395,7 +396,11 @@ INSERT INTO `preguntas` (`idpregunta`, `idevaluacion`, `pregunta`, `create_at`, 
 (7, 3, '¿Cuáles son los principios de la programación orientada a objetos?', '2023-11-12 08:59:09', NULL, NULL),
 (8, 3, '¿Qué significa JVM en el contexto de Java?', '2023-11-12 08:59:09', NULL, NULL),
 (9, 3, '¿Cómo se declara una variable en Java?', '2023-11-12 08:59:09', NULL, NULL),
-(10, 7, 'Pregunta Test Thunder', '2023-11-13 09:28:49', NULL, NULL);
+(10, 7, 'Pregunta Test Thunder', '2023-11-13 09:28:49', NULL, NULL),
+(11, 8, 'p', '2023-11-15 12:51:00', NULL, NULL),
+(12, 8, 'p', '2023-11-15 12:51:00', NULL, NULL),
+(13, 8, 'p', '2023-11-15 12:51:00', NULL, NULL),
+(14, 8, 'p', '2023-11-15 12:51:00', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -511,7 +516,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `alternativas`
 --
 ALTER TABLE `alternativas`
-  MODIFY `idalternativa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `idalternativa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT de la tabla `cursos`
@@ -523,7 +528,7 @@ ALTER TABLE `cursos`
 -- AUTO_INCREMENT de la tabla `evaluaciones`
 --
 ALTER TABLE `evaluaciones`
-  MODIFY `idevaluacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `idevaluacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `inscritos`
@@ -535,7 +540,7 @@ ALTER TABLE `inscritos`
 -- AUTO_INCREMENT de la tabla `preguntas`
 --
 ALTER TABLE `preguntas`
-  MODIFY `idpregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `idpregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`

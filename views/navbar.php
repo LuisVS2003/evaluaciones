@@ -66,18 +66,19 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
       </ul>
       </ul>
       <ul class="navbar-nav">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <?= $_SESSION["nombres"] ?>
-            <?= $_SESSION["apellidos"] ?>
-            - <?= $_SESSION["rol"] ?>
-          </a>
+        <a class="nav-link" href="#" id="dropdownId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <?= $_SESSION["nombres"] ?>
+          <?= $_SESSION["apellidos"] ?>
+          - <?= $_SESSION["rol"] ?>
+        </a>
+        <!-- <li class="nav-item dropdown">
           <div class="dropdown-menu" aria-labelledby="dropdownId">
-            <a class="dropdown-item" href="../controllers/usuario.controller.php?operacion=destroy">Cerrar Sessión</a>
-            <a class="dropdown-item" href="cambiar-pass.php">Cambiar contraseña</a>
+            <a class="dropdown-item" href="../controllers/usuario.controller.php?operacion=destroy">Cerrar Sessión</a> -->
+            <!-- <a class="dropdown-item" href="cambiar-pass.php">Cambiar contraseña</a> -->
             <!-- <a class="dropdown-item" href="reporte3.php">Reporte</a> -->
-          </div>
-        </li>
+          <!-- </div>
+        </li>-->
+        <a href="../controllers/usuario.controller.php?operacion=destroy"><button class="btn btn-warning">Salir <i class="bi bi-box-arrow-right"></i></button></a>
       </ul>
     </div>
   </div>
