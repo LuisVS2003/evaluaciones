@@ -53,8 +53,8 @@ CREATE TABLE inscritos(
     idinscrito      INT PRIMARY KEY AUTO_INCREMENT,
 	idusuario		INT			NOT NULL,
     idevaluacion	INT			NOT NULL,
-    fechainicio		DATETIME		NULL,
-    fechafin		DATETIME		NULL,
+    fechainicio		DATETIME	NULL,
+    fechafin		DATETIME	NULL,
 	CONSTRAINT	fk_iduser_ins	FOREIGN KEY (idusuario) REFERENCES usuarios (idusuario),
     CONSTRAINT	fk_idevaluacion_ins	FOREIGN KEY	(idevaluacion) REFERENCES evaluaciones(idevaluacion)
 )ENGINE = INNODB;

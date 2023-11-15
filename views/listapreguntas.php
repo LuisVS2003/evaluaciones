@@ -76,7 +76,7 @@ $id = $arregloURL[1];*/
       function preguntasAlternativas(){
         const parametros = new FormData();
         parametros.append('operacion', 'preguntasAlternativas');
-        parametros.append('idevaluacion', '<?php echo $idterminator; ?>');
+        parametros.append('idevaluacion', '<?= $idterminator; ?>');
 
         fetch('../controllers/evaluaciones.controller.php', {
           method: 'POST',
@@ -84,7 +84,7 @@ $id = $arregloURL[1];*/
         })
           .then(respuesta => respuesta.json())
           .then(datos => {
-            console.log(datos);
+            // console.log(datos);
             datos.forEach(registro => {
               if (registro.escorrecto == 'S') {
                 altCorrecto.push(registro.idalternativa);                
@@ -141,6 +141,10 @@ $id = $arregloURL[1];*/
         contador *= 4
         //alert("Tu puntaje es: " + contador);
       }
+
+      // console.log(preguntasAgrupadas);
+
+
 
       $("#form-evaluacion").addEventListener('submit', (event) => {
         event.preventDefault();

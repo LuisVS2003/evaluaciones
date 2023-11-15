@@ -239,7 +239,7 @@
         event.preventDefault();
         if (confirm("¿Estás seguro de registrar esta evaluación?")) {
           evaluacionRegistrar();
-          // alternativasRegistrar();
+          $("#form-examen").reset();
         } else {
           alert("Evaluación no registrada");
         }
