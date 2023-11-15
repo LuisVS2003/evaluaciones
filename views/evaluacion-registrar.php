@@ -6,7 +6,7 @@
   <div class="row justify-content-center">
     <div class="col-10">
       <h3 class="my-3">Registrar Evaluación</h3>
-      <form action="">
+      <form action="" id="form-registrar">
         <div class="row">
           <div class="col-9">
             <div class="input-group mb-3">
@@ -88,6 +88,10 @@
   </div>
 </div>
 
+  <!-- SweetAlert -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script src='../javascript/sweetalert.js'></script>
 
   <!-- Bootstrap JavaScript Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
@@ -236,6 +240,14 @@
           console.error(e);
         });
       }
+
+      $("#form-registrar").addEventListener("submit", (event) => {
+        event.preventDefault();
+        preguntasRegistrar();
+        alternativasRegistrar();
+        notificar("info","Registro de Preguntas","El examen a sido registrado")
+        $("#form-registrar").reset()
+      });
       
       getCursos();
       preguntasRenderEntrada('4');

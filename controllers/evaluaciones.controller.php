@@ -28,7 +28,7 @@ if (isset($_POST['operacion'])) {
         'nota'          => $_POST['nota']
       ];
 
-      echo json_encode($evaluacion->asignarNota($datos));
+      //echo json_encode($evaluacion->asignarNota($datos));
       break;
 
     case 'evaluacionRegistrar':

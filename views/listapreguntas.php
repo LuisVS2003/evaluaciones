@@ -33,9 +33,10 @@ $id = $arregloURL[1];*/
 
   <?php else: ?>
 
+  <!-- SweetAlert -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
-
+  <script src='../javascript/sweetalert.js'></script>
 
   <!-- Bootstrap JavaScript Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
@@ -122,14 +123,28 @@ $id = $arregloURL[1];*/
           })
         })
         contador *= 4
-        alert("Tu puntaje es: " + contador);
+        //alert("Tu puntaje es: " + contador);
       }
 
       $("#form-evaluacion").addEventListener('submit', (event) => {
         event.preventDefault();
-        if (confirm('¿Desea enviar el examen?')) {
-          examenRevisar();
-        }
+        // if (confirm('¿Desea enviar el examen?')) {
+        //   examenRevisar();
+        // }
+        mostrarPregunta("Examen", "¿Está seguro de enviar el examen?").then((result) => { 
+            if (result.isConfirmed) {
+              examenRevisar();
+              notificar("info","Envio entregado", `El resultado de tu examen es : ${contador}`, 3);
+              $("#form-evaluacion").reset()
+              setTimeout(function(){
+                window.location.href = 'evaluaciones.php';
+              },3000);
+
+            }
+
+          });
+        
+        
       })
       preguntasAlternativas();
     })
