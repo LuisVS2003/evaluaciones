@@ -1,5 +1,5 @@
 <?php
-  require_once "./navbar.php";
+  // require_once "./navbar.php";
 ?>
 
 <!doctype html>
@@ -27,12 +27,27 @@
         </div>
         <div class="card-body">
           <!-- CAMPO USUARIOS -->
-          <div class="mb-3">
-            <label for="usuario" class="form-label">Usuarios:</label>
-            <select name="" id="usuario" class="form-select" required autofocus>
-              <option value="">Seleccione:</option>
-            </select>
+          <div class="row">
+            <div class="col-6">
+              <div class="input-group">
+                <label for="get-usuario" class="input-group-text">Usuarios:</label>
+                <select id="get-usuario" class="form-select" required autofocus>
+                  <option value="">Seleccione:</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="input-group">
+                <label for="get-evaluacion" class="input-group-text">Evaluación:</label>
+                <select id="get-evaluacion" class="form-select" required>
+                  <option value="">Seleccione:</option>
+                </select>
+              </div>
+            </div>
           </div>
+
+          <!-- CAMPO FECHA -->
+
           
           
         </div> <!-- FIN DEL CARD - BODY-->
@@ -62,20 +77,18 @@
       function getUser(){
         const parametros = new FormData();
         parametros.append("operacion", "listarUsuario");
-
         fetch(`../controllers/formulario.controller.php`, {
           method: "POST",
           body: parametros
         })
           .then(respuesta => respuesta.json())
           .then(datos => {
-            // console.log(datos)
             datos.forEach(element => {
               const etiqueta = document.createElement("option");
               etiqueta.value = element.idusuario;
               etiqueta.innerHTML = element.nombres;
 
-              $("#usuario").appendChild(etiqueta);
+              $("#get-usuario").appendChild(etiqueta);
             });
           })
           .catch(e => {
@@ -83,42 +96,58 @@
           });
       }
 
-      
-      function registrarInscrito(){
+      function getEvaluacion(){
         const parametros = new FormData();
-        parametros.append("operacion","registrarInscrito");
-        parametros.append("idusuario",$("#usuario").value)
+        parametros.append("operacion", "listarEvaluacion");
 
-        fetch(`../controllers/formulario.controller.php`, {
-          method: "POST",
+        fetch('../controllers/formulario.controller.php', {
+          method: 'POST',
           body: parametros
         })
           .then(respuesta => respuesta.json())
-          .then(datos =>{
-            if(datos.idinscrito > 0){
-              alert(`Usuario insrito registrado con el ID: ${datos.idinscrito}`)
-              $("#form-inscrito").reset();
-            }
+          .then(datos => {
+            datos.forEach(registro => {
+              const tagOption = document.createElement("option");
+              tagOption.value = registro.idevaluacion;
+              tagOption.innerHTML = registro.nombre_evaluacion;
+
+              $("#get-evaluacion").appendChild(tagOption);
+            });
           })
-          .catch(e => {
-            console.error(e)
-          });
+          .catch(e => console.error(e));
       }
 
+      function inscritoRegistrar(){
+        const parametros = new FormData();
+        parametros.append("operacion", "registrar");
+        parametros.append("idusuario", $("#get-usuario").value);
+        parametros.append("idevaluacion", $("#get-evaluacion").value);
+        parametros.append("fechainicio", '');
+        parametros.append("fechafin", '');
+
+        fetch('../controllers/inscritos.controller.php', {
+          method: 'POST',
+          body: parametros
+        })
+          .then(respuesta => respuesta.json())
+          .then(datos => {
+            console.log(datos);
+          })
+          .catch(e => console.error(e));
+      }
+      
       $("#form-inscrito").addEventListener("submit", (event) => {
         event.preventDefault();
 
-        if(confirm("¿Está seguro de registrar?")){
-          registrarInscrito();
+        if (confirm("¿Desea registrar al Usuario a esta Evaluación?")) {
+          inscritoRegistrar();
         }
-      });
-
-
-      
+      })
 
 
       // Funciones de carga automática
       getUser();
+      getEvaluacion();
     });
   </script>
 </body>  

@@ -100,4 +100,4 @@ END $$
 
 -- CALL spu_usuario_listar();
 
-
+select * from usuarios
