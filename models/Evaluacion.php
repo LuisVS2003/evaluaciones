@@ -76,7 +76,7 @@ class Evaluacion extends Conexion{
         )
       );
       return $consulta->fetch(PDO::FETCH_ASSOC);
-    } catch (Exceptios $e) {
+    } catch (Exception $e) {
       die($e->getMessage());
     }
   }
