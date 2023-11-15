@@ -82,7 +82,7 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-primary" type="submit">Guardar Examen</button>
+        <button class="btn btn-primary" type="submit" >Guardar Examen</button>
       </form>
     </div>
   </div>
