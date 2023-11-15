@@ -11,38 +11,38 @@ if(isset($_POST['operacion'])){
       echo json_encode($usuario->login($_POST));
       break;
 
-    case 'login':
-      $datosEnviar = ["correo" => $_POST["correo"]];
-      $registro = $usuario->login($datosEnviar);
-      $statusLogin = [
-        "acceso"    => false,
-        "mensaje"   => ""
-      ];
-      if ($registro == false) {
+      case 'login':
+        $datosEnviar = ["correo" => $_POST["correo"]];
+        $registro = $usuario->login($datosEnviar);
+  
+        $statusLogin =[
+        "acceso" => false,
+        "mensaje" => ""
+        ];
+  
+      if($registro == false){
         $_SESSION["status"] = false;
-        $statusLogin["mensaje"] = "El correo no existe";
+        $statusLogin["mensaje"] = "No existe el correo";
       }else{
+  
         $claveEncriptada = $registro["claveacceso"];
-        $_SESSION["idusuario"] = $registro["idusuario"];
-        $_SESSION["nombres"] = $registro["nombres"];
-        $_SESSION["apellidos"] = $registro["apellidos"];
-        $_SESSION["idrol"] = $registro["idrol"];
-        $_SESSION["rol"] = $registro["rol"];
-
-        if (password_verify($_POST["claveacceso"], $claveEncriptada)) {
-          $_SESSION["status"] = true;
+        $_SESSION["idusuario"] = $registro["idusuario"];    
+        $_SESSION["nombres"] = $registro["nombres"];    
+        $_SESSION["apellidos"] = $registro["apellidos"];    
+        $_SESSION["idrol"] = $registro["idrol"]; 
+        $_SESSION["rol"] = $registro["rol"]; 
+  
+        if(password_verify($_POST['claveacceso'],$claveEncriptada)){
+          $_SESSION["status"]= TRUE;
           $statusLogin["acceso"] = true;
-          $statusLogin["mensaje"] = "La clave y el acceso son correctos";
-
-          
-          
+          $statusLogin["mensaje"] = "Acceso correcto";
         }else{
-          $_SESSION["status"] = true;
-          $statusLogin["mensaje"] = "Error en la clave";
+          $_SESSION["status"]= FALSE;
+          $statusLogin["mensaje"] = "Error en la contraseña";
         }
       }
       echo json_encode($statusLogin);
-      break;
+        break;
 
     case 'registrar':
       $datosEnviar = [
