@@ -81,3 +81,4 @@ CREATE TABLE alternativas(
 	inactive_at		DATETIME	    NULL,
     CONSTRAINT	fk_idpregunta_alte	FOREIGN KEY (idpregunta) REFERENCES preguntas(idpregunta)
 )ENGINE = INNODB;
+

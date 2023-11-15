@@ -26,8 +26,9 @@ BEGIN
 END $$
 
 -- CALL spu_cursos_listar();
-select * from evaluaciones
-
+select * from evaluaciones;
+select * from preguntas;
+select * from alternativas;
 -- ##########################################################################################################################
 DELIMITER $$
 CREATE PROCEDURE spu_evaluaciones_listar()

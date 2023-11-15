@@ -1,12 +1,16 @@
 <?php
-  require_once './navbar.php'
+  require_once './navbar.php';
 ?>
+
+<!-- Estilos de Bootstrap -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+
 
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-10">
       <h3 class="my-3">Registrar Evaluación</h3>
-      <form action="">
+      <form action="" id="form-examen">
         <div class="row">
           <div class="col-9">
             <div class="input-group mb-3">
@@ -48,39 +52,7 @@
         </div>
         <!-- Pregunta -->
         <div id="pregunta-render">
-          <div class="row">
-            <div class="col-9">
-              <div class="input-group mb-3">
-                <label for="nom-pregunta" class="input-group-text">Pregunta N° 1</label>
-                <input type="text" class="form-control" id="nom-pregunta" required>
-              </div>
-            </div>
-            <div class="col-3">
-              <div class="input-group mb-3">
-                <label class="input-group-text" for="alt-correcta">Opción Correcta</label>
-                <select class="form-select" id="alt-correcta" required>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <!-- Alternativas -->
-          <div class="row mx-5" id="alternativas-render">
-            <div class="input-group mb-3">
-              <label for="alt-a" class="input-group-text">Alternativa: A</label>
-              <input type="text" class="form-control" id="alt-a" required>
-            </div>
-            <div class="input-group mb-3">
-              <label for="alt-b" class="input-group-text">Alternativa: B</label>
-              <input type="text" class="form-control" id="alt-b" required>
-            </div>
-            <div class="input-group mb-3">
-              <label for="alt-c" class="input-group-text">Alternativa: C</label>
-              <input type="text" class="form-control" id="alt-c" required>
-            </div>
-          </div>
+
         </div>
         <button class="btn btn-primary" type="submit">Guardar Examen</button>
       </form>
@@ -116,7 +88,7 @@
           .then(datos => {
             datos.forEach(registro => {
               const option = document.createElement('option');
-              option.value = registro.id;
+              option.value = registro.idcurso;
               option.innerText = registro.curso;
               $('#list-curso').appendChild(option);
             });
@@ -142,9 +114,9 @@
               <div class="input-group mb-3">
                 <label class="input-group-text" for="alt-correcta-${i}">Opción Correcta</label>
                 <select class="form-select" id="alt-correcta-${i}" required>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
+                  <option value="a">A</option>
+                  <option value="b">B</option>
+                  <option value="c">C</option>
                 </select>
               </div>
             </div>
@@ -157,7 +129,7 @@
 
       function alternativasRenderEntrada(idAlt){
         $(`#alternativas-render-${idAlt}`).innerHTML += `
-          <div class="input-group mb-3">
+            <div class="input-group mb-3">
               <label for="alt-a-${idAlt}" class="input-group-text">Alternativa: A</label>
               <input type="text" class="form-control" id="alt-a-${idAlt}" required>
             </div>
@@ -169,14 +141,8 @@
               <label for="alt-c-${idAlt}" class="input-group-text">Alternativa: C</label>
               <input type="text" class="form-control" id="alt-c-${idAlt}" required>
             </div>
-          </div>
         `;
       }
-
-      $("#npreguntas").addEventListener('change', (event) => {
-        let nPreguntas = event.target.value;
-        preguntasRenderEntrada(nPreguntas);
-      });
 
       function evaluacionRegistrar(){
         const parametros = new FormData();
@@ -192,18 +158,26 @@
         })
           .then(respuesta => respuesta.json())
           .then(datos => {
+            const idEvaluacion = datos.idevaluacion;
             console.log(datos);
+            
+            for(let i = 1; i <= $('#npreguntas').value; i++){
+              preguntasRegistrar(idEvaluacion, i);
+            }
           })
           .catch(e => {
             console.error(e);
           });
       }
 
-      function preguntasRegistrar(idevaluacion){
+
+      function preguntasRegistrar(idevaluacion, altNum){
+        const nomPregunta = $(`#nom-pregunta-${altNum}`).value;
+        console.log(nomPregunta);
         const parametros = new FormData();
         parametros.append('operacion', 'preguntasRegistrar');
         parametros.append('idevaluacion', idevaluacion);
-        parametros.append('pregunta', $('#nom-pregunta-1').value);
+        parametros.append('pregunta', nomPregunta);
 
         fetch('../controllers/evaluaciones.controller.php', {
           method: 'POST',
@@ -211,18 +185,39 @@
         })
           .then(respuesta => respuesta.json())
           .then(datos => {
-            console.log(datos);
+            const altLetras = ['a', 'b', 'c'];
+            const altCorrecta = $(`#alt-correcta-${altNum}`).value;
+
+            for(let i = 1; i <= 3; i++){
+              if (altCorrecta == altLetras[i-1]){
+                alternativasRegistrar(datos.idpregunta, altLetras[i-1], altNum, 'S');
+                console.log(altLetras[i-1], i);
+
+              }
+              else{
+                alternativasRegistrar(datos.idpregunta, altLetras[i-1], altNum, 'N');
+                console.log(altLetras[i-1], i);
+
+              }
+            }
+
+            console.log(datos.idpregunta);
           })
           .catch(e => {
             console.error(e);
           });
       }
 
-      function alternativasRegistrar(idPregunta){
+      // idPregunta, letra, idAlt, escorrecta
+      function alternativasRegistrar(idPregunta, letra, idAlt, escorrecto){
+        const alternativa = $(`#alt-${letra}-${idAlt}`).value;
+        console.log(alternativa);
+
         const parametros = new FormData();
         parametros.append('operacion', 'alternativasRegistrar');
         parametros.append('idpregunta', idPregunta);
-        parametros.append('alternativa', $('#alt-a-1').value);
+        parametros.append('alternativa', alternativa);
+        parametros.append('escorrecto', escorrecto);
 
         fetch('../controllers/evaluaciones.controller.php', {
           method: 'POST',
@@ -236,9 +231,27 @@
           console.error(e);
         });
       }
+
+
+
+      $("#form-examen").addEventListener('submit', (event) => {
+        
+        event.preventDefault();
+        if (confirm("¿Estás seguro de registrar esta evaluación?")) {
+          evaluacionRegistrar();
+          // alternativasRegistrar();
+        } else {
+          alert("Evaluación no registrada");
+        }
+      });
+
+      $("#npreguntas").addEventListener('change', (event) => {
+        let nPreguntas = event.target.value;
+        preguntasRenderEntrada(nPreguntas);
+      });
       
       getCursos();
-      preguntasRenderEntrada('4');
+      preguntasRenderEntrada($("#npreguntas").value);
     })
   </script>
 
