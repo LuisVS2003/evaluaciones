@@ -74,6 +74,7 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
           <div class="dropdown-menu" aria-labelledby="dropdownId">
             <a class="dropdown-item" href="../controllers/usuario.controller.php?operacion=destroy">Cerrar Sessión</a>
             <a class="dropdown-item" href="cambiar-pass.php">Cambiar contraseña</a>
+            <a class="dropdown-item" href="reporte3.php">Reporte</a>
           </div>
         </li>
       </ul>

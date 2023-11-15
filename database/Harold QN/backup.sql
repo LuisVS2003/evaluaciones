@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-11-2023 a las 06:30:07
+-- Tiempo de generación: 15-11-2023 a las 02:00:33
 -- Versión del servidor: 10.4.24-MariaDB
 -- Versión de PHP: 8.1.6
 
@@ -25,147 +25,201 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_actualizar_pass` (IN `_correo` VARCHAR(100), IN `_token` VARCHAR(6), IN `_claveacceso` VARCHAR(90))   begin
-	update usuarios set
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_actualizar_pass` (IN `_correo` VARCHAR(90), IN `_token` VARCHAR(6), IN `_claveacceso` VARCHAR(90))   BEGIN
+	UPDATE usuarios SET
     claveacceso = _claveacceso,
     token_estado = 'C',
-    token = null
-    where correo = _correo and token = _token;
-end$$
+    token = NULL
+    WHERE correo = _correo AND token = _token;
+END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_alternativas_registrar` (IN `_idpregunta` INT, IN `_alternativa` TEXT, IN `_validacion` CHAR(1))   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_alternativas_listar` ()   BEGIN
+	SELECT 
+		ALT.idalternativa,
+        ALT.alternativa,
+        PRE.pregunta,
+        ALT.escorrecto
+	FROM alternativas ALT
+        INNER JOIN preguntas PRE ON PRE.idpregunta = ALT.idpregunta
+	WHERE ALT.inactive_at IS NULL;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_alternativas_registrar` (IN `_idpregunta` INT, IN `_alternativa` TEXT, IN `_escorrecto` CHAR(1))   BEGIN
 	INSERT INTO alternativas
-    (idpregunta, alternativa, validacion)
+		(idpregunta, alternativa, escorrecto)
     VALUES
-    (_idpregunta, _alternativa, _validacion);
-    
+		(_idpregunta, _alternativa, _escorrecto);
     SELECT @@last_insert_id 'idalternativa';
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_buscar_correo` (IN `_correo` VARCHAR(100))   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_buscar_correo` (IN `_correo` VARCHAR(90))   BEGIN
     SELECT *
     FROM usuarios
     WHERE correo = _correo;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_buscar_token` (IN `_correo` VARCHAR(100), IN `_token` VARCHAR(6))   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_buscar_token` (IN `_correo` VARCHAR(90), IN `_token` VARCHAR(6))   BEGIN
     SELECT *
     FROM usuarios
     WHERE correo = _correo AND token = _token;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_registrar` (IN `_idusuario` INT, IN `_idinscrito` INT, IN `_nombre_evaluacion` VARCHAR(45), IN `_fechainicio` DATETIME, IN `_fechafin` DATETIME)   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_cursos_listar` ()   BEGIN
+	SELECT
+		idcurso, curso
+    FROM cursos
+    WHERE inactive_at IS NULL;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_cursos_registrar` (IN `_curso` VARCHAR(50))   BEGIN
+	INSERT INTO cursos (curso)
+    VALUES (_curso);
+    SELECT @@last_insert_id 'idcurso';
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_estudiantes_listar` ()   BEGIN
+	SELECT
+		USR.idusuario, INS.idevaluacion,
+        CONCAT(USR.apellidos, ", ", USR.nombres) 'nombre_completo'
+    FROM usuarios USR
+	INNER JOIN inscritos INS ON INS.idusuario = USR.idusuario
+    WHERE idrol = 2 AND USR.inactive_at IS NULL;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_estudiante_listar` (IN `_idusuario` INT)   BEGIN
+	SELECT
+		INS.idinscrito, USR.idusuario, EVA.idevaluacion,
+        EVA.nombre_evaluacion,
+        INS.fechainicio, INS.fechafin
+    FROM inscritos INS
+    INNER JOIN usuarios USR ON USR.idusuario = INS.idusuario
+    INNER JOIN evaluaciones EVA ON EVA.idevaluacion = INS.idevaluacion
+    WHERE INS.idusuario = _idusuario;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_listar` ()   BEGIN
+	SELECT 
+		EVA.idevaluacion, CUR.curso,
+        nombre_evaluacion
+	FROM evaluaciones EVA
+		INNER JOIN cursos CUR ON CUR.idcurso = EVA.idcurso
+	WHERE EVA.inactive_at IS NULL;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_preguntas_listar` (IN `_idevaluacion` INT)   BEGIN
+	SELECT 
+		EVA.idevaluacion,
+        PRE.idpregunta, PRE.pregunta,
+        ALT.idalternativa, ALT.alternativa, ALT.escorrecto
+	FROM evaluaciones EVA
+    INNER JOIN preguntas PRE ON PRE.idevaluacion = EVA.idevaluacion
+    INNER JOIN alternativas ALT ON ALT.idpregunta = PRE.idpregunta
+    WHERE EVA.idevaluacion = _idevaluacion;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_registrar` (IN `_idcurso` INT, IN `_nombre_evaluacion` VARCHAR(90))   BEGIN
 	INSERT INTO evaluaciones
-    (idusuario, idinscrito, nombre_evaluacion, fechainicio, fechafin)
+		(idcurso, nombre_evaluacion)
     VALUES
-    (_idusuario, _idinscrito, _nombre_evaluacion, _fechainicio, _fechafin);
-    
+		(_idcurso, _nombre_evaluacion);
     SELECT @@last_insert_id 'idevaluacion';
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_usuario_listar` (IN `_idusuario` INT)   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_informes_resumen` ()   BEGIN
 	SELECT
-		EVA.idevaluacion, USR.idusuario,
-        CONCAT(USR.apellidos, " ", USR.nombres) 'nombre_completo',
+		c.curso,
+		COUNT(DISTINCT CASE WHEN i.fechafin IS NOT NULL THEN e.idevaluacion END) AS evaluaciones_realizadas,
+		COUNT(DISTINCT CASE WHEN i.fechafin IS NULL THEN i.idinscrito END) AS evaluaciones_pendientes
+	FROM
+		cursos c
+	LEFT JOIN
+		evaluaciones e ON c.idcurso = e.idcurso
+	LEFT JOIN
+		inscritos i ON e.idevaluacion = i.idevaluacion
+	GROUP BY
+		c.curso;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_inscritos_listar` ()   BEGIN
+	SELECT 
+		INS.idinscrito, INS.idevaluacion,
         EVA.nombre_evaluacion,
-        EVA.fechainicio, EVA.fechafin
-        
-    FROM evaluaciones EVA
-    INNER JOIN usuarios USR ON USR.idusuario = EVA.idusuario
-    WHERE USR.idusuario = _idusuario;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_inscritos_registrar` (IN `_idusuario` INT)   BEGIN
-	INSERT INTO inscritos (idusuario)
-    VALUES
-    (_idusuario);
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_listar_alternativas` ()   BEGIN
-	SELECT 
-		ALT.idalternativa,
-        ALT.alternativa,
-        PRE.pregunta,
-        ALT.validacion
-        FROM alternativas ALT
-        INNER JOIN preguntas PRE ON PRE.idpregunta = ALT.idpregunta
-        WHERE ALT.inactive_at IS NULL;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_listar_inscritos` ()   BEGIN
-	SELECT 
-		INS.idinscrito,
-        USR.apellidos,
-        USR.nombres
-        FROM inscritos INS
+        CONCAT(USR.apellidos, ", ", USR.nombres) 'nombre_completo',
+        INS.fechainicio, INS.fechafin
+	FROM inscritos INS
         INNER JOIN usuarios USR ON USR.idusuario = INS.idusuario
-        WHERE INS.inactive_at IS NULL;
+        INNER JOIN evaluaciones EVA ON EVA.idevaluacion = INS.idevaluacion;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_listar_preguntas` ()   BEGIN
-	SELECT 
-		idpregunta,
-        pregunta
-        FROM preguntas
-        WHERE inactive_at IS NULL;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_listar_usuario` ()   BEGIN
-  SELECT
-      USU.idusuario,
-      ROL.rol,
-      USU.apellidos,
-      USU.nombres,
-      USU.correo
-      FROM usuarios USU
-      INNER JOIN roles ROL ON ROL.idrol = USU.idrol
-      WHERE USU.inactive_at IS NULL;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_inscritos_registrar` (IN `_idusuario` INT, IN `_idevaluacion` INT, IN `_fechainicio` DATETIME, IN `_fechafin` DATETIME)   BEGIN
+	INSERT INTO inscritos
+		(idusuario, idevaluacion, fechainicio, fechafin)
+    VALUES
+		(_idusuario, _idevaluacion, _fechainicio, _fechafin);
+    SELECT @@last_insert_id 'idinscrito';
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_login` (IN `_correo` VARCHAR(90))   BEGIN
 	SELECT 
-		idusuario,
-        idrol,
-		apellidos,
-        nombres,
-        correo,
-        claveacceso
-	FROM usuarios
-    WHERE correo = _correo AND
-		inactive_at IS NULL;
+		usu.idusuario,
+        usu.idrol,
+        r.rol,
+		usu.apellidos,
+        usu.nombres,
+        usu.correo,
+        usu.claveacceso
+	FROM usuarios usu INNER JOIN roles r ON usu.idrol = r.idrol
+    WHERE correo = _correo AND usu.inactive_at IS NULL;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_preguntas_listar` ()   BEGIN
+	SELECT 
+		idpregunta, idevaluacion, pregunta
+	FROM preguntas
+	WHERE inactive_at IS NULL;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_preguntas_registrar` (IN `_idevaluacion` INT, IN `_pregunta` TEXT)   BEGIN
 	INSERT INTO preguntas
-    (idevaluacion, pregunta)
+		(idevaluacion, pregunta)
     VALUES
-    (_idevaluacion,  _pregunta);
-    
+		(_idevaluacion,  _pregunta);
     SELECT @@last_insert_id 'idpregunta';
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_registrar_usuario` (IN `_idrol` INT, IN `_apellidos` VARCHAR(45), IN `_nombres` VARCHAR(45), IN `_correo` VARCHAR(90), IN `_claveacceso` VARCHAR(90))   BEGIN
-    INSERT INTO usuarios
-		(idrol, apellidos, nombres, correo, claveacceso)
-    VALUES
-		(_idrol, _apellidos, _nombres, _correo, _claveacceso);
-    
-    SELECT @@last_insert_id 'idusuario';
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_registra_token` (IN `_correo` VARCHAR(100), IN `_token` VARCHAR(6))   begin
-	update usuarios set
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_registra_token` (IN `_correo` VARCHAR(90), IN `_token` VARCHAR(6))   BEGIN
+	UPDATE usuarios SET
     token_estado = 'P', 
     token = _token,
-    fechatoken = now()
-    where _correo = correo;
+    fechatoken = NOW()
+    WHERE _correo = correo;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_roles_listar` ()   BEGIN
 	SELECT 
-		idrol,
-		rol FROM roles
-		WHERE inactive_at IS NULL;
+		idrol, rol
+	FROM roles
+	WHERE inactive_at IS NULL;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_usuario_listar` ()   BEGIN
+	SELECT
+		USU.idusuario,
+		ROL.rol,
+		USU.apellidos,
+		USU.nombres,
+		USU.correo
+	FROM usuarios USU
+		INNER JOIN roles ROL ON ROL.idrol = USU.idrol
+	WHERE USU.inactive_at IS NULL;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_usuario_registrar` (IN `_idrol` INT, IN `_apellidos` VARCHAR(45), IN `_nombres` VARCHAR(45), IN `_correo` VARCHAR(90), IN `_claveacceso` VARCHAR(90))   BEGIN
+	INSERT INTO usuarios
+		(idrol, apellidos, nombres, correo, claveacceso)
+    VALUES
+		(_idrol, _apellidos, _nombres, _correo, _claveacceso);
+    SELECT @@last_insert_id 'idusuario';
 END$$
 
 DELIMITER ;
@@ -180,7 +234,7 @@ CREATE TABLE `alternativas` (
   `idalternativa` int(11) NOT NULL,
   `idpregunta` int(11) NOT NULL,
   `alternativa` text NOT NULL,
-  `validacion` char(1) NOT NULL,
+  `escorrecto` char(1) NOT NULL,
   `create_at` datetime DEFAULT current_timestamp(),
   `update_at` datetime DEFAULT NULL,
   `inactive_at` datetime DEFAULT NULL
@@ -190,16 +244,59 @@ CREATE TABLE `alternativas` (
 -- Volcado de datos para la tabla `alternativas`
 --
 
-INSERT INTO `alternativas` (`idalternativa`, `idpregunta`, `alternativa`, `validacion`, `create_at`, `update_at`, `inactive_at`) VALUES
-(2, 2, 'HyperText Markup Language', '1', '2023-11-10 14:57:58', NULL, NULL),
-(3, 2, 'París', 'V', '2023-11-10 15:15:53', NULL, NULL),
-(4, 3, 'Londres', 'F', '2023-11-10 15:15:53', NULL, NULL),
-(5, 4, 'Madrid', 'F', '2023-11-10 15:15:53', NULL, NULL),
-(6, 5, 'Berlín', 'F', '2023-11-10 15:15:53', NULL, NULL),
-(7, 5, '1914', 'V', '2023-11-10 15:15:53', NULL, NULL),
-(8, 6, '1918', 'F', '2023-11-10 15:15:53', NULL, NULL),
-(9, 7, '1939', 'F', '2023-11-10 15:15:53', NULL, NULL),
-(10, 8, '1945', 'F', '2023-11-10 15:15:53', NULL, NULL);
+INSERT INTO `alternativas` (`idalternativa`, `idpregunta`, `alternativa`, `escorrecto`, `create_at`, `update_at`, `inactive_at`) VALUES
+(1, 1, 'Corriente', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(2, 1, 'Resistencia', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(3, 1, 'Voltaje', 'S', '2023-11-12 09:07:26', NULL, NULL),
+(4, 2, 'Condensador', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(5, 2, 'Resistor', 'S', '2023-11-12 09:07:26', NULL, NULL),
+(6, 2, 'Inductor', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(7, 3, 'Amperio', 'S', '2023-11-12 09:07:26', NULL, NULL),
+(8, 3, 'Ohmio', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(9, 3, 'Voltio', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(10, 4, 'Gasolina', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(11, 4, 'Diesel', 'S', '2023-11-12 09:07:26', NULL, NULL),
+(12, 4, 'Etanol', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(13, 5, 'Propulsor', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(14, 5, 'Frenos', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(15, 5, 'Escape', 'S', '2023-11-12 09:07:26', NULL, NULL),
+(16, 6, 'Herencia', 'S', '2023-11-12 09:07:26', NULL, NULL),
+(17, 6, 'Polimorfismo', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(18, 6, 'Encapsulamiento', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(19, 7, 'Java Virtual Machine', 'S', '2023-11-12 09:07:26', NULL, NULL),
+(20, 7, 'Java Virtual Memory', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(21, 7, 'Java Variable Method', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(22, 8, 'int x = 10;', 'S', '2023-11-12 09:07:26', NULL, NULL),
+(23, 8, 'String name = \"John\";', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(24, 8, 'boolean flag = true;', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(25, 9, 'True', 'N', '2023-11-12 09:07:26', NULL, NULL),
+(26, 9, 'False', 'S', '2023-11-12 09:07:26', NULL, NULL),
+(27, 9, 'Null', 'N', '2023-11-12 09:07:26', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cursos`
+--
+
+CREATE TABLE `cursos` (
+  `idcurso` int(11) NOT NULL,
+  `curso` varchar(50) NOT NULL,
+  `create_at` datetime DEFAULT current_timestamp(),
+  `update_at` datetime DEFAULT NULL,
+  `inactive_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `cursos`
+--
+
+INSERT INTO `cursos` (`idcurso`, `curso`, `create_at`, `update_at`, `inactive_at`) VALUES
+(1, 'Electricidad Industrial', '2023-11-12 08:48:46', NULL, NULL),
+(2, 'Mecánica Automotriz', '2023-11-12 08:48:46', NULL, NULL),
+(3, 'Ing. de Software con IA', '2023-11-12 08:48:46', NULL, NULL),
+(4, 'Soldadura Avanzada', '2023-11-12 08:48:46', NULL, NULL),
+(5, 'Gestión de Proyectos', '2023-11-12 08:48:46', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -209,11 +306,8 @@ INSERT INTO `alternativas` (`idalternativa`, `idpregunta`, `alternativa`, `valid
 
 CREATE TABLE `evaluaciones` (
   `idevaluacion` int(11) NOT NULL,
-  `idusuario` int(11) NOT NULL,
-  `idinscrito` int(11) NOT NULL,
-  `nombre_evaluacion` varchar(45) NOT NULL,
-  `fechainicio` datetime DEFAULT NULL,
-  `fechafin` datetime DEFAULT NULL,
+  `idcurso` int(11) NOT NULL,
+  `nombre_evaluacion` varchar(90) NOT NULL,
   `create_at` datetime DEFAULT current_timestamp(),
   `update_at` datetime DEFAULT NULL,
   `inactive_at` datetime DEFAULT NULL
@@ -223,21 +317,12 @@ CREATE TABLE `evaluaciones` (
 -- Volcado de datos para la tabla `evaluaciones`
 --
 
-INSERT INTO `evaluaciones` (`idevaluacion`, `idusuario`, `idinscrito`, `nombre_evaluacion`, `fechainicio`, `fechafin`, `create_at`, `update_at`, `inactive_at`) VALUES
-(3, 2, 1, 'Inglés', '2023-11-09 00:00:00', '2023-11-10 00:00:00', '2023-11-10 14:53:14', NULL, NULL),
-(5, 2, 1, 'Evaluación 1', '2023-11-09 00:00:00', '2023-11-10 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(6, 2, 1, 'Evaluación 2', '2023-11-10 00:00:00', '2023-11-11 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(7, 2, 1, 'Evaluación 3', '2023-11-11 00:00:00', '2023-11-12 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(8, 2, 1, 'Evaluación 4', '2023-11-12 00:00:00', '2023-11-13 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(9, 2, 1, 'Evaluación 5', '2023-11-13 00:00:00', '2023-11-14 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(10, 2, 1, 'Evaluación 6', '2023-11-14 00:00:00', '2023-11-15 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(11, 2, 1, 'Evaluación 7', '2023-11-15 00:00:00', '2023-11-16 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(12, 2, 1, 'Evaluación 8', '2023-11-16 00:00:00', '2023-11-17 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(13, 2, 1, 'Evaluación 9', '2023-11-17 00:00:00', '2023-11-18 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(14, 2, 1, 'Evaluación 10', '2023-11-18 00:00:00', '2023-11-19 00:00:00', '2023-11-10 15:13:04', NULL, NULL),
-(15, 3, 1, 'Evaluación 1', '2023-11-09 00:00:00', '2023-11-10 00:00:00', '2023-11-10 20:36:24', NULL, NULL),
-(16, 3, 1, 'Evaluación 2', '2023-11-10 00:00:00', '2023-11-11 00:00:00', '2023-11-10 20:36:24', NULL, NULL),
-(17, 3, 1, 'Evaluación 3', '2023-11-11 00:00:00', '2023-11-12 00:00:00', '2023-11-10 20:36:24', NULL, NULL);
+INSERT INTO `evaluaciones` (`idevaluacion`, `idcurso`, `nombre_evaluacion`, `create_at`, `update_at`, `inactive_at`) VALUES
+(1, 1, 'Evaluación 1 Electricidad Industrial', '2023-11-12 08:48:46', NULL, NULL),
+(2, 1, 'Evaluación 2 Electricidad Industrial', '2023-11-12 08:48:46', NULL, NULL),
+(3, 3, 'Evaluación 1 Ing. de Software con IA', '2023-11-12 08:48:46', NULL, NULL),
+(4, 3, 'Evaluación 2 Ing. de Software con IA', '2023-11-12 08:48:46', NULL, NULL),
+(5, 3, 'Evaluación 3 Ing. de Software con IA', '2023-11-12 08:48:46', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -248,17 +333,21 @@ INSERT INTO `evaluaciones` (`idevaluacion`, `idusuario`, `idinscrito`, `nombre_e
 CREATE TABLE `inscritos` (
   `idinscrito` int(11) NOT NULL,
   `idusuario` int(11) NOT NULL,
-  `create_at` datetime DEFAULT current_timestamp(),
-  `update_at` datetime DEFAULT NULL,
-  `inactive_at` datetime DEFAULT NULL
+  `idevaluacion` int(11) NOT NULL,
+  `fechainicio` datetime DEFAULT NULL,
+  `fechafin` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `inscritos`
 --
 
-INSERT INTO `inscritos` (`idinscrito`, `idusuario`, `create_at`, `update_at`, `inactive_at`) VALUES
-(1, 2, '2023-11-10 14:51:28', NULL, NULL);
+INSERT INTO `inscritos` (`idinscrito`, `idusuario`, `idevaluacion`, `fechainicio`, `fechafin`) VALUES
+(1, 1, 1, '2023-11-12 10:00:00', '2023-11-15 18:00:00'),
+(2, 2, 1, '2023-11-13 11:30:00', '2023-11-16 20:30:00'),
+(3, 3, 2, '2023-11-14 09:45:00', '2023-11-17 17:45:00'),
+(4, 1, 3, '2023-11-15 13:15:00', '2023-11-18 22:15:00'),
+(5, 2, 3, '2023-11-16 14:45:00', '2023-11-19 23:45:00');
 
 -- --------------------------------------------------------
 
@@ -280,17 +369,15 @@ CREATE TABLE `preguntas` (
 --
 
 INSERT INTO `preguntas` (`idpregunta`, `idevaluacion`, `pregunta`, `create_at`, `update_at`, `inactive_at`) VALUES
-(2, 3, '¿Qué significa HTMl?', '2023-11-10 14:54:33', NULL, NULL),
-(3, 3, '¿Cuál es la capital de Francia?', '2023-11-10 15:14:18', NULL, NULL),
-(4, 3, '¿Qué año comenzó la Primera Guerra Mundial?', '2023-11-10 15:14:18', NULL, NULL),
-(5, 3, '¿Quién pintó la Mona Lisa?', '2023-11-10 15:14:18', NULL, NULL),
-(6, 3, '¿En qué año se descubrió América?', '2023-11-10 15:14:18', NULL, NULL),
-(7, 3, '¿Cuál es el río más largo del mundo?', '2023-11-10 15:14:18', NULL, NULL),
-(8, 3, '¿Qué científico formuló la teoría de la relatividad?', '2023-11-10 15:14:18', NULL, NULL),
-(9, 3, '¿Quién escribió \"El Quijote\"?', '2023-11-10 15:14:18', NULL, NULL),
-(10, 3, '¿Cuál es el metal más abundante en la corteza terrestre?', '2023-11-10 15:14:18', NULL, NULL),
-(11, 3, '¿Cuál es la montaña más alta del mundo?', '2023-11-10 15:14:18', NULL, NULL),
-(12, 3, '¿Quién fue el primer presidente de los Estados Unidos?', '2023-11-10 15:14:18', NULL, NULL);
+(1, 1, '¿Cuál es el concepto clave en Electricidad Industrial?', '2023-11-12 08:59:09', NULL, NULL),
+(2, 1, '¿Cómo se llama el componente que almacena energía en un circuito eléctrico?', '2023-11-12 08:59:09', NULL, NULL),
+(3, 1, '¿Cuál es la unidad de medida de la corriente eléctrica?', '2023-11-12 08:59:09', NULL, NULL),
+(4, 2, '¿Cuáles son los componentes esenciales de un sistema de escape en un automóvil?', '2023-11-12 08:59:09', NULL, NULL),
+(5, 2, '¿Qué tipo de combustible utiliza un motor diésel?', '2023-11-12 08:59:09', NULL, NULL),
+(6, 2, '¿Cuál es la función principal del sistema de frenos en un automóvil?', '2023-11-12 08:59:09', NULL, NULL),
+(7, 3, '¿Cuáles son los principios de la programación orientada a objetos?', '2023-11-12 08:59:09', NULL, NULL),
+(8, 3, '¿Qué significa JVM en el contexto de Java?', '2023-11-12 08:59:09', NULL, NULL),
+(9, 3, '¿Cómo se declara una variable en Java?', '2023-11-12 08:59:09', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -311,8 +398,8 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`idrol`, `rol`, `create_at`, `update_at`, `inactive_at`) VALUES
-(1, 'DOCENTE', '2023-11-09 14:57:38', NULL, NULL),
-(2, 'ESTUDIANTE', '2023-11-09 14:57:38', NULL, NULL);
+(1, 'Docente', '2023-11-12 08:48:46', NULL, NULL),
+(2, 'Estudiante', '2023-11-12 08:48:46', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -340,10 +427,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`idusuario`, `idrol`, `apellidos`, `nombres`, `correo`, `claveacceso`, `token`, `token_estado`, `create_at`, `update_at`, `inactive_at`, `fechatoken`) VALUES
-(2, 1, 'Muñoz', 'Alonso', 'alonsomunoz263@gamil.com', '$2y$10$JrWpvfajT/tVlC6C4f3q7eYYHVaOcG1MK/sIc0mqGPBGJ5dHM/P12', NULL, NULL, '2023-11-09 14:57:42', NULL, NULL, NULL),
-(3, 2, 'Villegas Salazar', 'Luis', 'villegasalazar08@gmail.com', '$2y$10$JrWpvfajT/tVlC6C4f3q7eYYHVaOcG1MK/sIc0mqGPBGJ5dHM/P12', NULL, NULL, '2023-11-09 15:23:18', NULL, NULL, NULL),
-(4, 2, 'Martinez', 'Alfonso', 'alonsomredick@gmail.com', '$2y$10$JrWpvfajT/tVlC6C4f3q7eYYHVaOcG1MK/sIc0mqGPBGJ5dHM/P12', NULL, NULL, '2023-11-10 14:50:32', NULL, NULL, NULL),
-(5, 2, 'Quispe Napa', 'Harold', 'efrainqn16@gmail.com', '$2y$10$JrWpvfajT/tVlC6C4f3q7eYYHVaOcG1MK/sIc0mqGPBGJ5dHM/P12', '581667', 'P', '2023-11-10 22:57:47', NULL, NULL, '2023-11-11 00:29:32');
+(1, 1, 'González', 'Juan', 'juan.gonzalez@example.com', '$2y$10$hbzZihcSrLuQxZvnfmqYCu9z0gEMU2JnaGmjqPkfwpuuxf5un8ejS', NULL, NULL, '2023-11-12 08:48:46', NULL, NULL, NULL),
+(2, 2, 'Martínez', 'Ana', 'ana.martinez@example.com', '$2y$10$hbzZihcSrLuQxZvnfmqYCu9z0gEMU2JnaGmjqPkfwpuuxf5un8ejS', NULL, NULL, '2023-11-12 08:48:46', NULL, NULL, NULL),
+(3, 2, 'Rodríguez', 'Pedro', 'pedro.rodriguez@example.com', '$2y$10$hbzZihcSrLuQxZvnfmqYCu9z0gEMU2JnaGmjqPkfwpuuxf5un8ejS', NULL, NULL, '2023-11-12 08:48:46', NULL, NULL, NULL),
+(4, 2, 'Sánchez', 'Laura', 'laura.sanchez@example.com', '$2y$10$hbzZihcSrLuQxZvnfmqYCu9z0gEMU2JnaGmjqPkfwpuuxf5un8ejS', NULL, NULL, '2023-11-12 08:48:46', NULL, NULL, NULL),
+(5, 2, 'Díaz', 'Carlos', 'carlos.diaz@example.com', '$2y$10$hbzZihcSrLuQxZvnfmqYCu9z0gEMU2JnaGmjqPkfwpuuxf5un8ejS', NULL, NULL, '2023-11-12 08:48:46', NULL, NULL, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -357,19 +445,25 @@ ALTER TABLE `alternativas`
   ADD KEY `fk_idpregunta_alte` (`idpregunta`);
 
 --
+-- Indices de la tabla `cursos`
+--
+ALTER TABLE `cursos`
+  ADD PRIMARY KEY (`idcurso`);
+
+--
 -- Indices de la tabla `evaluaciones`
 --
 ALTER TABLE `evaluaciones`
   ADD PRIMARY KEY (`idevaluacion`),
-  ADD KEY `fk_idusuario_eval` (`idusuario`),
-  ADD KEY `fk_idinscrito_eval` (`idinscrito`);
+  ADD KEY `fk_idcurso_eval` (`idcurso`);
 
 --
 -- Indices de la tabla `inscritos`
 --
 ALTER TABLE `inscritos`
   ADD PRIMARY KEY (`idinscrito`),
-  ADD UNIQUE KEY `un_iduser_ins` (`idusuario`);
+  ADD KEY `fk_iduser_ins` (`idusuario`),
+  ADD KEY `fk_idevaluacion_ins` (`idevaluacion`);
 
 --
 -- Indices de la tabla `preguntas`
@@ -399,25 +493,31 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `alternativas`
 --
 ALTER TABLE `alternativas`
-  MODIFY `idalternativa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idalternativa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT de la tabla `cursos`
+--
+ALTER TABLE `cursos`
+  MODIFY `idcurso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `evaluaciones`
 --
 ALTER TABLE `evaluaciones`
-  MODIFY `idevaluacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `idevaluacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `inscritos`
 --
 ALTER TABLE `inscritos`
-  MODIFY `idinscrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idinscrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `preguntas`
 --
 ALTER TABLE `preguntas`
-  MODIFY `idpregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `idpregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -445,13 +545,13 @@ ALTER TABLE `alternativas`
 -- Filtros para la tabla `evaluaciones`
 --
 ALTER TABLE `evaluaciones`
-  ADD CONSTRAINT `fk_idinscrito_eval` FOREIGN KEY (`idinscrito`) REFERENCES `inscritos` (`idinscrito`),
-  ADD CONSTRAINT `fk_idusuario_eval` FOREIGN KEY (`idusuario`) REFERENCES `usuarios` (`idusuario`);
+  ADD CONSTRAINT `fk_idcurso_eval` FOREIGN KEY (`idcurso`) REFERENCES `cursos` (`idcurso`);
 
 --
 -- Filtros para la tabla `inscritos`
 --
 ALTER TABLE `inscritos`
+  ADD CONSTRAINT `fk_idevaluacion_ins` FOREIGN KEY (`idevaluacion`) REFERENCES `evaluaciones` (`idevaluacion`),
   ADD CONSTRAINT `fk_iduser_ins` FOREIGN KEY (`idusuario`) REFERENCES `usuarios` (`idusuario`);
 
 --
