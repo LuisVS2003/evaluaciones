@@ -13,8 +13,6 @@ $permisos = [
 if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
   header("Location: ../index.php");
   exit();
-
-  
 }
 
 
@@ -97,9 +95,15 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
 
   $permitido = false;
   foreach ($permisos[$_SESSION["idrol"]] as $opcion) {
-      if ($opcion . ".php" == $vistaActual)  {
-          $permitido = true;
-      }
+    if ($opcion . ".php" == $vistaActual)  {
+        $permitido = true;
+    }
+  }
+
+  if ($_SESSION["idrol"] == 1 && !$permitido) {
+    // Redirigir a indexdocente.php si el usuario con rol 1 intenta acceder a una página no permitida
+    header("Location: indexdocente.php");
+    exit();
   }
 
   if (!$permitido) {
