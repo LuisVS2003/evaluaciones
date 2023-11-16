@@ -15,30 +15,17 @@
 </head>
 
 <body>
-    <div class="container mt-3">
-        <div class="card">
+  <div class="container mt-3">
+      <div class="card">
         <div class="card-header bg-dark text-light">
             <h1>
             Tus evaluaciones
             </h1>
         </div>
-        <div class="card-body">
-        <table class="table table-hover" id="form-evaluaciones">
-          <thead>
-            <tr>
-              <th>N°</th>
-              <th>Evaluación</th>
-              <th>Fecha Inicio</th>
-              <th>Fecha Fin</th>
-              <th>Rendir Examen</th>
-            </tr>
-          </thead>
-          <tbody>
-
-          </tbody>
-        </table>
+        <div class="card-body" id="form-evaluaciones">
+          
         </div>
-        </div> 
+      </div> 
    </div>
 
    <?php
@@ -69,7 +56,7 @@
         return document.querySelector(id);
         }
 
-        const listar = $("#form-evaluaciones tbody");
+        const listar = $("#form-evaluaciones");
 
         function listarEvaluaciones(){
             const parametros = new FormData();
@@ -90,15 +77,14 @@
                 datos.forEach(registro => {
                     let nuevaFila = '';
                     nuevaFila = `
-                    <tr>
-                        <td>${nFila}</td>
-                        <td>${registro.nombre_evaluacion}</td>
-                        <td>${registro.fechainicio}</td>
-                        <td>${registro.fechafin}</td>
-                        <td>
+                    <div class="card mt-3">
+                      <h5 class="card-header">${registro.nombre_evaluacion}</h5>
+                      <div class="card-body">
+                        <h5 class="card-title">Autoevaluacion ${nFila}</h5>
+                        <p class="card-text">Antes de revisar los materiales de la Tarea, revisa el contenido del Manual del Curso, para poder desarrollar las actividades.</p>
                         <a href="./listapreguntas.php?id=${registro.idevaluacion}" class="btn btn-primary">Rendir</a>
-                        </td>
-                    </tr>
+                      </div>
+                    </div>
                     `;
                     listar.innerHTML += nuevaFila;
                     nFila++; 
