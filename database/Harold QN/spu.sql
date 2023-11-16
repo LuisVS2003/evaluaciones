@@ -111,7 +111,7 @@ BEGIN
     WHERE r.idrol = 2 AND u.idusuario = p_idusuario AND c.idcurso = p_idcurso;
 END $$
 select * from cursos;
-call spu_listar_evaluaciones_x_curso(3,1)
+call spu_listar_evaluaciones_x_curso(2,3)
 
 select * from  evaluaciones;
 
@@ -122,4 +122,8 @@ select * from evaluaciones;
 select * from inscritos;
 
 select * from preguntas;
+
+select * from evaluaciones;
+
+delete from inscritos where idinscrito = 8
 
