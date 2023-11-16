@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-11-2023 a las 05:46:45
+-- Tiempo de generación: 16-11-2023 a las 06:35:36
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.0.28
 
@@ -215,6 +215,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_rendir_poruser` (IN `p_idusuari
         u.nombres,
         u.apellidos,
         c.curso,
+        c.idcurso,
         e.fechainicio,
         e.fechafin,
         i.idevaluacion

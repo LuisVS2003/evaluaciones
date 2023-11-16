@@ -167,6 +167,7 @@ $id = $arregloURL[1];*/
         
       })
       preguntasAlternativas();
+      //Por terminar - window.addEventListener('beforeunload', notificar('info','a','b',3));
     })
 
   </script>
