@@ -97,5 +97,23 @@ class Evaluacion extends Conexion{
     }
   }
 
+  // ---------------------------------------------------------
+  //Harold
+  public function listar_evaluaciones_x_curso($datos = []){
+    try {
+      $consulta = $this->conexion->prepare("CALL spu_listar_evaluaciones_x_curso(?,?)");
+      $consulta->execute(
+        array(
+          $datos['idusuario'],
+          $datos['idcurso']
+        )
+      );
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+  //---------------------------------------------------------
+
 }
 

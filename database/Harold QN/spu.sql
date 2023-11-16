@@ -56,3 +56,63 @@ END $$
 
 select * from alternativas;
 
+use evaluaciones;
+-- --------------------------------------------
+SELECT u.nombres, u.apellidos, c.curso, e.fechainicio, e.fechafin
+FROM usuarios u
+JOIN roles r ON u.idrol = r.idrol
+JOIN inscritos i ON u.idusuario = i.idusuario
+JOIN evaluaciones e ON i.idevaluacion = e.idevaluacion
+JOIN cursos c ON e.idcurso = c.idcurso
+WHERE r.idrol = 2;
+-------------------------------------------------------
+CALL spu_evaluaciones_estudiante_listar(2);
+
+select * from evaluaciones;
+
+
+DELIMITER $$
+CREATE PROCEDURE spu_rendir_poruser(IN p_idusuario INT)
+BEGIN
+    SELECT 
+        u.nombres,
+        c.idcurso,
+        c.curso,
+        e.fechainicio
+    FROM usuarios u
+    JOIN roles r ON u.idrol = r.idrol
+    LEFT JOIN inscritos i ON u.idusuario = i.idusuario
+    LEFT JOIN evaluaciones e ON i.idevaluacion = e.idevaluacion
+    LEFT JOIN cursos c ON e.idcurso = c.idcurso
+    WHERE r.idrol = 2 AND u.idusuario = p_idusuario
+    GROUP BY u.nombres, c.curso;
+END $$
+
+call spu_rendir_poruser(2);
+
+
+-- PROCEDIMIENTO PARA LISTAR EVALAUCIONES POR EL CURSO Y EL USUARIO
+DELIMITER $$
+CREATE PROCEDURE spu_listar_evaluaciones_x_curso(IN p_idusuario INT, IN p_idcurso INT)
+BEGIN
+    SELECT 
+        c.curso,
+        e.nombre_evaluacion,
+        e.fechainicio,
+        e.fechafin,
+        i.idevaluacion
+    FROM usuarios u
+    JOIN roles r ON u.idrol = r.idrol
+    LEFT JOIN inscritos i ON u.idusuario = i.idusuario
+    LEFT JOIN evaluaciones e ON i.idevaluacion = e.idevaluacion
+    LEFT JOIN cursos c ON e.idcurso = c.idcurso
+    WHERE r.idrol = 2 AND u.idusuario = p_idusuario AND c.idcurso = p_idcurso;
+END $$
+select * from cursos;
+call spu_listar_evaluaciones_x_curso(2,3)
+
+select * from  evaluaciones;
+
+
+select * from usuarios;
+

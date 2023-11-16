@@ -52,5 +52,15 @@ if (isset($_POST['operacion'])) {
 
       echo json_encode($evaluacion->alternativasRegistrar($datos));
       break;
+      // --------------------------------------------------------------
+      //Harold
+    case 'listar_evaluaciones_x_curso':
+      $datos = [
+        'idusuario' => $_POST['idusuario'],
+        'idcurso' => $_POST['idcurso']
+      ];
+      echo json_encode($evaluacion->listar_evaluaciones_x_curso($datos));
+      break;
+      //------------------------------------------------------------------
   }
 }

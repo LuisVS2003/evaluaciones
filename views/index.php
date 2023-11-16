@@ -77,7 +77,7 @@ if (isset($_SESSION['idusuario'])) {
                       <div class="card-body">
                         <h5 class="card-title">${element.curso}</h5>
                         <div class="d-grid">
-                          <a href="./listapreguntas.php?id=${element.idevaluacion}" class="btn btn-sm btn-primary">Ver evaluaciones</a>
+                          <a href="./listar-evaluaciones.php?id=${element.idcurso}" class="btn btn-sm btn-primary">Ver evaluaciones</a>
                         </div>
                       </div>
                     </div>
