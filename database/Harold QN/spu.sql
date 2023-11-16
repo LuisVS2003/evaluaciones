@@ -72,13 +72,14 @@ select * from evaluaciones;
 
 
 DELIMITER $$
-CREATE PROCEDURE spu_rendir_poruser(IN p_idusuario INT)
+create PROCEDURE spu_rendir_poruser(IN p_idusuario INT)
 BEGIN
     SELECT 
         u.nombres,
         c.idcurso,
         c.curso,
-        e.fechainicio
+        e.fechainicio,
+        u.idusuario
     FROM usuarios u
     JOIN roles r ON u.idrol = r.idrol
     LEFT JOIN inscritos i ON u.idusuario = i.idusuario
@@ -90,17 +91,18 @@ END $$
 
 call spu_rendir_poruser(2);
 
-
+-- --------------------------------------------------------------------------------------
 -- PROCEDIMIENTO PARA LISTAR EVALAUCIONES POR EL CURSO Y EL USUARIO
 DELIMITER $$
-CREATE PROCEDURE spu_listar_evaluaciones_x_curso(IN p_idusuario INT, IN p_idcurso INT)
+create PROCEDURE spu_listar_evaluaciones_x_curso(IN p_idusuario INT, IN p_idcurso INT)
 BEGIN
     SELECT 
         c.curso,
         e.nombre_evaluacion,
         e.fechainicio,
         e.fechafin,
-        i.idevaluacion
+        i.idevaluacion,
+        i.idusuario
     FROM usuarios u
     JOIN roles r ON u.idrol = r.idrol
     LEFT JOIN inscritos i ON u.idusuario = i.idusuario
@@ -109,10 +111,15 @@ BEGIN
     WHERE r.idrol = 2 AND u.idusuario = p_idusuario AND c.idcurso = p_idcurso;
 END $$
 select * from cursos;
-call spu_listar_evaluaciones_x_curso(2,3)
+call spu_listar_evaluaciones_x_curso(3,1)
 
 select * from  evaluaciones;
 
-
+use evaluaciones;
+select * from cursos;
 select * from usuarios;
+select * from evaluaciones;
+select * from inscritos;
+
+select * from preguntas;
 

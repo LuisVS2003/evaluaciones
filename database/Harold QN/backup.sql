@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-11-2023 a las 18:51:30
+-- Tiempo de generación: 16-11-2023 a las 18:59:30
 -- Versión del servidor: 10.4.24-MariaDB
 -- Versión de PHP: 8.1.6
 
@@ -79,11 +79,13 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_estudiantes_listar` ()   BEGIN
 	SELECT
-		USR.idusuario, INS.idevaluacion,
-        CONCAT(USR.apellidos, ", ", USR.nombres) 'nombre_completo'
-    FROM usuarios USR
+    USR.idusuario,
+    MIN(INS.idevaluacion) AS idevaluacion,
+    CONCAT(USR.apellidos, ", ", USR.nombres) AS nombre_completo
+	FROM usuarios USR
 	INNER JOIN inscritos INS ON INS.idusuario = USR.idusuario
-    WHERE idrol = 2 AND USR.inactive_at IS NULL;
+	WHERE USR.idrol = 2 AND USR.inactive_at IS NULL
+	GROUP BY USR.idusuario, USR.apellidos, USR.nombres;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_estudiante_listar` (IN `_idusuario` INT)   BEGIN
@@ -201,6 +203,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_login` (IN `_correo` VARCHAR(90
         usu.claveacceso
 	FROM usuarios usu INNER JOIN roles r ON usu.idrol = r.idrol
     WHERE correo = _correo AND usu.inactive_at IS NULL;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_obtener_evaluaciones_curso` (IN `_campo` INT)   BEGIN
+	SELECT DISTINCT u.nombres, u.apellidos, e.nombre_evaluacion, e.idcurso
+	FROM usuarios u
+	JOIN inscritos i ON u.idusuario = i.idusuario
+	JOIN evaluaciones e ON i.idevaluacion = e.idevaluacion
+	WHERE e.idcurso = _campo;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_preguntas_listar` ()   BEGIN
@@ -413,7 +423,11 @@ INSERT INTO `inscritos` (`idinscrito`, `idusuario`, `idevaluacion`, `fechainicio
 (3, 3, 2, '2023-11-14 09:45:00', '2023-11-17 17:45:00'),
 (4, 1, 3, '2023-11-15 13:15:00', '2023-11-18 22:15:00'),
 (5, 2, 3, '2023-11-16 14:45:00', '2023-11-19 23:45:00'),
-(6, 2, 5, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+(6, 2, 3, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(7, 2, 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(8, 2, 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(9, 2, 7, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(10, 2, 8, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -582,7 +596,7 @@ ALTER TABLE `evaluaciones`
 -- AUTO_INCREMENT de la tabla `inscritos`
 --
 ALTER TABLE `inscritos`
-  MODIFY `idinscrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idinscrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `preguntas`
