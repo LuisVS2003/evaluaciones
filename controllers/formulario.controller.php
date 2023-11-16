@@ -34,8 +34,11 @@ if (isset($_POST['operacion'])){
         echo json_encode($evaluacion->listarPregunta());
         break;
 
-    case 'cursosListar':
-        echo json_encode($evaluacion->cursosListar());
-        break;
+    case 'listarCurso':
+      $datos = [
+        'idusuario' => $_POST['idusuario']
+      ];
+      echo json_encode($evaluacion->listarCurso($datos));
+      break;
   }
 }

@@ -24,7 +24,7 @@ function notificar(icon,titulo, mensaje, tiempo){
       text: mensaje,
       confirmButtonColor: '#2E86C1',
       confirmButtonText: 'Aceptar',
-      footer: 'App Store - 2023',
+      footer: 'Sistema Evaluaciones - 2023',
       timerProgressBar: true,
       timer: (tiempo * 1000)
     })
@@ -41,7 +41,7 @@ function notificar(icon,titulo, mensaje, tiempo){
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#2E86C1',
       cancelButtonColor: '#797D7F',
-      footer: 'App Store - 2023'
+      footer: 'Sistema Evaluaciones  - 2023'
     }).then((result) => {
       return result;
     });

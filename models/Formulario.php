@@ -71,10 +71,14 @@ class Evaluacion extends Conexion{
     }
   }
 
-  public function cursosListar(){
+  public function listarCurso($datos = []){
     try {
-      $consulta = $this->evaluacion->prepare("CALL spu_cursos_listar()");
-      $consulta->execute();
+      $consulta = $this->evaluacion->prepare("CALL spu_rendir_poruser(?)");
+      $consulta->execute(
+        array(
+          $datos['idusuario']
+        )
+      );
       return $consulta->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       die($e->getMessage());

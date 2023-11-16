@@ -1,13 +1,23 @@
 <?php 
  require_once "./navbar.php";
 
+
+
+// Verifica si el usuario ha iniciado sesión y tiene un idusuario
+if (isset($_SESSION['idusuario'])) {
+    $idUsuarioSesion = $_SESSION['idusuario'];
+} else {
+    // Si no hay un idusuario en la sesión, redirige al usuario al inicio de sesión
+    header("Location:borra.php");
+    exit();
+}
 ?>
 
   <div class="container mt-3">
     <div class="card">
       <div class="card-header bg-dark text-light">
         <h1>
-          Evaluaciones - Senati 2023
+          Evaluaciones 2023
         </h1>
       </div>
       <div class="card-body">
@@ -42,7 +52,8 @@
 
       function listarEvaluaciones(){
         const parametros = new FormData();
-        parametros.append("operacion","alonso aca")
+        parametros.append("operacion","listarCurso");
+        parametros.append("idusuario",<?php echo $idUsuarioSesion; ?>)
 
         fetch(`../controllers/formulario.controller.php`,{
           method: "POST",
@@ -51,7 +62,30 @@
           .then(respuesta =>respuesta.json())
           .then(datosRecibidos =>{
             //para verufucar si los datos llegaron
-            console.log();
+            console.log(datosRecibidos);
+            if(datosRecibidos.length == 0){
+              $("#card-evaluaciones").innerHTML = `<h1>Pronto tendremos más novedades</h1>`; 
+              console.log("hol");
+            }else{
+              $("#card-evaluaciones").innerHTML = ``;
+              datosRecibidos.forEach(element => {
+                //Renderizado
+                const nuevoItem = `
+                  <div class="col-3 mb-3">
+                    <div class="card" style="width: 100%;" heigh="100%">
+                      <img src="../images/icon-web.png" class="card-img-top" alt="" width="100%" height="300px">
+                      <div class="card-body">
+                        <h5 class="card-title">${element.curso}</h5>
+                        <div class="d-grid">
+                          <a href="#" data-idevaluacion="${element.idevaluacion}" class="btn btn-sm btn-primary">Ver evaluaciones</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  `;
+                  $("#card-evaluaciones").innerHTML += nuevoItem;
+              });
+            }
           })
           .catch(e=>{
             console.error(e)
