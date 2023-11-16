@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-11-2023 a las 18:51:44
+-- Tiempo de generación: 16-11-2023 a las 09:52:13
 -- Versión del servidor: 10.4.24-MariaDB
 -- Versión de PHP: 8.1.6
 
@@ -159,6 +159,36 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_inscritos_registrar` (IN `_idus
     SELECT @@last_insert_id 'idinscrito';
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_listar_cursos` ()   BEGIN
+	SELECT 
+    u.nombres,
+    u.apellidos,
+    c.curso,
+    e.fechainicio,
+    e.fechafin
+	FROM usuarios u
+	JOIN roles r ON u.idrol = r.idrol
+	JOIN inscritos i ON u.idusuario = i.idusuario
+	JOIN evaluaciones e ON i.idevaluacion = e.idevaluacion
+	JOIN cursos c ON e.idcurso = c.idcurso
+	WHERE r.idrol = 2;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_listar_evaluaciones_x_curso` (IN `p_idusuario` INT, IN `p_idcurso` INT)   BEGIN
+    SELECT 
+        c.curso,
+        e.nombre_evaluacion,
+        e.fechainicio,
+        e.fechafin,
+        i.idevaluacion
+    FROM usuarios u
+    JOIN roles r ON u.idrol = r.idrol
+    LEFT JOIN inscritos i ON u.idusuario = i.idusuario
+    LEFT JOIN evaluaciones e ON i.idevaluacion = e.idevaluacion
+    LEFT JOIN cursos c ON e.idcurso = c.idcurso
+    WHERE r.idrol = 2 AND u.idusuario = p_idusuario AND c.idcurso = p_idcurso;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_login` (IN `_correo` VARCHAR(90))   BEGIN
 	SELECT 
 		usu.idusuario,
@@ -193,6 +223,21 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_registra_token` (IN `_correo` V
     token = _token,
     fechatoken = NOW()
     WHERE _correo = correo;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_rendir_poruser` (IN `p_idusuario` INT)   BEGIN
+    SELECT 
+        u.nombres,
+        c.idcurso,
+        c.curso,
+        e.fechainicio
+    FROM usuarios u
+    JOIN roles r ON u.idrol = r.idrol
+    LEFT JOIN inscritos i ON u.idusuario = i.idusuario
+    LEFT JOIN evaluaciones e ON i.idevaluacion = e.idevaluacion
+    LEFT JOIN cursos c ON e.idcurso = c.idcurso
+    WHERE r.idrol = 2 AND u.idusuario = p_idusuario
+    GROUP BY u.nombres, c.curso;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_roles_listar` ()   BEGIN
@@ -365,7 +410,8 @@ INSERT INTO `inscritos` (`idinscrito`, `idusuario`, `idevaluacion`, `fechainicio
 (2, 2, 1, '2023-11-13 11:30:00', '2023-11-16 20:30:00'),
 (3, 3, 2, '2023-11-14 09:45:00', '2023-11-17 17:45:00'),
 (4, 1, 3, '2023-11-15 13:15:00', '2023-11-18 22:15:00'),
-(5, 2, 3, '2023-11-16 14:45:00', '2023-11-19 23:45:00');
+(5, 2, 3, '2023-11-16 14:45:00', '2023-11-19 23:45:00'),
+(6, 2, 5, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -534,7 +580,7 @@ ALTER TABLE `evaluaciones`
 -- AUTO_INCREMENT de la tabla `inscritos`
 --
 ALTER TABLE `inscritos`
-  MODIFY `idinscrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `idinscrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `preguntas`
