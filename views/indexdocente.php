@@ -1,8 +1,6 @@
 <?php 
  require_once "./navbar.php";
 
-
-
 ?>
 
   <div class="container mt-3">
