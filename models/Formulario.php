@@ -85,5 +85,30 @@ class Evaluacion extends Conexion{
     }
   }
 
+  public function cursoCard($datos = []){
+    try {
+      $consulta = $this->evaluacion->prepare("CALL spu_cursos_listar()");
+      $consulta->execute();
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
+    catch(Exception $e){
+      die($e->getMessage()); //Desarrollo > Producción
+    }
+  }
+
+  public function cursoEvaluaciones($datos = []){
+    try {
+      $consulta = $this->evaluacion->prepare("CALL spu_obtener_evaluaciones_curso(?)");
+      $consulta->execute(
+        array(
+          $datos['campo']
+        )
+      );
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
 }
 

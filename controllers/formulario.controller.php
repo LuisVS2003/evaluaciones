@@ -40,5 +40,16 @@ if (isset($_POST['operacion'])){
       ];
       echo json_encode($evaluacion->listarCurso($datos));
       break;
+
+    case 'cursoCard':
+      echo json_encode($evaluacion->cursoCard());
+      break;
+
+    case 'cursoEvaluacion':
+      $datos = [
+        'campo' => $_POST['campo']
+      ];
+      echo json_encode($evaluacion->cursoEvaluaciones($datos));
+      break;
   }
 }
