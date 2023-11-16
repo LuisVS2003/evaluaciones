@@ -20,6 +20,8 @@
         <div class="card-header bg-dark text-light">
             <h1>
             Tus evaluaciones
+            <a href="evaluacion-registrar.php" class="btn btn-success float-end">Agregar Evaluación</a>
+
             </h1>
         </div>
         <div class="card-body">
