@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-11-2023 a las 16:48:04
+-- Tiempo de generación: 16-11-2023 a las 18:51:12
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.0.28
 
@@ -79,11 +79,13 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_estudiantes_listar` ()   BEGIN
 	SELECT
-		USR.idusuario, INS.idevaluacion,
-        CONCAT(USR.apellidos, ", ", USR.nombres) 'nombre_completo'
-    FROM usuarios USR
+    USR.idusuario,
+    MIN(INS.idevaluacion) AS idevaluacion,
+    CONCAT(USR.apellidos, ", ", USR.nombres) AS nombre_completo
+	FROM usuarios USR
 	INNER JOIN inscritos INS ON INS.idusuario = USR.idusuario
-    WHERE idrol = 2 AND USR.inactive_at IS NULL;
+	WHERE USR.idrol = 2 AND USR.inactive_at IS NULL
+	GROUP BY USR.idusuario, USR.apellidos, USR.nombres;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_estudiante_listar` (IN `_idusuario` INT)   BEGIN
