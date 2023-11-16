@@ -30,6 +30,7 @@
               <th>Apellidos</th>
               <th>Nombres</th>
               <th>Nombre de Evaluación</th>
+              <th>Estado de Evaluación</th>
             </tr>
           </thead>
           <tbody>
@@ -93,9 +94,8 @@
                         <td>${registro.apellidos}</td>
                         <td>${registro.nombres}</td>
                         <td>${registro.nombre_evaluacion}</td>
-                        <td>
-                        <a href="./listapreguntas.php?id=${registro.idevaluacion}" class="btn btn-primary">Rendir</a>
-                        </td>
+                        <td>Aún falta eso</td>
+                        
                     </tr>
                     `;
                     listar.innerHTML += nuevaFila;
