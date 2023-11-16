@@ -110,5 +110,15 @@ class Evaluacion extends Conexion{
     }
   }
 
+  public function cursosListar(){
+    try {
+      $consulta = $this->evaluacion->prepare("CALL spu_cursos_listar()");
+      $consulta->execute();
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
 }
 

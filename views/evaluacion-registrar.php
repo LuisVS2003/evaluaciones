@@ -235,7 +235,6 @@
 
 
       $("#form-examen").addEventListener('submit', (event) => {
-        
         event.preventDefault();
         if (confirm("¿Estás seguro de registrar esta evaluación?")) {
           evaluacionRegistrar();
@@ -249,6 +248,7 @@
         let nPreguntas = event.target.value;
         preguntasRenderEntrada(nPreguntas);
       });
+      
       
       getCursos();
       preguntasRenderEntrada($("#npreguntas").value);

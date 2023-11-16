@@ -39,14 +39,21 @@ CREATE TABLE usuarios(
 CREATE TABLE evaluaciones(
 	idevaluacion	INT PRIMARY KEY AUTO_INCREMENT,
     idcurso			INT				NOT NULL,
+    idusuario		INT				NOT NULL,
     nombre_evaluacion	VARCHAR(90)	NOT NULL,
     fechainicio		DATETIME		NULL,
     fechafin		DATETIME		NULL,
     create_at		DATETIME		DEFAULT NOW(),
     update_at		DATETIME		NULL,
     inactive_at		DATETIME		NULL,
-    CONSTRAINT	fk_idcurso_eval	FOREIGN KEY (idcurso)	REFERENCES cursos(idcurso)
+    CONSTRAINT	fk_idcurso_eval	FOREIGN KEY (idcurso)	REFERENCES cursos(idcurso),
+    CONSTRAINT	fk_iddocente_eval FOREIGN KEY (idusuario)	REFERENCES usuarios(idususario)
 )ENGINE = INNODB;
+
+-- NO HACER ESTO, POR EL MOMENTO
+-- alter table evaluaciones add column idusuario int not null;
+-- update evaluaciones set idusuario = 1;
+-- alter table evaluaciones add constraint fk_iddocente_eval FOREIGN KEY (idusuario)	REFERENCES usuarios(idusuario);
 
 
 CREATE TABLE inscritos(
