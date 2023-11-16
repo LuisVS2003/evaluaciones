@@ -69,15 +69,22 @@ if (isset($_SESSION['idusuario'])) {
             }else{
               $("#card-evaluaciones").innerHTML = ``;
               datosRecibidos.forEach(element => {
+                const p = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
+
+                const numeroAleatorio = Math.floor(Math.random() * 5 )+ 1;
+                const rutaImagen = `../images/cursos/${numeroAleatorio}.jpg`;
                 //Renderizado
                 const nuevoItem = `
-                  <div class="col-3 mb-3">
+                  <div class="col-4 mb-3">
                     <div class="card" style="width: 100%;" heigh="100%">
-                      <img src="../images/icon-web.png" class="card-img-top" alt="" width="100%" height="300px">
+                      <img src="${rutaImagen}" class="card-img-top" alt="" width="100%" height="300px">
                       <div class="card-body">
+                        <p>2023-PIAD-${p}-TEC-NRC_...</p>
                         <h5 class="card-title">${element.curso}</h5>
+                        <p>Abrir</p>
+                        <hr>
                         <div class="d-grid">
-                          <a href="./listar-evaluaciones.php?id=${element.idcurso}" class="btn btn-sm btn-primary">Ver evaluaciones</a>
+                          <a href="./listar-evaluaciones.php?id=${element.idcurso}&idu=${element.idusuario}" class="btn btn-sm btn-primary">Ver evaluaciones</a>
                         </div>
                       </div>
                     </div>
