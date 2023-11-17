@@ -64,7 +64,20 @@ BEGIN
     WHERE idrol = 2 AND USR.inactive_at IS NULL;
 END $$
 
-SELECT * FROM evaluaciones;
-SELECT * FROM preguntas;
-SELECT * FROM alternativas;
-SELECT * FROM usuarios;
+-- ##########################################################################################################################
+DELIMITER $$
+CREATE PROCEDURE spu_evaluaciones_docente_listar(
+	IN _iddocente	INT,
+    IN _idcurso		INT
+)
+BEGIN
+	SELECT
+		EVA.idevaluacion, EVA.idcurso, EVA.idusuario 'iddocente',
+        EVA.nombre_evaluacion, EVA.fechainicio, EVA.fechafin
+    FROM evaluaciones EVA
+    INNER JOIN usuarios USR ON USR.idusuario = EVA.idusuario
+    INNER JOIN cursos CUR ON CUR.idcurso = EVA.idcurso
+    WHERE EVA.idusuario = _iddocente AND EVA.idcurso = _idcurso;
+END $$
+
+-- CALL spu_evaluaciones_docente_listar(1,4);

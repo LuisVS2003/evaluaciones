@@ -35,13 +35,15 @@ CREATE PROCEDURE spu_evaluaciones_listar()
 BEGIN
 	SELECT 
 		EVA.idevaluacion, CUR.curso,
-        nombre_evaluacion
+        nombre_evaluacion,
+        CONCAT(USR.apellidos, ', ', USR.nombres )'docente'
 	FROM evaluaciones EVA
 		INNER JOIN cursos CUR ON CUR.idcurso = EVA.idcurso
+        INNER JOIN usuarios USR ON USR.idusuario = EVA.idusuario
 	WHERE EVA.inactive_at IS NULL;
 END $$
 
--- CALL spu_evaluacion_listar();
+-- CALL spu_evaluaciones_listar();
 
 -- ##########################################################################################################################
 DELIMITER $$

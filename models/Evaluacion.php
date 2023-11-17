@@ -98,6 +98,23 @@ class Evaluacion extends Conexion{
     }
   }
 
+  function evaluacionesDocente($datos = []){
+    try {
+      $consulta = $this->conexion->prepare("CALL spu_evaluaciones_docente_listar(?,?)");
+      $consulta->execute(
+        array(
+          $datos['iddocente'],
+          $datos['idcurso']
+        )
+      );
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+
+
   // ---------------------------------------------------------
   //Harold
   public function listar_evaluaciones_x_curso($datos = []){
