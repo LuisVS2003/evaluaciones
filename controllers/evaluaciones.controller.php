@@ -26,6 +26,7 @@ if (isset($_POST['operacion'])) {
     case 'evaluacionRegistrar':
       $datos = [
         'idcurso'           => $_POST['idcurso'],
+        'idusuario'         => $_POST['idusuario'],
         'nombre_evaluacion' => $_POST['nombre_evaluacion'],
         'fechainicio'       => $_POST['fechainicio'],
         'fechafin'          => $_POST['fechafin']

@@ -1,5 +1,6 @@
 <?php
   require_once './navbar.php';
+
 ?>
 
 
@@ -207,6 +208,7 @@
         const parametros = new FormData();
         parametros.append('operacion', 'evaluacionRegistrar');
         parametros.append('idcurso', $('#list-curso').value);
+        parametros.append('idusuario', <?= $_SESSION['idrol']?>);
         parametros.append('nombre_evaluacion', $('#nom-evaluacion').value);
         parametros.append('fechainicio', $('#inicio-evaluacion').value);
         parametros.append('fechafin', $('#fin-evaluacion').value);
@@ -291,7 +293,6 @@
         if (tipo === 'checkbox' && marcado) {
           const pregunta = objetivo.closest('.row.mb-3');
           const checkboxes = pregunta.querySelectorAll('input[type="checkbox"]');
-          console.log(checkboxes);
           // Remover el atributo "required" de los checkboxes del grupo de esa pregunta
           checkboxes.forEach(checkbox => {
             if (checkbox !== objetivo) {

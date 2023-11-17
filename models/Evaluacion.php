@@ -51,10 +51,11 @@ class Evaluacion extends Conexion{
   public function evaluacionRegistrar($datos = []){
     try {
       //code...
-      $consulta = $this->conexion->prepare("CALL spu_evaluaciones_registrar(?,?,?,?)");
+      $consulta = $this->conexion->prepare("CALL spu_evaluaciones_registrar(?,?,?,?,?)");
       $consulta->execute(
         array(
           $datos['idcurso'],
+          $datos['idusuario'],
           $datos['nombre_evaluacion'],
           $datos['fechainicio'],
           $datos['fechafin']

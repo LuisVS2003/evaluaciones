@@ -47,7 +47,9 @@ BEGIN
 END $$
 
 SELECT * FROM usuarios;
-SELECT * FROM inscritos;
+SELECT * FROM evaluaciones;
+select * from preguntas;
+select * from alternativas
 -- CALL spu_evaluaciones_preguntas_listar(3)
 
 -- ##########################################################################################################################
@@ -65,3 +67,4 @@ END $$
 SELECT * FROM evaluaciones;
 SELECT * FROM preguntas;
 SELECT * FROM alternativas;
+SELECT * FROM usuarios;

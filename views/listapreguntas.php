@@ -84,7 +84,6 @@ $id = $arregloURL[1];*/
         })
           .then(respuesta => respuesta.json())
           .then(datos => {
-            console.log(datos);
             datos.forEach(registro => {
               if (registro.escorrecto == 'S') {
                 altCorrecto.push(registro.idalternativa);                
@@ -106,7 +105,6 @@ $id = $arregloURL[1];*/
           }
           preguntasAgrupadas[pregunta].push({ alternativa, idalternativa });
         });
-        console.log(preguntasAgrupadas);
         for (const pregunta in preguntasAgrupadas) {
           const alternativas = preguntasAgrupadas[pregunta];
           const preguntaHTML = `<div>
@@ -139,18 +137,14 @@ $id = $arregloURL[1];*/
           })
         })
         contador *= 4
-        //alert("Tu puntaje es: " + contador);
       }
 
-      // console.log(preguntasAgrupadas);
 
 
 
       $("#form-evaluacion").addEventListener('submit', (event) => {
         event.preventDefault();
-        // if (confirm('¿Desea enviar el examen?')) {
-        //   examenRevisar();
-        // }
+
         mostrarPregunta("Examen", "¿Está seguro de enviar el examen?").then((result) => { 
             if (result.isConfirmed) {
               examenRevisar();
@@ -163,8 +157,6 @@ $id = $arregloURL[1];*/
             }
 
           });
-        
-        
       })
       preguntasAlternativas();
       //Por terminar - window.addEventListener('beforeunload', notificar('info','a','b',3));

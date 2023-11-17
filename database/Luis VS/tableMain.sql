@@ -50,10 +50,9 @@ CREATE TABLE evaluaciones(
     CONSTRAINT	fk_iddocente_eval FOREIGN KEY (idusuario)	REFERENCES usuarios(idususario)
 )ENGINE = INNODB;
 
--- NO HACER ESTO, POR EL MOMENTO
 -- alter table evaluaciones add column idusuario int not null;
 -- update evaluaciones set idusuario = 1;
--- alter table evaluaciones add constraint fk_iddocente_eval FOREIGN KEY (idusuario)	REFERENCES usuarios(idusuario);
+-- alter table evaluaciones add constraint fk_iddocente_eval FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario);
 
 
 CREATE TABLE inscritos(
