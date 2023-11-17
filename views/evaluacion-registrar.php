@@ -2,6 +2,8 @@
   require_once './navbar.php';
 ?>
 
+
+
 <!-- Estilos de Bootstrap -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
 
@@ -12,19 +14,10 @@
       <h3 class="my-3">Registrar Evaluación</h3>
       <form action="" id="form-examen">
         <div class="row">
-          <div class="col-9">
+          <div class="col-12">
             <div class="input-group mb-3">
               <label for="nom-evaluacion" class="input-group-text">Nombre de la Evaluación</label>
               <input type="text" class="form-control" id="nom-evaluacion" required>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="input-group mb-3">
-              <label class="input-group-text" for="npreguntas">Cantidad de Preguntas</label>
-              <select class="form-select" id="npreguntas" required>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </select>
             </div>
           </div>
         </div>
@@ -50,12 +43,18 @@
             </div>
           </div>
         </div>
-        <!-- Pregunta -->
+        <!-- Preguntas -->
         <div id="pregunta-render">
 
         </div>
-        <button class="btn btn-primary" type="submit">Guardar Examen</button>
+        <div class="row">
+          <button class="col-3 btn btn-success" type="submit">Guardar Evaluación</button>
+        </div>
       </form>
+      <div id="config">
+        <button class="col-3 btn btn-primary agregar">Agregar</button>
+        <button class="col-3 btn btn-danger quitar">Quitar</button>
+      </div>
     </div>
   </div>
 </div>
@@ -72,6 +71,9 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      let contador = 1;
+      let contadorRegistro = 1;
+
       function $(id) {
         return document.querySelector(id)
       }
@@ -98,51 +100,108 @@
           });
       }
 
-      function preguntasRenderEntrada(nPreguntas) {
-        $("#pregunta-render").innerHTML = '';
-
-        for(let i = 1; i <= nPreguntas; i++){
-          $("#pregunta-render").innerHTML += `
-          <div class="row">
-            <div class="col-9">
+      /**
+       * Renderiza las preguntas
+       * @param {number} i - Identificador - Index - N° Pregunta
+       */
+      function preguntasRenderEntrada(i) {
+        const pregunta = document.createElement('section');
+        pregunta.id = `pregunta-${i}`;
+        pregunta.dataset.idpregunta = `${i}`;
+        pregunta.innerHTML = `
+          <div class="row mb-3">
+            <div class="col-12">
               <div class="input-group mb-3">
                 <label for="nom-pregunta-${i}" class="input-group-text">Pregunta N° ${i}</label>
                 <input type="text" class="form-control" id="nom-pregunta-${i}" required>
               </div>
             </div>
-            <div class="col-3">
-              <div class="input-group mb-3">
-                <label class="input-group-text" for="alt-correcta-${i}">Opción Correcta</label>
-                <select class="form-select" id="alt-correcta-${i}" required>
-                  <option value="a">A</option>
-                  <option value="b">B</option>
-                  <option value="c">C</option>
-                </select>
-              </div>
+            <div class="col-12">
+            
+            <div class="row mx-5" id="alternativas-render-${i}"></div>
+            <div class="row justify-content-center">
+              <button data-addalternativa="${i}" class="col-3 btn btn-warning agregar-alt" type="button">Agregar Alternativa</button>
+              <button data-dropalternativa="${i}" class="col-3 btn btn-danger quitar-alt" type="button">Quitar Alternativa</button>
             </div>
           </div>
-          <div class="row mx-5" id="alternativas-render-${i}"></div>
-          `;
-          alternativasRenderEntrada(i);
+        `;
+
+        $("#pregunta-render").appendChild(pregunta);
+
+        alternativasRenderEntrada(i, 1);
+        alternativasRenderEntrada(i, 2);
+      }
+
+      function quitarUltimaPregunta() {
+        const ultimaPregunta = $("#pregunta-render").lastElementChild;
+        $("#pregunta-render").removeChild(ultimaPregunta);
+      }
+
+      $("#config").addEventListener('click', (event) => {
+        const objetivo = event.target.classList;
+        if (objetivo.contains('agregar')) {
+          preguntasRenderEntrada(contador);
+          contador++;
+        } else if (objetivo.contains('quitar') && contador > 2) {
+          quitarUltimaPregunta();
+          contador--;
+        }
+      });
+
+
+      /**
+       * Renderiza las alternativas para cada Pregunta
+       * @param {number} numPregunta    - Identificador del N° Pregunta
+       * @param {number} numAlternativa - Identificador del N° Alternativa - Cantidad de Alternativas
+       */
+      function alternativasRenderEntrada(numPregunta, numAlternativa) {
+        const section = document.createElement('div');
+        section.id = `alternativa-${numPregunta}-${numAlternativa}`;
+        section.innerHTML = `
+          <div class="row">
+            <div class="input-group mb-3">
+              <div class="input-group-text">
+                <input class="form-check-input mt-0" type="checkbox" data-escorrecto="nom-alternativa-${numPregunta}-${numAlternativa}" id="check-${numPregunta}-${numAlternativa}" required>
+              </div>
+              <input type="text" class="form-control" id="nom-alternativa-${numPregunta}-${numAlternativa}" required>
+            </div>
+          </div>
+        `;
+
+        const alternativasContainer = $(`#alternativas-render-${numPregunta}`);
+        alternativasContainer.appendChild(section);
+      }
+
+      function quitarUltimaAlternativa(i) {
+        const ultimaAlternativa = $(`#alternativas-render-${i}`).lastElementChild;
+        $(`#alternativas-render-${i}`).removeChild(ultimaAlternativa);
+      }
+
+      function quitarUltimaAlternativa(i) {
+        const nAlternativas = $(`#alternativas-render-${i}`);
+
+        if (nAlternativas.children.length > 2) {
+          const ultimaAlternativa = nAlternativas.lastElementChild;
+          nAlternativas.removeChild(ultimaAlternativa);
         }
       }
 
-      function alternativasRenderEntrada(idAlt){
-        $(`#alternativas-render-${idAlt}`).innerHTML += `
-            <div class="input-group mb-3">
-              <label for="alt-a-${idAlt}" class="input-group-text">Alternativa: A</label>
-              <input type="text" class="form-control" id="alt-a-${idAlt}" required>
-            </div>
-            <div class="input-group mb-3">
-              <label for="alt-b-${idAlt}" class="input-group-text">Alternativa: B</label>
-              <input type="text" class="form-control" id="alt-b-${idAlt}" required>
-            </div>
-            <div class="input-group mb-3">
-              <label for="alt-c-${idAlt}" class="input-group-text">Alternativa: C</label>
-              <input type="text" class="form-control" id="alt-c-${idAlt}" required>
-            </div>
-        `;
-      }
+
+      // Evento para las alterantivas - agregar y quitar
+      $("#pregunta-render").addEventListener('click', (event) => {
+        const objetivo = event.target;
+        const id = objetivo.dataset;
+        
+        if (objetivo.classList.contains('agregar-alt')) {
+          const nAlternativas = $(`#alternativas-render-${id.addalternativa}`).children.length + 1;
+          alternativasRenderEntrada(id.addalternativa, nAlternativas);
+        }
+        else if (objetivo.classList.contains('quitar-alt')) {
+          quitarUltimaAlternativa(id.dropalternativa);
+        }
+
+      });
+
 
       function evaluacionRegistrar(){
         const parametros = new FormData();
@@ -159,9 +218,11 @@
           .then(respuesta => respuesta.json())
           .then(datos => {
             const idEvaluacion = datos.idevaluacion;
-            console.log(datos);
+            alert("Se creo la evaluacion con el ID: " + idEvaluacion);
             
-            for(let i = 1; i <= $('#npreguntas').value; i++){
+            let cantidadPreguntas = $("#pregunta-render").children.length;
+            
+            for(let i = 1; i <= cantidadPreguntas; i++){
               preguntasRegistrar(idEvaluacion, i);
             }
           })
@@ -170,10 +231,10 @@
           });
       }
 
+      
+      function preguntasRegistrar(idevaluacion, numeroPregunta){
+        const nomPregunta = $(`#nom-pregunta-${numeroPregunta}`).value;
 
-      function preguntasRegistrar(idevaluacion, altNum){
-        const nomPregunta = $(`#nom-pregunta-${altNum}`).value;
-        console.log(nomPregunta);
         const parametros = new FormData();
         parametros.append('operacion', 'preguntasRegistrar');
         parametros.append('idevaluacion', idevaluacion);
@@ -185,32 +246,22 @@
         })
           .then(respuesta => respuesta.json())
           .then(datos => {
-            const altLetras = ['a', 'b', 'c'];
-            const altCorrecta = $(`#alt-correcta-${altNum}`).value;
-
-            for(let i = 1; i <= 3; i++){
-              if (altCorrecta == altLetras[i-1]){
-                alternativasRegistrar(datos.idpregunta, altLetras[i-1], altNum, 'S');
-                console.log(altLetras[i-1], i);
-
-              }
-              else{
-                alternativasRegistrar(datos.idpregunta, altLetras[i-1], altNum, 'N');
-                console.log(altLetras[i-1], i);
-
-              }
+            console.log(datos);
+            let numeroAlternativa = $(`#alternativas-render-${numeroPregunta}`).children.length;
+            for(let i = 1; i <= numeroAlternativa; i++){
+              const altCorrecta = ($(`#check-${numeroPregunta}-${i}`).checked) ? 'S' : 'N';
+              alternativasRegistrar(datos.idpregunta, i, altCorrecta, contadorRegistro);
             }
-
-            console.log(datos.idpregunta);
+            
+            contadorRegistro++;
           })
           .catch(e => {
             console.error(e);
           });
       }
 
-      // idPregunta, letra, idAlt, escorrecta
-      function alternativasRegistrar(idPregunta, letra, idAlt, escorrecto){
-        const alternativa = $(`#alt-${letra}-${idAlt}`).value;
+      function alternativasRegistrar(idPregunta, idAlt, escorrecto, nPregunta){
+        const alternativa = $(`#nom-alternativa-${nPregunta}-${idAlt}`).value;
         console.log(alternativa);
 
         const parametros = new FormData();
@@ -232,26 +283,47 @@
         });
       }
 
+      $("#form-examen").addEventListener('click', (event) => {
+        const objetivo = event.target;
+        const tipo = objetivo.type;
+        const marcado = objetivo.checked;
 
-
-      $("#form-examen").addEventListener('submit', (event) => {
-        event.preventDefault();
-        if (confirm("¿Estás seguro de registrar esta evaluación?")) {
-          evaluacionRegistrar();
-          $("#form-examen").reset();
-        } else {
-          alert("Evaluación no registrada");
+        if (tipo === 'checkbox' && marcado) {
+          const pregunta = objetivo.closest('.row.mb-3');
+          const checkboxes = pregunta.querySelectorAll('input[type="checkbox"]');
+          console.log(checkboxes);
+          // Remover el atributo "required" de los checkboxes del grupo de esa pregunta
+          checkboxes.forEach(checkbox => {
+            if (checkbox !== objetivo) {
+              checkbox.removeAttribute('required');
+            }
+          });
+        } else if (tipo === 'checkbox' && !marcado) {
+          const pregunta = objetivo.closest('.row.mb-3');
+          const checkboxes = pregunta.querySelectorAll('input[type="checkbox"]');
+          // Volver a agregar el atributo "required" a los checkboxes del grupo de esa pregunta
+          checkboxes.forEach(checkbox => {
+            if (checkbox !== objetivo) {
+              checkbox.setAttribute('required', '');
+            }
+          });
         }
       });
 
-      $("#npreguntas").addEventListener('change', (event) => {
-        let nPreguntas = event.target.value;
-        preguntasRenderEntrada(nPreguntas);
+      $("#form-examen").addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        if (confirm("¿Desea registrar la evaluación?")) {
+          evaluacionRegistrar();
+          
+        }
       });
-      
-      
+
+
+
       getCursos();
-      preguntasRenderEntrada($("#npreguntas").value);
+      preguntasRenderEntrada(contador);
+      contador++;
     })
   </script>
 

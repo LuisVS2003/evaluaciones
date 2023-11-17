@@ -84,7 +84,7 @@ $id = $arregloURL[1];*/
         })
           .then(respuesta => respuesta.json())
           .then(datos => {
-            // console.log(datos);
+            console.log(datos);
             datos.forEach(registro => {
               if (registro.escorrecto == 'S') {
                 altCorrecto.push(registro.idalternativa);                
