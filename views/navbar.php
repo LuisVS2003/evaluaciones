@@ -3,7 +3,7 @@
 session_start();
 
 $permisos = [
-  "1" => ["indexdocente","matriculados", "evaluaciones", "inscritos",
+  "1" => ["indexdocente", "evaluaciones", "inscritos",
           "evaluacion-registrar","informe"], // DOCENTE
   "2" => ["index"] // ESTUDIANTE
 ];
@@ -56,7 +56,7 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
       <ul class="navbar-nav me-auto mt-2 mt-lg-0">
         <?php
             foreach($permisos[$_SESSION["idrol"]] as $permiso){
-                if($permiso != "index" && $permiso != "indexdocente"){
+                if($permiso != "index" && $permiso != "indexdocente" ){
                   echo "
                   <li class='nav-item'>
                     <a class='nav-link' href='./{$permiso}.php'>$permiso</a>

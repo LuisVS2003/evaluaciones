@@ -130,8 +130,9 @@
                         <td>${registro.apellidos}</td>
                         <td>${registro.nombres}</td>
                         <td>
-                          <a href="#" class="ver-info" data-bs-toggle="modal" data-bs-target="#infoModal"
-                            data-info="${registro.idusuario}">Ver Info</a>
+                          <button type="button" class="btn btn-outline-primary"
+                            href="#" class="ver-info" data-bs-toggle="modal" data-bs-target="#infoModal"
+                            data-info="${registro.idusuario}">Ver Evaluaciones</button>
                         </td>
 
                         

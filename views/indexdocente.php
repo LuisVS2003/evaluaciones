@@ -3,6 +3,12 @@
 
 ?>
 
+<style>
+  .zoom-image {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+  }
+</style>
   <div class="container mt-3">
     <div class="card">
       <div class="card-header bg-dark text-light">
@@ -58,11 +64,14 @@
             }else{
               $("#card-evaluaciones").innerHTML = ``;
               datosRecibidos.forEach(element => {
-                //Renderizado
+                const p = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
+
+                const numeroAleatorio = Math.floor(Math.random() * 5 )+ 1;
+                const rutaImagen = `../images/cursos/${numeroAleatorio}.jpg`;
                 const nuevoItem = `
                   <div class="col-3 mb-3">
                     <div class="card" style="width: 100%;" heigh="100%">
-                      <img src="../images/icon-web.png" class="card-img-top" alt="" width="100%" height="300px">
+                      <img src="${rutaImagen}" class="card-img-top" alt="" width="100%" height="300px">
                       <div class="card-body">
                         <h5 class="card-title">${element.curso}</h5>
                         <div class="d-grid">

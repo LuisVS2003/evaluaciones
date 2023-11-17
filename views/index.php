@@ -65,7 +65,7 @@ if (isset($_SESSION['idusuario'])) {
             console.log(datosRecibidos);
             if(datosRecibidos.length == 0){
               $("#card-evaluaciones").innerHTML = `<h1>Pronto tendremos más novedades</h1>`; 
-              console.log("hol");
+              
             }else{
               $("#card-evaluaciones").innerHTML = ``;
               datosRecibidos.forEach(element => {
