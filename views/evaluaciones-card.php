@@ -31,7 +31,6 @@
               <th>N°</th>
               <th>Apellidos</th>
               <th>Nombres</th>
-              <th>Nombre de Evaluación</th>
               <th>Estado de Evaluación</th>
             </tr>
           </thead>
@@ -42,6 +41,23 @@
         </div>
         </div> 
    </div>
+
+   <!-- Modal para mostrar información adicional -->
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Información Adicional</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Aquí mostrarás la información adicional -->
+                    <p id="modalContent"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
    <?php
     $idterminator = $_GET['id']; //Encapsulndo el id en una variable (URL)
@@ -95,7 +111,8 @@
                         <td>${nFila}</td>
                         <td>${registro.apellidos}</td>
                         <td>${registro.nombres}</td>
-                        <td>${registro.nombre_evaluacion}</td>
+                        <td><a href="#" class="ver-info" data-bs-toggle="modal" data-bs-target="#infoModal"
+                            data-info="${registro.idusuario}">Ver Info</a></td>
                         <td>Aún falta eso</td>
                         
                     </tr>
@@ -114,6 +131,8 @@
         }
 
         listarEvaluaciones();
+
+        
 
         })
   </script>
