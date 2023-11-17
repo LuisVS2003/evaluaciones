@@ -47,12 +47,25 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Información Adicional</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Evaluaciones inscritas </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" >
                     <!-- Aquí mostrarás la información adicional -->
-                    <p id="modalContent"></p>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>N°</th>
+                          <th>Evalaucion</th>
+                          <th>Calificacion</th>
+                          <th>Estado</th>
+
+                        </tr>
+                      </thead>
+                      <tbody id="listarmodal">
+
+                      </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -81,6 +94,9 @@
   </script>
 
   <script>
+        let idUsuarioGlobal;
+
+
         document.addEventListener("DOMContentLoaded", () => {
 
         function $(id){
@@ -88,6 +104,8 @@
         }
 
         const listar = $("#form-evaluaciones tbody");
+
+        const tablaModal = $("#listarmodal");
 
         function listarEvaluaciones(){
             const parametros = new FormData();
@@ -111,9 +129,11 @@
                         <td>${nFila}</td>
                         <td>${registro.apellidos}</td>
                         <td>${registro.nombres}</td>
-                        <td><a href="#" class="ver-info" data-bs-toggle="modal" data-bs-target="#infoModal"
-                            data-info="${registro.idusuario}">Ver Info</a></td>
-                        <td>Aún falta eso</td>
+                        <td>
+                          <a href="#" class="ver-info" data-bs-toggle="modal" data-bs-target="#infoModal"
+                            data-info="${registro.idusuario}">Ver Info</a>
+                        </td>
+
                         
                     </tr>
                     `;
@@ -124,13 +144,58 @@
                 if (datos.length == 0) {
                     $("#form-evaluaciones").innerHTML = '<h3>No has asignado evaluaciones</h3>';
                 }
+
+                if (datos.length > 0) {
+                idUsuarioGlobal = datos[0].idusuario;
+                }
+                listarModal();
+
                 })
                 .catch(e => {
                 console.error(e);
                 });
         }
 
+        function listarModal(){
+          const parametros = new FormData();
+          parametros.append('operacion', 'listar_evaluaciones_x_curso');
+          parametros.append('idusuario', idUsuarioGlobal);
+          parametros.append('idcurso',<?= $idterminator?>);
+
+
+          fetch('../controllers/evaluaciones.controller.php',{
+            method: 'POST',
+            body: parametros
+          })
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+              console.log(datos);
+
+               tablaModal.innerHTML = '';
+               nFila = 1;
+               
+               datos.forEach(element => {
+                  let nuevoModal = '';
+                  nuevoModal = `
+                  <tr>
+                        <td>${nFila}</td>
+                        <td>${element.nombre_evaluacion}</td>
+                        <td>Por definir</td>
+                        <td>Activo</td>   
+                    </tr>
+                  `;
+                  tablaModal.innerHTML += nuevoModal;
+                  nFila ++;
+
+               });
+            })
+            .catch(e =>{
+              console.error(e);
+            })
+        }
+
         listarEvaluaciones();
+
 
         
 

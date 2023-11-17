@@ -66,7 +66,7 @@
                       <div class="card-body">
                         <h5 class="card-title">${element.curso}</h5>
                         <div class="d-grid">
-                          <a href="./evaluaciones-card.php?id=${element.idcurso}" class="btn btn-sm btn-primary">Ver evaluaciones</a>
+                          <a href="./evaluaciones-card.php?id=${element.idcurso}" class="btn btn-sm btn-primary">Lista de inscritos</a>
                         </div>
                       </div>
                     </div>
