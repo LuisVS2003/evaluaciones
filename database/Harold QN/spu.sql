@@ -133,21 +133,23 @@ select * from inscritos;
 
 select * from evaluaciones;
 -- --------------------------------------------------------------------
+
 DELIMITER $$
-CREATE PROCEDURE spu_obtener_evaluaciones_curso(IN _campo INT)
+CREATE PROCEDURE spu_usuario_listar_evaluaciones_x_curso(IN _idcurso VARCHAR(20))
 BEGIN
-    SELECT DISTINCT u.nombres, u.apellidos, u.idusuario
-        FROM usuarios u
-        JOIN inscritos i ON u.idusuario = i.idusuario
-        JOIN evaluaciones e ON i.idevaluacion = e.idevaluacion
-        WHERE e.idcurso = _campo AND u.idrol = 2;
-END $$
+    SELECT
+        c.idcurso,
+        c.curso,
+        e.idevaluacion,
+        e.nombre_evaluacion
+    FROM cursos c
+        INNER JOIN evaluaciones e ON e.idcurso = c.idcurso
+    WHERE c.idcurso = _idcurso;
+END$$
+call spu_usuario_listar_evaluaciones_x_curso(1);
 
-
-
-
-
-
+select * from cursos;
+select * from evaluaciones;
 
 
 

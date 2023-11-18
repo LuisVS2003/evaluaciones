@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-11-2023 a las 05:11:59
+-- Tiempo de generación: 18-11-2023 a las 06:54:17
 -- Versión del servidor: 10.4.24-MariaDB
 -- Versión de PHP: 8.1.6
 
@@ -271,6 +271,28 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_usuario_listar` ()   BEGIN
 	WHERE rol.rol = 'Estudiante';
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_usuario_listar_evalauciones_x_curso` (IN `idcurso` VARCHAR(20))   BEGIN
+	SELECT
+		c.idcurso,
+        c.curso,
+        e.idevalaucion,
+        e.nombre_evaluacion
+	FROM cursos c
+		INNER JOIN evaluaciones e ON e.idevaluacion = c.evaluacion
+	WHERE rol.rol = 'Estudiante';
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_usuario_listar_evaluaciones_x_curso` (IN `_idcurso` VARCHAR(20))   BEGIN
+    SELECT
+        c.idcurso,
+        c.curso,
+        e.idevaluacion,
+        e.nombre_evaluacion
+    FROM cursos c
+        INNER JOIN evaluaciones e ON e.idcurso = c.idcurso
+    WHERE c.idcurso = _idcurso;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_usuario_registrar` (IN `_idrol` INT, IN `_apellidos` VARCHAR(45), IN `_nombres` VARCHAR(45), IN `_correo` VARCHAR(90), IN `_claveacceso` VARCHAR(90))   BEGIN
 	INSERT INTO usuarios
 		(idrol, apellidos, nombres, correo, claveacceso)
@@ -451,7 +473,9 @@ INSERT INTO `inscritos` (`idinscrito`, `idusuario`, `idevaluacion`, `fechainicio
 (7, 2, 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (8, 2, 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (9, 2, 7, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(10, 2, 8, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+(10, 2, 8, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(11, 2, 21, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(12, 2, 5, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -637,7 +661,7 @@ ALTER TABLE `evaluaciones`
 -- AUTO_INCREMENT de la tabla `inscritos`
 --
 ALTER TABLE `inscritos`
-  MODIFY `idinscrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idinscrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `preguntas`
