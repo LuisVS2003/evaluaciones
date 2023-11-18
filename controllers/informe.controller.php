@@ -11,6 +11,10 @@ if (isset($_POST['operacion'])){
     case 'mostrarResumen':
       echo json_encode($categoria->mostrarResumen());
       break;
+
+    case 'fechaChart':
+      echo json_encode($categoria->fechaChart());
+      break;
     
   }
 

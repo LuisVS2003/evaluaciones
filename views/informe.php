@@ -14,12 +14,17 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 
+
+
+
+
 </head>
 
 <body>
 
   <div class="container mt-3">
     <div class="row">
+      
       <div class="col-md-12">
         <canvas id="grafico"></canvas>
       </div>
@@ -39,14 +44,20 @@
   </script>
 
 
+  
+
   <!-- ChartJs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
   
 
   <script>
     const contexto = document.querySelector("#grafico");
     let grafico; //Variable, puede cambiar durante la ejecucion 
+
+
+  
 
     //Obtiene los datos que requiere ChartJS
     function getData(){

@@ -22,6 +22,17 @@ class Informe extends Conexion{
     }
   }
 
+  public function fechaChart(){
+    try {
+      $consulta = $this->informe->prepare("CALL spu_fecha_mes()");
+      $consulta->execute();
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
+    catch(Exception $e){
+      die($e->getMessage());
+    }
+  }
+
 
 }
 
