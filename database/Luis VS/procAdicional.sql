@@ -66,6 +66,77 @@ END $$
 
 -- ##########################################################################################################################
 DELIMITER $$
+CREATE PROCEDURE spu_alternativas_correctas(IN _idevaluacion INT)
+BEGIN
+	SELECT
+		ALT.idalternativa, PRG.idpregunta, EVA.idevaluacion,
+        PRG.pregunta, ALT.alternativa, ALT.escorrecto
+    FROM alternativas ALT
+		INNER JOIN preguntas PRG ON PRG.idpregunta = ALT.idpregunta
+        INNER JOIN evaluaciones EVA ON EVA.idevaluacion = PRG.idevaluacion
+	WHERE ALT.escorrecto = 'S' AND EVA.idevaluacion = _idevaluacion;
+END $$
+
+-- CALL spu_alternativas_correctas(1)
+
+-- ##########################################################################################################################
+DELIMITER $$
+CREATE PROCEDURE spu_respuestas_marcadas(IN _idinscrito INT)
+BEGIN
+	SELECT
+		RPT.idrespuesta, INS.idinscrito,
+        ALT.idalternativa, ALT.idpregunta, ALT.escorrecto,
+        PRG.puntos
+    FROM respuestas RPT
+		INNER JOIN inscritos INS ON INS.idinscrito = RPT.idinscrito
+        INNER JOIN alternativas ALT ON ALT.idalternativa = RPT.idalternativa
+        INNER JOIN preguntas PRG ON PRG.idpregunta = ALT.idpregunta
+	WHERE 	RPT.idinscrito = 2 AND
+			ALT.escorrecto = 'S';
+END $$
+
+-- CALL spu_respuestas_marcadas(1);
+select * from alternativas;
+select * from respuestas where idinscrito = 1; 
+
+-- ##########################################################################################################################
+DELIMITER $$
+CREATE PROCEDURE spu_evaluacion_preguntas(IN _idevaluacion INT)
+BEGIN
+	SELECT 
+		idpregunta, idevaluacion, pregunta, puntos
+	FROM preguntas
+	WHERE 	idevaluacion = _idevaluacion AND
+			inactive_at IS NULL;
+END $$
+select * from evaluaciones
+-- CALL spu_evaluacion_preguntas(1);
+
+
+-- ##########################################################################################################################
+DELIMITER $$
+CREATE PROCEDURE spu_preguntas_alternativas(IN _idpregunta INT)
+BEGIN
+	SELECT 
+		idalternativa,
+        alternativa,
+        idpregunta,
+        escorrecto
+	FROM alternativas
+	WHERE	idpregunta = _idpregunta AND
+			inactive_at IS NULL;
+END $$
+
+-- CALL spu_preguntas_alternativas(2);
+
+
+
+
+
+
+-- ##########################################################################################################################
+-- Testeo - Luis
+DELIMITER $$
 CREATE PROCEDURE spu_evaluaciones_docente_listar(
 	IN _iddocente	INT,
     IN _idcurso		INT

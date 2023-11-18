@@ -162,7 +162,7 @@
           <div class="row">
             <div class="input-group mb-3">
               <div class="input-group-text">
-                <input class="form-check-input mt-0" type="checkbox" data-escorrecto="nom-alternativa-${numPregunta}-${numAlternativa}" id="check-${numPregunta}-${numAlternativa}" required>
+                <input class="form-check-input mt-0" type="checkbox" data-escorrecto="nom-alternativa-${numPregunta}-${numAlternativa}" id="check-${numPregunta}-${numAlternativa}">
               </div>
               <input type="text" class="form-control" id="nom-alternativa-${numPregunta}-${numAlternativa}" required>
             </div>
@@ -248,7 +248,7 @@
         })
           .then(respuesta => respuesta.json())
           .then(datos => {
-            console.log(datos);
+            // console.log(datos);
             let numeroAlternativa = $(`#alternativas-render-${numeroPregunta}`).children.length;
             for(let i = 1; i <= numeroAlternativa; i++){
               const altCorrecta = ($(`#check-${numeroPregunta}-${i}`).checked) ? 'S' : 'N';
@@ -264,7 +264,7 @@
 
       function alternativasRegistrar(idPregunta, idAlt, escorrecto, nPregunta){
         const alternativa = $(`#nom-alternativa-${nPregunta}-${idAlt}`).value;
-        console.log(alternativa);
+        // console.log(alternativa);
 
         const parametros = new FormData();
         parametros.append('operacion', 'alternativasRegistrar');
@@ -278,14 +278,14 @@
         })
         .then(respuesta => respuesta.json())
         .then(datos => {
-          console.log(datos);
+          // console.log(datos);
         })
         .catch(e => {
           console.error(e);
         });
       }
 
-      $("#form-examen").addEventListener('click', (event) => {
+/*       $("#form-examen").addEventListener('click', (event) => {
         const objetivo = event.target;
         const tipo = objetivo.type;
         const marcado = objetivo.checked;
@@ -309,18 +309,16 @@
             }
           });
         }
-      });
+      }); */
 
       $("#form-examen").addEventListener('submit', (event) => {
         event.preventDefault();
 
         if (confirm("¿Desea registrar la evaluación?")) {
           evaluacionRegistrar();
-          
+          $("#form-examen").reset();
         }
       });
-
-
 
       getCursos();
       preguntasRenderEntrada(contador);

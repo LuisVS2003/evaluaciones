@@ -90,6 +90,19 @@ BEGIN
     SELECT @@last_insert_id 'idusuario';
 END $$
 
-CALL spu_usuario_registrar('1', 'Villegas Salazar', 'Luis', 'villegasalazar08@gmail.com', '$2y$10$agTIMGR8DG68EJM9qzCxm.AefDUj4wEGJawA6JZB6w9LhUvrYqomm');
+-- CALL spu_usuario_registrar('2', 'Villegas Salazar', 'Luis', 'villegasalazar08@gmail.com', '$2y$10$agTIMGR8DG68EJM9qzCxm.AefDUj4wEGJawA6JZB6w9LhUvrYqomm');
 
-SELECT * FROM evaluaciones
+-- ##########################################################################################################################
+DELIMITER $$
+CREATE PROCEDURE spu_respuestas_registrar(
+	IN _idinscrito		INT,
+    IN _idalternativa	INT
+)
+BEGIN
+	INSERT INTO respuestas
+		(idinscrito, idalternativa)
+	VALUES
+		(_idinscrito, _idalternativa);
+	SELECT @@last_insert_id 'idrespuesta';
+END $$
+

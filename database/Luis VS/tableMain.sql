@@ -76,6 +76,10 @@ CREATE TABLE preguntas(
     CONSTRAINT	fk_idevaluacion_preg	FOREIGN KEY (idevaluacion)	REFERENCES evaluaciones(idevaluacion)
 )ENGINE = INNODB;
 
+-- alter table preguntas add column puntos tinyint not null;
+-- update preguntas set puntos = 4;
+-- select * from preguntas;
+
 
 CREATE TABLE alternativas(
 	idalternativa	INT PRIMARY KEY AUTO_INCREMENT,
@@ -86,5 +90,17 @@ CREATE TABLE alternativas(
     update_at		DATETIME	    NULL,
 	inactive_at		DATETIME	    NULL,
     CONSTRAINT	fk_idpregunta_alte	FOREIGN KEY (idpregunta) REFERENCES preguntas(idpregunta)
+)ENGINE = INNODB;
+
+
+CREATE TABLE respuestas(
+	idrespuesta		INT PRIMARY KEY AUTO_INCREMENT,
+    idinscrito		INT				NOT NULL,
+	idalternativa	INT				NOT NULL,
+	create_at		DATETIME		DEFAULT NOW(),
+	update_at		DATETIME		NULL,
+	inactive_at		DATETIME		NULL,
+    CONSTRAINT fk_idinscrito_resp FOREIGN KEY (idinscrito) REFERENCES inscritos (idinscrito),
+	CONSTRAINT fk_idalternativa_resp FOREIGN KEY (idalternativa) REFERENCES alternativas (idalternativa)
 )ENGINE = INNODB;
 

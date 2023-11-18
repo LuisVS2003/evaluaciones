@@ -6,6 +6,7 @@ BEGIN
 	SELECT 
 		ALT.idalternativa,
         ALT.alternativa,
+        PRE.idpregunta,
         PRE.pregunta,
         ALT.escorrecto
 	FROM alternativas ALT
@@ -13,7 +14,7 @@ BEGIN
 	WHERE ALT.inactive_at IS NULL;
 END $$
 
--- CALL spu_listar_alternativas();
+-- CALL spu_alternativas_listar();
 
 -- ##########################################################################################################################
 DELIMITER $$
@@ -66,7 +67,7 @@ DELIMITER $$
 CREATE PROCEDURE spu_preguntas_listar()
 BEGIN
 	SELECT 
-		idpregunta, idevaluacion, pregunta
+		idpregunta, idevaluacion, pregunta, puntos
 	FROM preguntas
 	WHERE inactive_at IS NULL;
 END $$
@@ -102,4 +103,3 @@ END $$
 
 -- CALL spu_usuario_listar();
 
-select * from usuarios

@@ -1,13 +1,7 @@
-<?php /*require_once "./navbar.php";
-
-$url = $_SERVER['REQUEST_URI'];
-$arregloURL = explode("=", $url);
-$id = $arregloURL[1];*/
-
+<?php
+  $idEvaluacion = explode('=', $_SERVER['REQUEST_URI']);
+  $idEvaluacion = $idEvaluacion[1];
 ?>
-  <!-- Bootstrap CSS v5.2.1 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 
 <!doctype html>
 <html lang="es">
@@ -30,7 +24,7 @@ $id = $arregloURL[1];*/
       <div class="col-md-6">
         <h2 class="text-center mb-4">Evaluación de Preguntas</h2>
 
-        <form id="form-evaluacion">
+        <form method="POST" id="form-evaluacion">
           <ol>
 
           </ol>
@@ -40,14 +34,7 @@ $id = $arregloURL[1];*/
     </div>
   </div>
 
-  <?php
-    $idterminator = $_GET['id']; //Encapsulndo el id en una variable (URL)
-    if(empty($idterminator)):   //Comprobamos si existe un id en la URL y si no existe mandamos "NO"
-    ?>
 
-  <p>Error en capturar el ID</p>
-
-  <?php else: ?>
 
   <!-- SweetAlert -->
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -65,105 +52,111 @@ $id = $arregloURL[1];*/
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      function $(id){
-        return document.querySelector(id);
-      }
+      const $ = id => document.querySelector(id);
+      const evaluacion = $("#form-evaluacion ol");
 
-      const formPA = $('#form-evaluacion ol');
-      let altCorrecto = [];
-      let altMarcadas = [];
-
-      function preguntasAlternativas(){
+      function preguntasListar(){
         const parametros = new FormData();
-        parametros.append('operacion', 'preguntasAlternativas');
-        parametros.append('idevaluacion', '<?= $idterminator; ?>');
+        parametros.append('operacion', 'preguntasListar');
+        parametros.append('idevaluacion', <?= $idEvaluacion ?>)
 
-        fetch('../controllers/evaluaciones.controller.php', {
+        fetch('../controllers/pregunta.controller.php', {
           method: 'POST',
           body: parametros
         })
           .then(respuesta => respuesta.json())
           .then(datos => {
+            evaluacion.innerHTML = '';
+
             datos.forEach(registro => {
-              if (registro.escorrecto == 'S') {
-                altCorrecto.push(registro.idalternativa);                
-              }
+              let pregunta = '';
+              pregunta = `
+                <section class="mb-4">
+                  <div class="row">
+                    <div class="col-md-10">
+                      <li>${registro.pregunta}</li>
+                      </div>
+                      <div class="col-md-2">
+                        <strong>${registro.puntos} PUNTOS</strong>
+                    </div>
+                  </div>
+                  <div id="pregunta-${registro.idpregunta}"></div>
+                </section>
+              `;
+
+              evaluacion.innerHTML += pregunta;
+              alternativasListar(registro.idpregunta);
             });
-            almacenarPreguntas(datos);
           })
-          .catch(e => {
-            console.error(e);
-          });
+          .catch(e => console.error(e));
       }
 
-      function almacenarPreguntas(data) {
-        const preguntasAgrupadas = {};
-        data.forEach((dato) => {
-          const { pregunta, alternativa, idalternativa } = dato;
-          if (!preguntasAgrupadas[pregunta]) {
-            preguntasAgrupadas[pregunta] = [];
-          }
-          preguntasAgrupadas[pregunta].push({ alternativa, idalternativa });
-        });
-        for (const pregunta in preguntasAgrupadas) {
-          const alternativas = preguntasAgrupadas[pregunta];
-          const preguntaHTML = `<div>
-                                  <li>${pregunta}</li>`;
-          const alternativasHTML = alternativas.map((opcion, idalternativa) => {
-            const { alternativa, idalternativa: opcionId } = opcion;
-            
-            return `<div class="form-check">
-                      <input data-idalternativa="${opcionId}" class="form-check-input" type="radio" name="${pregunta}" id="${opcionId}" required>
-                      <label  class="form-check-label" for="${opcionId}">${alternativa}</label>
-                    </div>`;
-          }).join('\n');
-          const divCierreHTML = '</div>';
-          formPA.innerHTML += preguntaHTML + alternativasHTML + divCierreHTML;
-        }
-      }
+      function alternativasListar(idPregunta){
+        const parametros = new FormData();
+        parametros.append('operacion', 'alternativasListar');
+        parametros.append('idpregunta', idPregunta)
 
-      function examenRevisar() {
-        let datas = document.querySelectorAll(".form-check-input:checked");
-        datas.forEach((data) => {
-          altMarcadas.push(data.dataset.idalternativa);
-        });
-
-        contador = 0;
-        altCorrecto.forEach((correcta) => {
-          altMarcadas.forEach((marcada) => {
-            if (correcta == marcada) {
-              contador++;
-            }
-          })
+        fetch('../controllers/pregunta.controller.php', {
+          method: 'POST',
+          body: parametros
         })
-        contador *= 4
+          .then(respuesta => respuesta.json())
+          .then(datos => {
+            const preguntaDiv = $(`#pregunta-${idPregunta}`);
+            console.log(datos);
+            
+            datos.forEach(registro => {
+              let alternativa = '';
+              alternativa = `
+                <div class="form-check">
+                  <input data-idalternativa="${registro.idalternativa}" class="form-check-input" type="radio" id="alternativa-${registro.idalternativa}" name="alternativa-${idPregunta}">
+                  <label class="form-check-label" for="alternativa-${registro.idalternativa}">${registro.alternativa}</label>
+                </div>
+              `;
+              preguntaDiv.innerHTML += alternativa;
+            });
+          })
+          .catch(e => console.error(e));
       }
 
+      function respuestasRegistrar(marcado){
+        const parametros = new FormData();
+        parametros.append('operacion', 'respuestasRegistrar');
+        parametros.append('idinscrito', '1')
+        parametros.append('idalternativa', marcado)
 
-
-
-      $("#form-evaluacion").addEventListener('submit', (event) => {
+        fetch('../controllers/pregunta.controller.php', {
+          method: 'POST',
+          body: parametros
+        })
+          .then(respuesta => respuesta.json())
+          .then(datos => {
+            console.log(datos);
+          })
+          .catch();
+      }      
+      
+      $("#form-evaluacion").addEventListener('submit', event => {
         event.preventDefault();
-
-        mostrarPregunta("Examen", "¿Está seguro de enviar el examen?").then((result) => { 
-            if (result.isConfirmed) {
-              examenRevisar();
-              notificar("info","Envio entregado", `El resultado de tu examen es : ${contador}`, 3);
-              $("#form-evaluacion").reset()
-              setTimeout(function(){
-                window.location.href = 'evaluaciones.php';
-              },3000);
-
-            }
-
+        
+        if (confirm("¿Deseas enviar las respuestas?")) {
+          let marcado = document.querySelectorAll('input[type="radio"]:checked');
+          marcado.forEach(boton => {
+            respuestasRegistrar(boton.dataset.idalternativa);
+            console.log(boton.dataset.idalternativa);
           });
-      })
-      preguntasAlternativas();
-      //Por terminar - window.addEventListener('beforeunload', notificar('info','a','b',3));
-    })
+        }
+      });
 
+      // Mostrar advertencia si quiere ir a la pagina anterior con la flecha del navegador, solo funciona si ha marcado al menos 1
+//       window.onbeforeunload = () => {
+//   return '¿Estás seguro de que deseas salir de esta página? Los cambios que realizaste podrían no guardarse.';
+// };
+      
+      
+      preguntasListar();
+    })
   </script>
-  <?php endif; ?>
 </body>
 
 </html>

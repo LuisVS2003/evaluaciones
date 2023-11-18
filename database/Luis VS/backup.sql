@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-11-2023 a las 22:43:20
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Tiempo de generación: 18-11-2023 a las 19:34:05
+-- Versión del servidor: 10.4.27-MariaDB
+-- Versión de PHP: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -33,10 +33,21 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_actualizar_pass` (IN `_correo` 
     WHERE correo = _correo AND token = _token;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_alternativas_correctas` (IN `_idevaluacion` INT)   BEGIN
+	SELECT
+		ALT.idalternativa, PRG.idpregunta, EVA.idevaluacion,
+        PRG.pregunta, ALT.alternativa, ALT.escorrecto
+    FROM alternativas ALT
+		INNER JOIN preguntas PRG ON PRG.idpregunta = ALT.idpregunta
+        INNER JOIN evaluaciones EVA ON EVA.idevaluacion = PRG.idevaluacion
+	WHERE ALT.escorrecto = 'S' AND EVA.idevaluacion = _idevaluacion;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_alternativas_listar` ()   BEGIN
 	SELECT 
 		ALT.idalternativa,
         ALT.alternativa,
+        PRE.idpregunta,
         PRE.pregunta,
         ALT.escorrecto
 	FROM alternativas ALT
@@ -127,6 +138,37 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluaciones_registrar` (IN `_i
     SELECT @@last_insert_id 'idevaluacion';
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_evaluacion_preguntas` (IN `_idevaluacion` INT)   BEGIN
+	SELECT 
+		idpregunta, idevaluacion, pregunta, puntos
+	FROM preguntas
+	WHERE 	idevaluacion = _idevaluacion AND
+			inactive_at IS NULL;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_fecha_mes` ()   BEGIN
+SELECT
+        u.idusuario,
+        u.apellidos,
+        u.nombres,
+        c.curso,
+        e.nombre_evaluacion,
+        i.fechainicio,
+        i.fechafin
+    FROM
+        cursos c
+    LEFT JOIN
+        evaluaciones e ON c.idcurso = e.idcurso
+    LEFT JOIN
+        inscritos i ON e.idevaluacion = i.idevaluacion
+    LEFT JOIN
+        usuarios u ON i.idusuario = u.idusuario
+    WHERE
+        e.fechainicio <= CURDATE() AND (e.fechafin IS NULL OR e.fechafin >= CURDATE())
+    ORDER BY
+        c.curso, e.nombre_evaluacion, u.apellidos, u.nombres;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_informes_resumen` ()   BEGIN
 	SELECT
 		c.curso,
@@ -206,16 +248,27 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_login` (IN `_correo` VARCHAR(90
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_obtener_evaluaciones_curso` (IN `_campo` INT)   BEGIN
-	SELECT DISTINCT u.nombres, u.apellidos, e.nombre_evaluacion, e.idcurso
-	FROM usuarios u
-	JOIN inscritos i ON u.idusuario = i.idusuario
-	JOIN evaluaciones e ON i.idevaluacion = e.idevaluacion
-	WHERE e.idcurso = _campo;
+    SELECT DISTINCT u.nombres, u.apellidos, u.idusuario
+        FROM usuarios u
+        JOIN inscritos i ON u.idusuario = i.idusuario
+        JOIN evaluaciones e ON i.idevaluacion = e.idevaluacion
+        WHERE e.idcurso = _campo AND u.idrol = 2;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_preguntas_alternativas` (IN `_idpregunta` INT)   BEGIN
+	SELECT 
+		idalternativa,
+        alternativa,
+        idpregunta,
+        escorrecto
+	FROM alternativas
+	WHERE	idpregunta = _idpregunta AND
+			inactive_at IS NULL;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_preguntas_listar` ()   BEGIN
 	SELECT 
-		idpregunta, idevaluacion, pregunta
+		idpregunta, idevaluacion, pregunta, puntos
 	FROM preguntas
 	WHERE inactive_at IS NULL;
 END$$
@@ -252,6 +305,27 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_rendir_poruser` (IN `p_idusuari
     GROUP BY u.nombres, c.curso;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_respuestas_marcadas` (IN `_idinscrito` INT)   BEGIN
+	SELECT
+		RPT.idrespuesta, INS.idinscrito,
+        ALT.idalternativa, ALT.idpregunta, ALT.escorrecto,
+        PRG.puntos
+    FROM respuestas RPT
+		INNER JOIN inscritos INS ON INS.idinscrito = RPT.idinscrito
+        INNER JOIN alternativas ALT ON ALT.idalternativa = RPT.idalternativa
+        INNER JOIN preguntas PRG ON PRG.idpregunta = ALT.idpregunta
+	WHERE 	RPT.idinscrito = _idinscrito AND
+			ALT.escorrecto = 'S';
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_respuestas_registrar` (IN `_idinscrito` INT, IN `_idalternativa` INT)   BEGIN
+	INSERT INTO respuestas
+		(idinscrito, idalternativa)
+	VALUES
+		(_idinscrito, _idalternativa);
+	SELECT @@last_insert_id 'idrespuesta';
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_roles_listar` ()   BEGIN
 	SELECT 
 		idrol, rol
@@ -269,6 +343,28 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_usuario_listar` ()   BEGIN
 	FROM usuarios USU
 		INNER JOIN roles ROL ON ROL.idrol = USU.idrol
 	WHERE rol.rol = 'Estudiante';
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_usuario_listar_evalauciones_x_curso` (IN `idcurso` VARCHAR(20))   BEGIN
+	SELECT
+		c.idcurso,
+        c.curso,
+        e.idevalaucion,
+        e.nombre_evaluacion
+	FROM cursos c
+		INNER JOIN evaluaciones e ON e.idevaluacion = c.evaluacion
+	WHERE rol.rol = 'Estudiante';
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_usuario_listar_evaluaciones_x_curso` (IN `_idcurso` VARCHAR(20))   BEGIN
+    SELECT
+        c.idcurso,
+        c.curso,
+        e.idevaluacion,
+        e.nombre_evaluacion
+    FROM cursos c
+        INNER JOIN evaluaciones e ON e.idcurso = c.idcurso
+    WHERE c.idcurso = _idcurso;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_usuario_registrar` (IN `_idrol` INT, IN `_apellidos` VARCHAR(45), IN `_nombres` VARCHAR(45), IN `_correo` VARCHAR(90), IN `_claveacceso` VARCHAR(90))   BEGIN
@@ -349,7 +445,17 @@ INSERT INTO `alternativas` (`idalternativa`, `idpregunta`, `alternativa`, `escor
 (45, 29, 'Hidrogeno', 'S', '2023-11-16 19:13:06', NULL, NULL),
 (46, 29, 'No se q poner', 'N', '2023-11-16 19:13:06', NULL, NULL),
 (47, 30, 'Europa', 'N', '2023-11-17 16:40:42', NULL, NULL),
-(48, 30, 'Paris', 'S', '2023-11-17 16:40:42', NULL, NULL);
+(48, 30, 'Paris', 'S', '2023-11-17 16:40:42', NULL, NULL),
+(49, 31, 'Solar ', 'S', '2023-11-18 09:45:43', NULL, NULL),
+(50, 31, 'Eólica ', 'S', '2023-11-18 09:45:43', NULL, NULL),
+(51, 31, 'Nuclear', 'N', '2023-11-18 09:45:43', NULL, NULL),
+(52, 32, 'Júpiter', 'N', '2023-11-18 09:45:43', NULL, NULL),
+(53, 31, 'Petróleo', 'N', '2023-11-18 09:45:43', NULL, NULL),
+(54, 32, 'Saturno ', 'S', '2023-11-18 09:45:43', NULL, NULL),
+(55, 33, 'Madrid', 'N', '2023-11-18 09:45:43', NULL, NULL),
+(56, 32, 'Neptuno ', 'N', '2023-11-18 09:45:43', NULL, NULL),
+(57, 33, 'París ', 'S', '2023-11-18 09:45:43', NULL, NULL),
+(58, 33, 'Roma', 'N', '2023-11-18 09:45:43', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -421,7 +527,8 @@ INSERT INTO `evaluaciones` (`idevaluacion`, `idcurso`, `idusuario`, `nombre_eval
 (21, 4, 1, 'Examen Premium', '2023-11-16 19:13:05', NULL, NULL, '2023-11-16 19:12:00', '2023-11-30 19:12:00'),
 (22, 1, 1, 'Evaluacion V2', '2023-11-17 16:29:35', NULL, NULL, NULL, NULL),
 (23, 1, 1, 'Evaluacion Thunder V2', '2023-11-17 16:35:06', NULL, NULL, NULL, NULL),
-(24, 3, 1, 'Evaluación Vista V2', '2023-11-17 16:40:40', NULL, NULL, '2023-11-17 16:40:00', '2023-11-17 16:40:00');
+(24, 3, 1, 'Evaluación Vista V2', '2023-11-17 16:40:40', NULL, NULL, '2023-11-17 16:40:00', '2023-11-17 16:40:00'),
+(25, 3, 1, 'Testeo para las Respuestas', '2023-11-18 09:45:41', NULL, NULL, '2023-11-18 09:44:00', '2023-11-30 09:44:00');
 
 -- --------------------------------------------------------
 
@@ -451,7 +558,9 @@ INSERT INTO `inscritos` (`idinscrito`, `idusuario`, `idevaluacion`, `fechainicio
 (7, 2, 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (8, 2, 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (9, 2, 7, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(10, 2, 8, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+(10, 2, 8, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(11, 2, 21, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(12, 2, 5, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -465,44 +574,86 @@ CREATE TABLE `preguntas` (
   `pregunta` text NOT NULL,
   `create_at` datetime DEFAULT current_timestamp(),
   `update_at` datetime DEFAULT NULL,
-  `inactive_at` datetime DEFAULT NULL
+  `inactive_at` datetime DEFAULT NULL,
+  `puntos` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `preguntas`
 --
 
-INSERT INTO `preguntas` (`idpregunta`, `idevaluacion`, `pregunta`, `create_at`, `update_at`, `inactive_at`) VALUES
-(1, 1, '¿Cuál es el concepto clave en Electricidad Industrial?', '2023-11-12 08:59:09', NULL, NULL),
-(2, 1, '¿Cómo se llama el componente que almacena energía en un circuito eléctrico?', '2023-11-12 08:59:09', NULL, NULL),
-(3, 1, '¿Cuál es la unidad de medida de la corriente eléctrica?', '2023-11-12 08:59:09', NULL, NULL),
-(4, 2, '¿Cuáles son los componentes esenciales de un sistema de escape en un automóvil?', '2023-11-12 08:59:09', NULL, NULL),
-(5, 2, '¿Qué tipo de combustible utiliza un motor diésel?', '2023-11-12 08:59:09', NULL, NULL),
-(6, 2, '¿Cuál es la función principal del sistema de frenos en un automóvil?', '2023-11-12 08:59:09', NULL, NULL),
-(7, 3, '¿Cuáles son los principios de la programación orientada a objetos?', '2023-11-12 08:59:09', NULL, NULL),
-(8, 3, '¿Qué significa JVM en el contexto de Java?', '2023-11-12 08:59:09', NULL, NULL),
-(9, 3, '¿Cómo se declara una variable en Java?', '2023-11-12 08:59:09', NULL, NULL),
-(10, 7, 'Pregunta Test Thunder', '2023-11-13 09:28:49', NULL, NULL),
-(11, 8, 'p', '2023-11-15 12:51:00', NULL, NULL),
-(12, 8, 'p', '2023-11-15 12:51:00', NULL, NULL),
-(13, 8, 'p', '2023-11-15 12:51:00', NULL, NULL),
-(14, 8, 'p', '2023-11-15 12:51:00', NULL, NULL),
-(15, 9, '¿Cuál es el capital de Francia?', '2023-11-16 18:44:24', NULL, NULL),
-(16, 9, '¿Cuál es el elemento químico representado por el símbolo \"H\"?', '2023-11-16 18:44:24', NULL, NULL),
-(17, 11, '¿Cuál es el capital de Francia?', '2023-11-16 18:50:26', NULL, NULL),
-(18, 12, '¿Cuál es el capital de Francia?', '2023-11-16 19:00:24', NULL, NULL),
-(19, 13, '¿Cuál es el capital de Francia?', '2023-11-16 19:01:21', NULL, NULL),
-(20, 14, '¿Cuál es el capital de Francia?', '2023-11-16 19:02:11', NULL, NULL),
-(21, 14, '¿Cuál es el elemento químico representado por el símbolo \"H\"?', '2023-11-16 19:02:11', NULL, NULL),
-(22, 15, '¿Cuál es el capital de Francia?', '2023-11-16 19:04:39', NULL, NULL),
-(23, 16, '¿Cuál es el capital de Francia?', '2023-11-16 19:05:39', NULL, NULL),
-(24, 17, '¿Cuál es el capital de Francia?', '2023-11-16 19:06:37', NULL, NULL),
-(25, 18, '¿Cuál es el capital de Francia?', '2023-11-16 19:07:45', NULL, NULL),
-(26, 19, '¿Cuál es el capital de Francia?', '2023-11-16 19:10:16', NULL, NULL),
-(27, 20, '¿Cuál es el capital de Francia?', '2023-11-16 19:11:09', NULL, NULL),
-(28, 21, '¿Cuál es el capital de Francia?', '2023-11-16 19:13:06', NULL, NULL),
-(29, 21, '¿Cuál es el elemento químico representado por el símbolo \"H\"?', '2023-11-16 19:13:06', NULL, NULL),
-(30, 24, '¿Cuál es el capital de Francia?', '2023-11-17 16:40:42', NULL, NULL);
+INSERT INTO `preguntas` (`idpregunta`, `idevaluacion`, `pregunta`, `create_at`, `update_at`, `inactive_at`, `puntos`) VALUES
+(1, 1, '¿Cuál es el concepto clave en Electricidad Industrial?', '2023-11-12 08:59:09', NULL, NULL, 4),
+(2, 1, '¿Cómo se llama el componente que almacena energía en un circuito eléctrico?', '2023-11-12 08:59:09', NULL, NULL, 4),
+(3, 1, '¿Cuál es la unidad de medida de la corriente eléctrica?', '2023-11-12 08:59:09', NULL, NULL, 4),
+(4, 2, '¿Cuáles son los componentes esenciales de un sistema de escape en un automóvil?', '2023-11-12 08:59:09', NULL, NULL, 4),
+(5, 2, '¿Qué tipo de combustible utiliza un motor diésel?', '2023-11-12 08:59:09', NULL, NULL, 4),
+(6, 2, '¿Cuál es la función principal del sistema de frenos en un automóvil?', '2023-11-12 08:59:09', NULL, NULL, 4),
+(7, 3, '¿Cuáles son los principios de la programación orientada a objetos?', '2023-11-12 08:59:09', NULL, NULL, 4),
+(8, 3, '¿Qué significa JVM en el contexto de Java?', '2023-11-12 08:59:09', NULL, NULL, 4),
+(9, 3, '¿Cómo se declara una variable en Java?', '2023-11-12 08:59:09', NULL, NULL, 4),
+(10, 7, 'Pregunta Test Thunder', '2023-11-13 09:28:49', NULL, NULL, 4),
+(11, 8, 'p', '2023-11-15 12:51:00', NULL, NULL, 4),
+(12, 8, 'p', '2023-11-15 12:51:00', NULL, NULL, 4),
+(13, 8, 'p', '2023-11-15 12:51:00', NULL, NULL, 4),
+(14, 8, 'p', '2023-11-15 12:51:00', NULL, NULL, 4),
+(15, 9, '¿Cuál es el capital de Francia?', '2023-11-16 18:44:24', NULL, NULL, 4),
+(16, 9, '¿Cuál es el elemento químico representado por el símbolo \"H\"?', '2023-11-16 18:44:24', NULL, NULL, 4),
+(17, 11, '¿Cuál es el capital de Francia?', '2023-11-16 18:50:26', NULL, NULL, 4),
+(18, 12, '¿Cuál es el capital de Francia?', '2023-11-16 19:00:24', NULL, NULL, 4),
+(19, 13, '¿Cuál es el capital de Francia?', '2023-11-16 19:01:21', NULL, NULL, 4),
+(20, 14, '¿Cuál es el capital de Francia?', '2023-11-16 19:02:11', NULL, NULL, 4),
+(21, 14, '¿Cuál es el elemento químico representado por el símbolo \"H\"?', '2023-11-16 19:02:11', NULL, NULL, 4),
+(22, 15, '¿Cuál es el capital de Francia?', '2023-11-16 19:04:39', NULL, NULL, 4),
+(23, 16, '¿Cuál es el capital de Francia?', '2023-11-16 19:05:39', NULL, NULL, 4),
+(24, 17, '¿Cuál es el capital de Francia?', '2023-11-16 19:06:37', NULL, NULL, 4),
+(25, 18, '¿Cuál es el capital de Francia?', '2023-11-16 19:07:45', NULL, NULL, 4),
+(26, 19, '¿Cuál es el capital de Francia?', '2023-11-16 19:10:16', NULL, NULL, 4),
+(27, 20, '¿Cuál es el capital de Francia?', '2023-11-16 19:11:09', NULL, NULL, 4),
+(28, 21, '¿Cuál es el capital de Francia?', '2023-11-16 19:13:06', NULL, NULL, 4),
+(29, 21, '¿Cuál es el elemento químico representado por el símbolo \"H\"?', '2023-11-16 19:13:06', NULL, NULL, 4),
+(30, 24, '¿Cuál es el capital de Francia?', '2023-11-17 16:40:42', NULL, NULL, 4),
+(31, 25, '¿Cuáles son los dos tipos principales de energía renovable?', '2023-11-18 09:45:43', NULL, NULL, 0),
+(32, 25, '¿Cuál es la capital de Francia?', '2023-11-18 09:45:43', NULL, NULL, 0),
+(33, 25, '¿Cuáles son dos de los planetas del sistema solar con anillos?', '2023-11-18 09:45:43', NULL, NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `respuestas`
+--
+
+CREATE TABLE `respuestas` (
+  `idrespuesta` int(11) NOT NULL,
+  `idinscrito` int(11) NOT NULL,
+  `idalternativa` int(11) NOT NULL,
+  `create_at` datetime DEFAULT current_timestamp(),
+  `update_at` datetime DEFAULT NULL,
+  `inactive_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `respuestas`
+--
+
+INSERT INTO `respuestas` (`idrespuesta`, `idinscrito`, `idalternativa`, `create_at`, `update_at`, `inactive_at`) VALUES
+(1, 1, 3, '2023-11-18 09:12:58', NULL, NULL),
+(2, 1, 5, '2023-11-18 09:12:58', NULL, NULL),
+(3, 1, 8, '2023-11-18 09:12:58', NULL, NULL),
+(4, 2, 2, '2023-11-18 09:32:40', NULL, NULL),
+(5, 2, 4, '2023-11-18 09:32:40', NULL, NULL),
+(6, 2, 7, '2023-11-18 09:32:40', NULL, NULL),
+(7, 1, 1, '2023-11-18 12:02:14', NULL, NULL),
+(8, 1, 1, '2023-11-18 12:08:55', NULL, NULL),
+(9, 1, 7, '2023-11-18 12:44:52', NULL, NULL),
+(10, 1, 4, '2023-11-18 12:44:52', NULL, NULL),
+(11, 1, 3, '2023-11-18 12:44:52', NULL, NULL),
+(12, 1, 2, '2023-11-18 12:47:13', NULL, NULL),
+(13, 1, 7, '2023-11-18 12:47:13', NULL, NULL),
+(14, 1, 5, '2023-11-18 12:47:13', NULL, NULL),
+(15, 1, 1, '2023-11-18 12:49:03', NULL, NULL),
+(16, 1, 7, '2023-11-18 12:49:03', NULL, NULL),
+(17, 1, 4, '2023-11-18 12:49:03', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -599,6 +750,14 @@ ALTER TABLE `preguntas`
   ADD KEY `fk_idevaluacion_preg` (`idevaluacion`);
 
 --
+-- Indices de la tabla `respuestas`
+--
+ALTER TABLE `respuestas`
+  ADD PRIMARY KEY (`idrespuesta`),
+  ADD KEY `fk_idinscrito_resp` (`idinscrito`),
+  ADD KEY `fk_idalternativa_resp` (`idalternativa`);
+
+--
 -- Indices de la tabla `roles`
 --
 ALTER TABLE `roles`
@@ -619,7 +778,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `alternativas`
 --
 ALTER TABLE `alternativas`
-  MODIFY `idalternativa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `idalternativa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT de la tabla `cursos`
@@ -631,19 +790,25 @@ ALTER TABLE `cursos`
 -- AUTO_INCREMENT de la tabla `evaluaciones`
 --
 ALTER TABLE `evaluaciones`
-  MODIFY `idevaluacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `idevaluacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `inscritos`
 --
 ALTER TABLE `inscritos`
-  MODIFY `idinscrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idinscrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `preguntas`
 --
 ALTER TABLE `preguntas`
-  MODIFY `idpregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `idpregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT de la tabla `respuestas`
+--
+ALTER TABLE `respuestas`
+  MODIFY `idrespuesta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -686,6 +851,13 @@ ALTER TABLE `inscritos`
 --
 ALTER TABLE `preguntas`
   ADD CONSTRAINT `fk_idevaluacion_preg` FOREIGN KEY (`idevaluacion`) REFERENCES `evaluaciones` (`idevaluacion`);
+
+--
+-- Filtros para la tabla `respuestas`
+--
+ALTER TABLE `respuestas`
+  ADD CONSTRAINT `fk_idalternativa_resp` FOREIGN KEY (`idalternativa`) REFERENCES `alternativas` (`idalternativa`),
+  ADD CONSTRAINT `fk_idinscrito_resp` FOREIGN KEY (`idinscrito`) REFERENCES `inscritos` (`idinscrito`);
 
 --
 -- Filtros para la tabla `usuarios`
