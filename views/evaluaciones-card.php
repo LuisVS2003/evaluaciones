@@ -38,6 +38,7 @@
 
           </tbody>
         </table>
+        <a href="./indexdocente.php" class="btn btn-danger"> Volver</a>
         </div>
         </div> 
    </div>
@@ -56,7 +57,7 @@
                       <thead>
                         <tr>
                           <th>N°</th>
-                          <th>Evalaucion</th>
+                          <th>Evaluacion</th>
                           <th>Calificacion</th>
                           <th>Estado</th>
 
@@ -143,7 +144,7 @@
                 });
 
                 if (datos.length == 0) {
-                    $("#form-evaluaciones").innerHTML = '<h3>No has asignado evaluaciones</h3>';
+                    $("#form-evaluaciones").innerHTML = '<h3>No hay inscritos en este curso</h3>';
                 }
 
                 if (datos.length > 0) {

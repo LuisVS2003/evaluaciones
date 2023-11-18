@@ -20,43 +20,36 @@
 <body>
   
 <div class="container mt-3">
-    <form action="" autocomplete="off" id="form-inscrito">
       <div class="card">
-        <div class="card-header">
-          <div>Registro de Inscritos</div>
+        <div class="card-header bg-dark text-light">
+            <h1>
+            Formulario de Inscripción - Evaluaciones
+            </h1>
         </div>
-        <div class="card-body">
-          <!-- CAMPO USUARIOS -->
-          <div class="row">
-            <div class="col-6">
-              <div class="input-group">
-                <label for="get-usuario" class="input-group-text">Usuarios:</label>
-                <select id="get-usuario" class="form-select" required autofocus>
-                  <option value="">Seleccione:</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="input-group">
-                <label for="get-evaluacion" class="input-group-text">Evaluación:</label>
-                <select id="get-evaluacion" class="form-select" required>
-                  <option value="">Seleccione:</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- CAMPO FECHA -->
-
-          
-          
-        </div> <!-- FIN DEL CARD - BODY-->
-        <div class="card-footer text-end">
-          <button class="btn btn-sm btn-primary" type="submit" id="guardar">Guardar registro</button>
-        </div>
-      </div> <!-- FIN DEL CARD -->
-    </form> <!-- FIN DEL FORMULARIO-->
-  </div> <!-- FIN DEL CONTAINER -->
+            <div class="row container">  
+                  <div class="col-md-3 mb-3 mt-3">
+                    <label for="get-curso" class="form-label">Seleccione el curso:</label>
+                    <select name="" id="get-curso" class="form-select">
+                      <option value="">Todos:</option>
+                    </select>
+                  </div>
+                  <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="get-evaluacion" class="form-label">Selecione la evaluacion:</label>
+                    <select name="" id="get-evaluacion" class="form-select" required>
+                      <option value="">Seleccione Categoria:</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="get-usuario" class="form-label">Seleccione el Usuario:</label>
+                    <select name="" id="get-usuario" class="form-select" required>
+                      <option value="">Seleccione Categoria:</option>
+                    </select>
+                  </div>     
+                </div>
+            </div> 
+      </div>
+    </div>
   
   <!-- Bootstrap JavaScript Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
@@ -136,13 +129,13 @@
           .catch(e => console.error(e));
       }
       
-      $("#form-inscrito").addEventListener("submit", (event) => {
-        event.preventDefault();
+      // $("#form-inscrito").addEventListener("submit", (event) => {
+      //   event.preventDefault();
 
-        if (confirm("¿Desea registrar al Usuario a esta Evaluación?")) {
-          inscritoRegistrar();
-        }
-      })
+      //   if (confirm("¿Desea registrar al Usuario a esta Evaluación?")) {
+      //     inscritoRegistrar();
+      //   }
+      // })
 
 
       // Funciones de carga automática

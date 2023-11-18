@@ -114,20 +114,6 @@ select * from cursos;
 call spu_listar_evaluaciones_x_curso(2,3)
 
 select * from  evaluaciones;
-
-use evaluaciones;
-select * from cursos;
-select * from usuarios;
-select * from evaluaciones;
-select * from inscritos;
-
-select * from preguntas;
-
-select * from evaluaciones;
-
-delete from inscritos where idinscrito = 8
-
-select * from inscritos;
 -- ----------------------------------------------------------------------
 -- 16/11 09:00
 
@@ -146,6 +132,16 @@ CALL spu_obtener_evaluaciones_curso(1);
 select * from inscritos;
 
 select * from evaluaciones;
+-- --------------------------------------------------------------------
+DELIMITER $$
+CREATE PROCEDURE spu_obtener_evaluaciones_curso(IN _campo INT)
+BEGIN
+    SELECT DISTINCT u.nombres, u.apellidos, u.idusuario
+        FROM usuarios u
+        JOIN inscritos i ON u.idusuario = i.idusuario
+        JOIN evaluaciones e ON i.idevaluacion = e.idevaluacion
+        WHERE e.idcurso = _campo AND u.idrol = 2;
+END $$
 
 
 
