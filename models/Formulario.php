@@ -120,5 +120,19 @@ class Evaluacion extends Conexion{
     }
   }
 
+  public function evalaucione_x_curso($datos = []){
+    try {
+      $consulta = $this->evaluacion->prepare("CALL spu_usuario_listar_evaluaciones_x_curso(?)");
+      $consulta->execute(
+        array(
+          $datos['idcurso']
+        )
+      );
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
 }
 
