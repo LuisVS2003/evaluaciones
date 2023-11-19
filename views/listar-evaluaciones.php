@@ -86,7 +86,7 @@ if (empty($idterminator)) :
                                         <div class="card mt-3">
                                             <h5 class="card-header">${registro.nombre_evaluacion}</h5>
                                             <div class="card-body">
-                                                <h5 class="card-title">Autoevaluacion ${nFila}</h5>
+                                                <h5 class="card-title">${fechaInicio} - ${fechaFin}</h5>
                                                 <p class="card-text">Antes de revisar los materiales de la Tarea ${nFila}, revisa el contenido del Manual del Curso, para poder desarrollar las actividades.</p>
                                                 <a href="./listapreguntas.php?id=${registro.idevaluacion}&inscrito=${registro.idinscrito}" class="btn btn-primary">Rendir</a>
                                             </div>
