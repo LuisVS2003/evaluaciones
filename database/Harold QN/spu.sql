@@ -137,7 +137,6 @@ select * from inscritos;
 
 select * from evaluaciones;
 -- --------------------------------------------------------------------
-
 DELIMITER $$
 CREATE PROCEDURE spu_usuario_listar_evaluaciones_x_curso(IN _idcurso VARCHAR(20))
 BEGIN
@@ -154,6 +153,51 @@ call spu_usuario_listar_evaluaciones_x_curso(1);
 
 select * from cursos;
 select * from evaluaciones;
+select * from usuarios;
+select * from inscritos;
+-- ------------------------------------------------------------------
+-- Procedmiento de luis actualizado
+DELIMITER $$
+CREATE PROCEDURE spu_inscritos_registrar(
+	IN _idusuario		INT,
+    IN _idevaluacion	INT
+)
+BEGIN
+	INSERT INTO inscritos
+		(idusuario, idevaluacion)
+    VALUES
+		(_idusuario, _idevaluacion);
+    SELECT @@last_insert_id 'idinscrito';
+END $$
+
+UPDATE inscritos
+    SET fechainicio = NULL;
+-- -------------------------------------------------------------------------------------------------------
+-- 
+DELIMITER $$
+CREATE PROCEDURE spu_actualizar_fecha_inicio(in _idinscrito int,IN _idevaluacion INT, IN _fechainicio DATETIME)
+BEGIN
+    UPDATE inscritos
+    SET fechainicio = _fechainicio
+    WHERE idinscrito = _idinscrito and idevaluacion = _idevaluacion;
+END $$
+
+call spu_actualizar_fecha_inicio(13,21,now());
+
+select * from inscritos;
+-- ------------------------------------------------------------------------------------------------------------------
+DELIMITER $$
+CREATE PROCEDURE spu_actualizar_fecha_fin(in _idinscrito int,IN _idevaluacion INT, IN _fechafin DATETIME)
+BEGIN
+    UPDATE inscritos
+    SET fechafin = _fechafin
+    WHERE idinscrito = _idinscrito and idevaluacion = _idevaluacion;
+END $$
+
+call spu_actualizar_fecha_fin(13,21,now());
+
+select * from inscritos;
+
 
 
 
