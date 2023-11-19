@@ -60,14 +60,14 @@
             console.log(datosRecibidos);
             if(datosRecibidos.length == 0){
               $("#card-evaluaciones").innerHTML = `<h1>Pronto tendremos más novedades</h1>`; 
-              console.log("hol");
             }else{
               $("#card-evaluaciones").innerHTML = ``;
               datosRecibidos.forEach(element => {
+                console.log(element);
                 const p = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
 
-                const numeroAleatorio = Math.floor(Math.random() * 5 )+ 1;
-                const rutaImagen = `../images/cursos/${numeroAleatorio}.jpg`;
+                const rutaImagen = `../images/cursos/${element.curso}.jpg`;
+                console.log(rutaImagen);
                 const nuevoItem = `
                   <div class="col-4 mb-3">
                     <div class="card" style="width: 100%;" heigh="100%">
