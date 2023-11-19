@@ -84,16 +84,25 @@ if (empty($idterminator)) :
                                     let nuevaFila = '';
                                     nuevaFila = `
                                         <div class="card mt-3">
-                                            <h5 class="card-header">${registro.nombre_evaluacion}</h5>
-                                            <div class="card-body">
-                                                <h5 class="card-title">${fechaInicio} - ${fechaFin}</h5>
-                                                <p class="card-text">Antes de revisar los materiales de la Tarea ${nFila}, revisa el contenido del Manual del Curso, para poder desarrollar las actividades.</p>
-                                                <a href="./listapreguntas.php?id=${registro.idevaluacion}&inscrito=${registro.idinscrito}" class="btn btn-primary">Rendir</a>
+                                            <div class="row">
+                                                <div class="col-10">
+                                                    <h5 class="card-header">${registro.nombre_evaluacion}</h5>
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">${fechaInicio} - ${fechaFin}</h5>
+                                                        <p class="card-text">Antes de revisar los materiales de la Tarea ${nFila}, revisa el contenido del Manual del Curso, para poder desarrollar las actividades.</p>
+                                                        <a href="./listapreguntas.php?id=${registro.idevaluacion}&inscrito=${registro.idinscrito}" class="btn btn-primary">Rendir</a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2">
+                                                    <h3 id="inscrito-${registro.idinscrito}"></h3>
+                                                </div>
+
                                             </div>
                                         </div>
                                     `;
                                     listar.innerHTML += nuevaFila;
                                     nFila++;
+                                    notaContar(registro.idinscrito);
                                 });
 
                                 if (datos.length == 0) {
@@ -103,6 +112,32 @@ if (empty($idterminator)) :
                             .catch(e => {
                                 console.error(e);
                             });
+                    }
+
+
+                    function notaContar(idInscrito){
+                        const parametros = new FormData();
+                        parametros.append('operacion', 'respuestasMarcadas');
+                        parametros.append('idinscrito', idInscrito);
+
+                        fetch('../controllers/pregunta.controller.php', {
+                        method: 'POST',
+                        body: parametros
+                        })
+                        .then(respuesta => respuesta.json())
+                        .then(datos => {
+                            console.log(datos);
+                            $(`#inscrito-${idInscrito}`).innerHTML = '';
+                            if (datos.length == 0) {
+                                $(`#inscrito-${idInscrito}`).innerHTML = 'No haz realizado esta evaluación';
+                            } else {
+                                datos.forEach(registro => {
+                                    $(`#inscrito-${idInscrito}`).innerHTML = `Nota: ${registro.marcados} / ${registro.puntos_totales}`
+                                });
+                            }
+                        })
+                        .catch(e => console.error(e));
+
                     }
 
                     listarEvaluaciones();

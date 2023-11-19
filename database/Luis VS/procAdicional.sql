@@ -84,20 +84,19 @@ DELIMITER $$
 CREATE PROCEDURE spu_respuestas_marcadas(IN _idinscrito INT)
 BEGIN
 	SELECT
-		RPT.idrespuesta, INS.idinscrito,
-        ALT.idalternativa, ALT.idpregunta, ALT.escorrecto,
-        PRG.puntos
-    FROM respuestas RPT
+		INS.idinscrito,
+		SUM(CASE WHEN ALT.escorrecto = 'S' THEN PRG.puntos ELSE 0 END) AS 'puntos_correctos',
+		SUM(CASE WHEN (ALT.escorrecto = 'N' OR ALT.escorrecto = 'S') THEN PRG.puntos ELSE 0 END) AS 'puntos_totales'
+	FROM respuestas RPT
 		INNER JOIN inscritos INS ON INS.idinscrito = RPT.idinscrito
-        INNER JOIN alternativas ALT ON ALT.idalternativa = RPT.idalternativa
-        INNER JOIN preguntas PRG ON PRG.idpregunta = ALT.idpregunta
-	WHERE 	RPT.idinscrito = 2 AND
-			ALT.escorrecto = 'S';
+		INNER JOIN alternativas ALT ON ALT.idalternativa = RPT.idalternativa
+		INNER JOIN preguntas PRG ON PRG.idpregunta = ALT.idpregunta
+	WHERE
+		RPT.idinscrito = _idinscrito
+	GROUP BY INS.idinscrito;
 END $$
 
 -- CALL spu_respuestas_marcadas(1);
-select * from alternativas;
-select * from respuestas where idinscrito = 1; 
 
 -- ##########################################################################################################################
 DELIMITER $$
