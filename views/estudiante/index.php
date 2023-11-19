@@ -41,21 +41,21 @@ if (isset($_SESSION['idusuario'])) {
   </script>
 
   <script>
-    document.addEventListener("DOMContentLoaded",()=>{
+    document.addEventListener("DOMContentLoaded", () => {
       const card = document.querySelector("#card-evaluaciones");
 
-      function $(id){
-        return document.querySelector(id)
+      function $(id) {
+        return document.querySelector(id);
       }
 
-      function listarEvaluaciones(){
+      function listarEvaluaciones() {
         const parametros = new FormData();
         parametros.append("operacion","listarCurso");
         parametros.append("idusuario",<?= $idUsuarioSesion ?>)
 
         fetch(`../../controllers/formulario.controller.php`,{
           method: "POST",
-          body: parametros
+          body: parametros,
         })
           .then(respuesta =>respuesta.json())
           .then(datosRecibidos =>{
@@ -84,21 +84,20 @@ if (isset($_SESSION['idusuario'])) {
                         </div>
                       </div>
                     </div>
-                  </div>
                   `;
                   $("#card-evaluaciones").innerHTML += nuevoItem;
+                }
               });
             }
           })
-          .catch(e=>{
-            console.error(e)
-          })
+          .catch((e) => {
+            console.error(e);
+          });
       }
 
       listarEvaluaciones();
-
-
-    })
+    });
   </script>
+
 </body>
 </html>

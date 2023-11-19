@@ -12,26 +12,13 @@
     integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 
   <!-- SweetAlert -->
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <link rel="stylesheet" href="./css/styles.css">
 
 </head>
 
 <body>
-    <!-- <div class="container">
-        <div class="row justify-content-md-center" style="margin-top:15%;">
-            <form action="#" class="col-3" method="POST" id="form-rest">
-                <h2>Enviar codigo - Email</h2>
-                <div class="mb-3">
-                    <label for="correo" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="correo" name="correo">
-                </div>
-
-                <button type="submit" class="btn btn-primary" id="submit">Restablecer</button>
-            </form>
-        </div>
-    </div> -->
 
   <div class="login-container">
     <div class="login-form-container">
@@ -47,12 +34,12 @@
       </form>
       <form id="form-cambiar">
         <div class="input-group" id="ingresartoken">
-          <!--Hacemos una renderizacion-->
+          <!--Hacemos una renderización-->
         </div>
       </form>
       <form action="" id="form-cambiarpass">
         <div class="input-group" id="cambiarpass">
-          <!--Haremos la renderizacion para cambiar la contraseña-->
+          <!--Haremos la renderización para cambiar la contraseña-->
         </div>
       </form>
       <div class="additional-options">
@@ -62,14 +49,12 @@
     <div class="login-image-container">
       <div class="login-image-text">
         <h1>Recuperar Cuenta</h1>
-        <p>Recuperar tu cuenta con unos simples pasos,verifica tu correo.</p>
+        <p>Recuperar tu cuenta con unos simples pasos, verifica tu correo.</p>
       </div>
     </div>
   </div>
 
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
     integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
@@ -79,175 +64,172 @@
     integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
   </script>
 
-  <!--Fuciones de SweetAlert-->
+  <!-- Funciones de SweetAlert -->
   <script src="javascript/sweetalert.js"></script>
 
-
   <script>
-    document.addEventListener("DOMContentLoaded",()=>{
+    document.addEventListener("DOMContentLoaded", () => {
 
-      /**
-       * @div = Constantes para hacer la renderizacion y manejarlo con el formualrio-ingresartoken
-       * @div2 = Constantes para hacer la renderizacion y manejarlo con el formualrio-cambiarpass
-       */
       const div = document.querySelector("#ingresartoken");
-      const div2 = document.querySelector("#cambiarpass"); 
+      const div2 = document.querySelector("#cambiarpass");
       const boton = document.querySelector("#submit");
 
-      function $(id){
+      function $(id) {
         return document.querySelector(id);
       }
-  
-      function buscarCorreo(){
-        const correo = $("#correo").value; // Obtener el valor del campo de correo
+
+      function buscarCorreo() {
+        const correo = $("#correo").value;
 
         const parametros = new FormData();
-        parametros.append("operacion","buscarCorreo");
-        parametros.append("correo",correo)
+        parametros.append("operacion", "buscarCorreo");
+        parametros.append("correo", correo)
 
-        fetch("./controllers/reset.controller.php",{
+        fetch("./controllers/reset.controller.php", {
           method: "POST",
           body: parametros
         })
           .then(respuesta => respuesta.json())
-          .then(data =>{
-            /**
-             *  data.usuario = 1 si se encontro el correo
-             *  dara.usuario = 0 si no se encontro
-             */
-            if(data.idusuario > 0) {
-              notificar('success','Se encontro el Correo',`Porfavor verificar el token en su  correo: ${data.correo}`,3)
+          .then(data => {
+            if (data.idusuario > 0) {
+              notificar('success', 'Se encontro el Correo', `Por favor verificar el token en su correo: ${data.correo}`, 3);
               registraTokens();
-
               $("#correo").setAttribute("readonly", "true");
 
               ingresarToken = `
                 <label for="token">Clave de Verificacion</label>
-                <input type="text" id="token" name="token" placeholder="Ingresa tu token" required maxlength="6">
-                <button type="submit" id="validartoken" class="mt-3">Validar Token</button>
+                <input type="text" id="token" name="token" placeholder="Ingresa tu token" maxlength="6">
+                <div class="button-container">
+                  <button type="button" id="validartoken" class="mt-3">Validar Token</button>
+                  <button type="button" id="reenviartoken" class="mt-3">Reenviar Token</button>
+                </div>
               `;
               div.innerHTML = ingresarToken;
               boton.innerHTML = "Validar Token";
 
               $("#submit").style.display = "none";
 
-            }else{
-              notificar('error','No encontrado','El correo no se encuentra registrado',2);
-              $("#form-rest").reset()
+              // Agregar evento click al botón "Reenviar Token"
+              $("#reenviartoken").addEventListener("click", () => {
+                notificar('info', 'Reenviando Token', 'Se ha reenviado el token al correo', 2);
+                registraTokens(); // Vuelve a enviar el token
+              });
+
+              // Agregar evento click al botón "Validar Token"
+              $("#validartoken").addEventListener("click", (event) => {
+                event.preventDefault();
+                ValidarTokens();
+              });
+
+            } else {
+              notificar('error', 'No encontrado', 'El correo no se encuentra registrado', 2);
+              $("#form-rest").reset();
             }
 
           })
-          .catch(e =>{
+          .catch(e => {
             console.error(e);
           });
-      }   
-      function registraTokens(){
-        const correo = $("#correo").value; // Obtener el valor del campo de correo electrónico
+      }
+
+      function registraTokens() {
+        const correo = $("#correo").value;
 
         const parametros = new FormData();
-        parametros.append("operacion","registrartoken");
-        parametros.append("correo",correo); // Enviar el valor del campo de correo
+        parametros.append("operacion", "registrartoken");
+        parametros.append("correo", correo);
 
         fetch("./include/EnviarTokens.php", {
           method: "POST",
           body: parametros
         })
           .then(respuesta => respuesta.json())
-          .then(data =>{
-            /**
-            console.log(`Status: Enviado<=Verificar Correo ${correo}`);
-             * 
-             */
+          .then(data => {
 
-            })
-          .catch(e =>{
+          })
+          .catch(e => {
             console.error(e);
           });
       }
+
       function ValidarTokens(){
 
-        const parametros = new FormData();
-        parametros.append("operacion","buscarToken");
-        parametros.append("correo",$("#correo").value);
-        parametros.append("token",$("#token").value);
+            const parametros = new FormData();
+            parametros.append("operacion","buscarToken");
+            parametros.append("correo",$("#correo").value);
+            parametros.append("token",$("#token").value);
 
-        fetch("./controllers/reset.controller.php",{
+            fetch("./controllers/reset.controller.php",{
+            method: "POST",
+            body: parametros
+            })
+            .then(respuesta =>respuesta.json())
+            .then(data =>{
+                if(data.length > 0){
+
+                // Verificar la expiración del token
+                const fechaTokenString = data[0].fechatoken;
+                const fechaToken = new Date(fechaTokenString);
+                const ahora = new Date();
+                const tiempoExpiracion = 3 * 60 * 1000; // 1 minuto en milisegundos
+
+                    // Calcular la diferencia en milisegundos
+                const diferenciaTiempo = ahora - fechaToken;
+
+                if(diferenciaTiempo > tiempoExpiracion){
+                    // El token ha expirado
+                    notificar('warning','Token expirado','El token ha expirado',2);
+                }else{
+                    $("#token").setAttribute("readonly", "true");
+                    //console.log(data)
+                    notificar('success','Encontrado','Registro encontrado en la base de datos',2);
+
+                    //Yo pense en hacer una renderizacion 
+                    nuevaContraseña = `
+                    <label for="claveacceso">Nueva Contraseña</label>
+                    <input type="password" id="claveacceso" name="claveacceso" placeholder="Ingrese su nueva clave" required>
+                    <button type="submit" id="cambiarpass" class="mt-3">Cambiar Contraseña</button>
+                    `;
+                    div2.innerHTML += nuevaContraseña;
+
+                    // Ocultar el botón de "Validar"
+                    $("#validartoken").style.display = "none";
+                    $("#reenviartoken").style.display = "none";
+
+                }
+                }else{
+                notificar('warning','No se encontro','No encontrado en la base de datos',2)
+                }
+            })
+            .catch(e =>{
+                console.error(e);
+            })
+      }
+
+      function CambiarPass() {
+        const parametros = new FormData();
+        parametros.append("operacion", "cambiarpass");
+        parametros.append("correo", $("#correo").value);
+        parametros.append("token", $("#token").value);
+        parametros.append("claveacceso", $("#claveacceso").value);
+
+        fetch("./controllers/reset.controller.php", {
           method: "POST",
           body: parametros
         })
-          .then(respuesta =>respuesta.json())
-          .then(data =>{
-            if(data.length > 0){
-
-              // Verificar la expiración del token
-              const fechaTokenString = data[0].fechatoken;
-              const fechaToken = new Date(fechaTokenString);
-              const ahora = new Date();
-              const tiempoExpiracion = 1 * 60 * 1000; // 1 minuto en milisegundos
-
-                // Calcular la diferencia en milisegundos
-              const diferenciaTiempo = ahora - fechaToken;
-
-              if(diferenciaTiempo > tiempoExpiracion){
-                // El token ha expirado
-                notificar('warning','Token expirado','El token ha expirado',2);
-              }else{
-                $("#token").setAttribute("readonly", "true");
-                //console.log(data)
-                notificar('success','Encontrado','Registro encontrado en la base de datos',2);
-  
-                //Yo pense en hacer una renderizacion 
-                nuevaContraseña = `
-                  <label for="claveacceso">Nueva Contraseña</label>
-                  <input type="password" id="claveacceso" name="claveacceso" placeholder="Ingrese su nueva clave" required>
-                  <button type="submit" id="cambiarpass" class="mt-3">Cambiar Contraseña</button>
-                  `;
-                div2.innerHTML += nuevaContraseña;
-  
-                // Ocultar el botón de "Validar"
-                $("#validartoken").style.display = "none";
-
-              }
-            }else{
-              notificar('warning','No se encontro','No encontrado en la base de datos',2)
-            }
+          .then(respuesta => respuesta.json())
+          .then(data => {
+            //console.log(data);
           })
-          .catch(e =>{
+          .catch(e => {
             console.error(e);
           })
+      }
 
-        }
-
-        function CambiarPass(){
-          const parametros = new FormData();
-          parametros.append("operacion","cambiarpass");
-          parametros.append("correo",$("#correo").value);
-          parametros.append("token",$("#token").value);
-          parametros.append("claveacceso",$("#claveacceso").value);
-
-          fetch("./controllers/reset.controller.php",{
-            method: "POST",
-            body: parametros
-          })
-            .then(respuesta =>respuesta.json())
-            .then(data =>{
-              //console.log(data);
-            })
-            .catch(e =>{
-              console.error(e);
-            })
-        }
-      
-        //buscarCorreo();
-      
-        $("#form-rest").addEventListener("submit", (event) => {
-          event.preventDefault();
-          buscarCorreo();
-        });
-      $("#form-cambiar").addEventListener("submit", (event) => {
-          event.preventDefault();
-          ValidarTokens();
-        });
+      $("#form-rest").addEventListener("submit", (event) => {
+        event.preventDefault();
+        buscarCorreo();
+      });
       $("#form-cambiarpass").addEventListener("submit", (event) => {
           event.preventDefault();
           CambiarPass();
@@ -255,7 +237,7 @@
           setTimeout(function(){
             window.location.href = 'index.php';
           },3000);
-        });
+      });
 
     });
 
