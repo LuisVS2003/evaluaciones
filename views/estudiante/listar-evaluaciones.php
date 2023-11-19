@@ -67,7 +67,7 @@ if (empty($idterminator)) :
                         parametros.append('idusuario', <?= $idusuario ?>);
                         parametros.append('idcurso', <?= $idcurso ?>);
 
-                        fetch('../controllers/evaluaciones.controller.php', {
+                        fetch('../../controllers/evaluaciones.controller.php', {
                                 method: 'POST',
                                 body: parametros
                             })
@@ -120,7 +120,7 @@ if (empty($idterminator)) :
                         parametros.append('operacion', 'respuestasMarcadas');
                         parametros.append('idinscrito', idInscrito);
 
-                        fetch('../controllers/pregunta.controller.php', {
+                        fetch('../../controllers/pregunta.controller.php', {
                         method: 'POST',
                         body: parametros
                         })

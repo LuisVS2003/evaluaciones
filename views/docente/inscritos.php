@@ -1,5 +1,6 @@
 <?php
-  require_once "./navbar.php";
+ require_once "../../include/extra/navbar.php";
+
 ?>
 
 <!doctype html>
@@ -83,7 +84,7 @@
         const parametros = new FormData();
         parametros.append("operacion", "cursosListar");
 
-        fetch(`../controllers/formulario.controller.php`,{
+        fetch(`../../controllers/formulario.controller.php`,{
           method: 'POST',
           body: parametros
         })
@@ -107,7 +108,7 @@
       function getUser(){
         const parametros = new FormData();
         parametros.append("operacion", "listarUsuario");
-        fetch(`../controllers/formulario.controller.php`, {
+        fetch(`../../controllers/formulario.controller.php`, {
           method: "POST",
           body: parametros
         })
@@ -145,7 +146,7 @@
               parametros.append("operacion", "evaluaciones_x_curso");
               parametros.append("idcurso", idCursoSeleccionado);
 
-              fetch('../controllers/formulario.controller.php', {
+              fetch('../../controllers/formulario.controller.php', {
                   method: 'POST',
                   body: parametros
               })
@@ -189,7 +190,7 @@
         parametros.append("idusuario", idUsuario);
         parametros.append("idevaluacion", idEvaluacion);
 
-        fetch('../controllers/inscritos.controller.php', {
+        fetch('../../controllers/inscritos.controller.php', {
             method: 'POST',
             body: parametros
         })

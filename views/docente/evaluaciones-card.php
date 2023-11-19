@@ -112,7 +112,7 @@
             parametros.append('operacion', 'cursoEvaluacion');
             parametros.append('campo',<?= $idterminator?>);
 
-            fetch('../controllers/formulario.controller.php', {
+            fetch('../../controllers/formulario.controller.php', {
                 method: 'POST',
                 body: parametros
             })
@@ -162,7 +162,7 @@
           parametros.append('idcurso',<?= $idterminator?>);
 
 
-          fetch('../controllers/evaluaciones.controller.php',{
+          fetch('../../controllers/evaluaciones.controller.php',{
             method: 'POST',
             body: parametros
           })
@@ -197,7 +197,7 @@
           const parametros = new FormData();
           parametros.append('operacion', 'respuestasMarcadas');
           parametros.append('idinscrito', idInscrito);
-          fetch('../controllers/pregunta.controller.php', {
+          fetch('../../controllers/pregunta.controller.php', {
             method: 'POST',
             body: parametros
           })

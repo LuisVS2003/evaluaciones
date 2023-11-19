@@ -1,5 +1,5 @@
 <?php
-  require_once './navbar.php';
+ require_once "../../include/extra/navbar.php";
 
 ?>
 
@@ -84,7 +84,7 @@
         const parametros = new FormData();
         parametros.append('operacion', 'cursosListar');
 
-        fetch('../controllers/formulario.controller.php', {
+        fetch('../../controllers/formulario.controller.php', {
           method: 'POST',
           body: parametros
         })
@@ -218,7 +218,7 @@
         parametros.append('fechainicio', $('#inicio-evaluacion').value);
         parametros.append('fechafin', $('#fin-evaluacion').value);
 
-        fetch('../controllers/evaluaciones.controller.php', {
+        fetch('../../controllers/evaluaciones.controller.php', {
           method: 'POST',
           body: parametros
         })
@@ -249,7 +249,7 @@
         parametros.append('pregunta', nomPregunta);
         parametros.append('puntos', puntos);
 
-        fetch('../controllers/evaluaciones.controller.php', {
+        fetch('../../controllers/evaluaciones.controller.php', {
           method: 'POST',
           body: parametros
         })
@@ -279,7 +279,7 @@
         parametros.append('alternativa', alternativa);
         parametros.append('escorrecto', escorrecto);
 
-        fetch('../controllers/evaluaciones.controller.php', {
+        fetch('../../controllers/evaluaciones.controller.php', {
           method: 'POST',
           body: parametros
         })

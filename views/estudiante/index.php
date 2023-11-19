@@ -1,7 +1,5 @@
 <?php 
- require_once "./navbar.php";
-
-
+ require_once "../../include/extra/navbar.php";
 
 // Verifica si el usuario ha iniciado sesión y tiene un idusuario
 if (isset($_SESSION['idusuario'])) {
@@ -30,7 +28,7 @@ if (isset($_SESSION['idusuario'])) {
     
   </div>
 
-  <script src="../javascript/sweetalert.js"></script>
+  <script src="../../javascript/sweetalert.js"></script>
 
 
   <!-- Bootstrap JavaScript Libraries -->
@@ -53,16 +51,15 @@ if (isset($_SESSION['idusuario'])) {
       function listarEvaluaciones(){
         const parametros = new FormData();
         parametros.append("operacion","listarCurso");
-        parametros.append("idusuario",<?php echo $idUsuarioSesion; ?>)
+        parametros.append("idusuario",<?= $idUsuarioSesion ?>)
 
-        fetch(`../controllers/formulario.controller.php`,{
+        fetch(`../../controllers/formulario.controller.php`,{
           method: "POST",
           body: parametros
         })
           .then(respuesta =>respuesta.json())
           .then(datosRecibidos =>{
-            //para verufucar si los datos llegaron
-            console.log(datosRecibidos);
+            // console.log(datosRecibidos);
             if(datosRecibidos.length == 0){
               $("#card-evaluaciones").innerHTML = `<h1>Pronto tendremos más novedades</h1>`; 
               
@@ -71,15 +68,14 @@ if (isset($_SESSION['idusuario'])) {
               datosRecibidos.forEach(element => {
                 const p = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
 
-                const numeroAleatorio = Math.floor(Math.random() * 5 )+ 1;
-                const rutaImagen = `../images/cursos/${numeroAleatorio}.jpg`;
+                const rutaImagen = `../../images/cursos/${element.curso}.jpg`;
                 //Renderizado
                 const nuevoItem = `
                   <div class="col-4 mb-3">
                     <div class="card" style="width: 100%;" heigh="100%">
                       <img src="${rutaImagen}" class="card-img-top" alt="" width="100%" height="300px">
                       <div class="card-body">
-                        <p>2023-PIAD-${p}-TEC-NRC_...</p>
+                        <p>2023-PIAD-${p}-TEC-NRC_${p}</p>
                         <h5 class="card-title">${element.curso}</h5>
                         <p>Abrir</p>
                         <hr>

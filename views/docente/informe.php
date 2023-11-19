@@ -1,5 +1,5 @@
 <?php
-  require_once "./navbar.php";
+  require_once "../../include/extra/navbar.php";
 ?>
 <!doctype html>
 <html lang="es">
@@ -64,7 +64,7 @@
       const parametros = new FormData();
       parametros.append("operacion", "mostrarResumen");
 
-      fetch(`../controllers/informe.controller.php`,{
+      fetch(`../../controllers/informe.controller.php`,{
         method: "POST",
         body: parametros
       })

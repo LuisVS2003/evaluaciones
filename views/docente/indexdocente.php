@@ -1,5 +1,5 @@
 <?php 
- require_once "./navbar.php";
+ require_once "../../include/extra/navbar.php";
 
 ?>
 
@@ -26,7 +26,7 @@
     
   </div>
 
-  <script src="../javascript/sweetalert.js"></script>
+  <script src="../../javascript/sweetalert.js"></script>
 
 
   <!-- Bootstrap JavaScript Libraries -->
@@ -50,32 +50,31 @@
         const parametros = new FormData();
         parametros.append("operacion","cursoCard");
 
-        fetch(`../controllers/formulario.controller.php`,{
+        fetch(`../../controllers/formulario.controller.php`,{
           method: "POST",
           body: parametros
         })
           .then(respuesta =>respuesta.json())
           .then(datosRecibidos =>{
             //para verufucar si los datos llegaron
-            console.log(datosRecibidos);
+            // console.log(datosRecibidos);
             if(datosRecibidos.length == 0){
               $("#card-evaluaciones").innerHTML = `<h1>Pronto tendremos más novedades</h1>`; 
             }else{
               $("#card-evaluaciones").innerHTML = ``;
               datosRecibidos.forEach(element => {
-                console.log(element);
+                // console.log(element);
                 const p = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
 
-                const rutaImagen = `../images/cursos/${element.curso}.jpg`;
-                console.log(rutaImagen);
+                const rutaImagen = `../../images/cursos/${element.curso}.jpg`;
+                // console.log(rutaImagen);
                 const nuevoItem = `
                   <div class="col-4 mb-3">
                     <div class="card" style="width: 100%;" heigh="100%">
                       <img src="${rutaImagen}" class="card-img-top" alt="" width="100%" height="300px">
                       <div class="card-body">
-                        <p>2023-PIAD-${p}-TEC-NRC_...</p>
+                        <p>2023-PIAD-${p}-TEC-NRC_${p}</p>
                         <h5 class="card-title">${element.curso}</h5>
-                        <p>Abrir</p>
                         <hr>
                         <div class="d-grid">
                           <a href="./evaluaciones-card.php?id=${element.idcurso}" class="btn btn-sm btn-primary">Lista de inscritos</a>

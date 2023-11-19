@@ -1,20 +1,37 @@
 <?php
-
 session_start();
 
 $permisos = [
-  "1" => ["indexdocente", "evaluaciones", "inscritos",
-          "evaluacion-registrar","informe"], // DOCENTE
-  "2" => ["index"] // ESTUDIANTE
+  "1" => ["indexdocente", "inscritos", "evaluacion-registrar","informe"], // DOCENTE
+  "2" => ["index"], // ESTUDIANTE
 ];
-
-
 
 if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
   header("Location: ../index.php");
   exit();
 }
 
+$url = $_SERVER['REQUEST_URI'];
+$urlCut = explode("/", $url);
+$urlCut = explode(".", $urlCut[4]);
+$archivo = ($urlCut[0]);
+
+$permitido = false;
+
+foreach ($permisos[$_SESSION["idrol"]] as $opcion) {
+  if ($opcion == $archivo){
+    $permitido = true;
+  }
+}
+
+if (!$permitido) {
+  echo '
+      <div class="container">
+      <h3>Acceso no permitido</h3>
+      </div>
+    ';
+  exit();
+}
 
 ?>
 
@@ -54,17 +71,17 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
     </button>
     <div class="collapse navbar-collapse" id="collapsibleNavId">
       <ul class="navbar-nav me-auto mt-2 mt-lg-0">
-        <?php
-            foreach($permisos[$_SESSION["idrol"]] as $permiso){
-                if($permiso != "index" && $permiso != "indexdocente" ){
-                  echo "
-                  <li class='nav-item'>
-                    <a class='nav-link' href='./{$permiso}.php'>$permiso</a>
-                  </li>
-                ";
-              }
+      <?php
+          foreach($permisos[$_SESSION["idrol"]] as $permiso){
+              if($permiso != "index" && $permiso != "indexdocente" ){
+                echo "
+                <li class='nav-item'>
+                  <a class='nav-link' href='./{$permiso}.php'>$permiso</a>
+                </li>
+              ";
             }
-        ?>
+          }
+      ?>
       </ul>
       </ul>
       <ul class="navbar-nav">
@@ -80,7 +97,7 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
             <!-- <a class="dropdown-item" href="reporte3.php">Reporte</a> -->
           <!-- </div>
         </li>-->
-        <a href="../controllers/usuario.controller.php?operacion=destroy"><button class="btn btn-warning">Salir <i class="bi bi-box-arrow-right"></i></button></a>
+        <a href="../../controllers/usuario.controller.php?operacion=destroy"><button class="btn btn-warning">Salir <i class="bi bi-box-arrow-right"></i></button></a>
       </ul>
     </div>
   </div>
@@ -93,27 +110,12 @@ if (!isset($_SESSION["status"]) || !$_SESSION["status"]) {
   $arregloURL = explode("/", $url);
   $vistaActual = $arregloURL[count($arregloURL)-1];
 
-  $permitido = false;
-  foreach ($permisos[$_SESSION["idrol"]] as $opcion) {
-    if ($opcion . ".php" == $vistaActual)  {
-        $permitido = true;
-    }
-  }
 
-  if ($_SESSION["idrol"] == 1 && !$permitido) {
-    // Redirigir a indexdocente.php si el usuario con rol 1 intenta acceder a una página no permitida
-    header("Location: indexdocente.php");
-    exit();
-  }
 
-  if (!$permitido) {
-      echo '
-          <div class="container">
-          <h3>Acceso no permitido</h3>
-          </div>
-        ';
-      exit();
-  }
+
+
+
+
 
 
 ?>

@@ -1,8 +1,8 @@
 <?php
 
-require '../vendor/autoload.php';
+require '../../vendor/autoload.php';
 
-require '../models/Inscritos.php';
+require '../../models/Inscritos.php';
 
 use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
@@ -20,8 +20,8 @@ use Spipu\Html2Pdf\Exception\ExceptionFormatter;
       $datos = $objeto->listarInscritosPDF();
 
     ob_start();
-    include '../pdf/estilos.php';
-    require_once '../pdf/reporte3-contenido.php';
+    include '../../pdf/estilos.php';
+    require_once '../../pdf/reporte3-contenido.php';
     $contenido = ob_get_clean();
 
     $reporte->writeHTML($contenido);

@@ -38,7 +38,7 @@
   <!-- SweetAlert -->
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <script src='../javascript/sweetalert.js'></script>
+  <script src='../../javascript/sweetalert.js'></script>
 
   <!-- Bootstrap JavaScript Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
@@ -81,7 +81,7 @@
         parametros.append('idevaluacion',<?= $idEvaluacion ?>);
         parametros.append('fechainicio', fechaActual);
 
-        fetch('../controllers/inscritos.controller.php',{
+        fetch('../../controllers/inscritos.controller.php',{
           method: 'POST',
           body:parametros
         })
@@ -104,7 +104,7 @@
         parametros.append('idevaluacion',<?= $idEvaluacion ?>);
         parametros.append('fechafin', fechaActual);
 
-        fetch('../controllers/inscritos.controller.php',{
+        fetch('../../controllers/inscritos.controller.php',{
           method: 'POST',
           body:parametros
         })
@@ -124,7 +124,7 @@
         parametros.append('operacion', 'preguntasListar');
         parametros.append('idevaluacion', <?= $idEvaluacion ?>)
 
-        fetch('../controllers/pregunta.controller.php', {
+        fetch('../../controllers/pregunta.controller.php', {
           method: 'POST',
           body: parametros
         })
@@ -159,7 +159,7 @@
         parametros.append('operacion', 'alternativasListar');
         parametros.append('idpregunta', idPregunta)
 
-        fetch('../controllers/pregunta.controller.php', {
+        fetch('../../controllers/pregunta.controller.php', {
           method: 'POST',
           body: parametros
         })
@@ -186,7 +186,7 @@
         parametros.append('idinscrito', <?= $idinscrito ?>)
         parametros.append('idalternativa', marcado)
 
-        fetch('../controllers/pregunta.controller.php', {
+        fetch('../../controllers/pregunta.controller.php', {
           method: 'POST',
           body: parametros
         })
