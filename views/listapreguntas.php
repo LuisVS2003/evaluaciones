@@ -200,18 +200,24 @@
       
       $("#form-evaluacion").addEventListener('submit', event => {
         event.preventDefault();
-        
-        if (confirm("¿Deseas enviar las respuestas?")) {
-          EvaluacionTermina();
-          let marcado = document.querySelectorAll('input[type="radio"]:checked');
-          marcado.forEach(boton => {
-            respuestasRegistrar(boton.dataset.idalternativa);
+
+        mostrarPregunta("Evalucion", "¿Está seguro de enviar su evaluación?").then((result) => { 
+            if (result.isConfirmed) {
+              
+              EvaluacionTermina();
+              let marcado = document.querySelectorAll('input[type="radio"]:checked');
+              marcado.forEach(boton => {
+                respuestasRegistrar(boton.dataset.idalternativa);
+              });
+              notificar('info','Evaluacion enviada','Ahora ya puedes ver tu nota',3);
+              setTimeout(function(){
+                window.location.href = './listar-evaluaciones.php?id=<?= $idEvaluacion ?>&idu=<?= $idusuario?>';
+              },3000);
+
+            }
+
           });
-          notificar('info','Evaluacion enviada','Ahora ya puedes ver tu nota',3);
-          setTimeout(function(){
-            window.location.href = './listar-evaluaciones.php?id=<?= $idEvaluacion ?>&idu=<?= $idusuario?>';
-          },3000);
-        }
+        
       });
 
       // Mostrar advertencia si quiere ir a la pagina anterior con la flecha del navegador, solo funciona si ha marcado al menos 1

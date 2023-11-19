@@ -90,7 +90,7 @@ if (empty($idterminator)) :
                                                     <div class="card-body">
                                                         <h5 class="card-title">${fechaInicio} - ${fechaFin}</h5>
                                                         <p class="card-text">Antes de revisar los materiales de la Tarea ${nFila}, revisa el contenido del Manual del Curso, para poder desarrollar las actividades.</p>
-                                                        <a id="link-${registro.idinscrito}" href="./listapreguntas.php?id=${registro.idevaluacion}&inscrito=${registro.idinscrito}" class="btn btn-primary">Rendir</a>
+                                                        <a id="link-${registro.idinscrito}" href="./listapreguntas.php?id=${registro.idevaluacion}&inscrito=${registro.idinscrito}&idu=<?= $idusuario ?>" class="btn btn-primary">Rendir</a>
                                                     </div>
                                                 </div>
                                                 <div class="col-2">
