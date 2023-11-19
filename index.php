@@ -88,7 +88,7 @@
             .then(data =>{
               console.log(data)
               if(data.acceso == true){
-                bienvenida(`¡Inicio de session Exitoso!`);
+                bienvenida(`¡Inicio de Sesión Exitoso!`);
                 setTimeout(function(){
                   window.location.href = './views/index.php'
                 },2000);               
