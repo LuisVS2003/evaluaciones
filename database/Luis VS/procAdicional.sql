@@ -129,8 +129,7 @@ END $$
 -- CALL spu_preguntas_alternativas(2);
 
 -- ##########################################################################################################################
-select * from alternativas;
-select * from inscritos;
+
 
 
 

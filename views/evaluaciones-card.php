@@ -60,7 +60,6 @@
                           <th>Evaluacion</th>
                           <th>Calificacion</th>
                           <th>Estado</th>
-
                         </tr>
                       </thead>
                       <tbody id="listarmodal">
@@ -135,8 +134,6 @@
                             href="#" class="ver-info" data-bs-toggle="modal" data-bs-target="#infoModal"
                             data-info="${registro.idusuario}">Ver Evaluaciones</button>
                         </td>
-
-                        
                     </tr>
                     `;
                     listar.innerHTML += nuevaFila;
@@ -182,18 +179,43 @@
                   <tr>
                         <td>${nFila}</td>
                         <td>${element.nombre_evaluacion}</td>
-                        <td>Por definir</td>
-                        <td>Activo</td>   
+                        <td id="nota-${element.idinscrito}"></td>
+                        <td id="estado-${element.idinscrito}"></td>   
                     </tr>
                   `;
                   tablaModal.innerHTML += nuevoModal;
                   nFila ++;
-
+                  notaContar(element.idinscrito);
                });
             })
             .catch(e =>{
               console.error(e);
             })
+        }
+
+        function notaContar(idInscrito){
+          const parametros = new FormData();
+          parametros.append('operacion', 'respuestasMarcadas');
+          parametros.append('idinscrito', idInscrito);
+          fetch('../controllers/pregunta.controller.php', {
+            method: 'POST',
+            body: parametros
+          })
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+              $(`#nota-${idInscrito}`).innerHTML = '';
+              if (datos.length == 0) {
+                  $(`#nota-${idInscrito}`).innerHTML = ' --- ';
+                  $(`#estado-${idInscrito}`).innerHTML = 'Pendiente';
+              } else {
+                datos.forEach(registro => {
+                  const estado = ((registro.puntos_totales/2) <= registro.marcados) ? 'Aprobado' : 'Reprobado';
+                  $(`#nota-${idInscrito}`).innerHTML = `${registro.marcados} / ${registro.puntos_totales}`;
+                  $(`#estado-${idInscrito}`).innerHTML = estado;
+                });
+              }
+            })
+            .catch(e => console.error(e));
         }
 
         listarEvaluaciones();

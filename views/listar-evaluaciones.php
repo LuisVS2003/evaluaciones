@@ -90,7 +90,7 @@ if (empty($idterminator)) :
                                                     <div class="card-body">
                                                         <h5 class="card-title">${fechaInicio} - ${fechaFin}</h5>
                                                         <p class="card-text">Antes de revisar los materiales de la Tarea ${nFila}, revisa el contenido del Manual del Curso, para poder desarrollar las actividades.</p>
-                                                        <a href="./listapreguntas.php?id=${registro.idevaluacion}&inscrito=${registro.idinscrito}" class="btn btn-primary">Rendir</a>
+                                                        <a id="link-${registro.idinscrito}" href="./listapreguntas.php?id=${registro.idevaluacion}&inscrito=${registro.idinscrito}" class="btn btn-primary">Rendir</a>
                                                     </div>
                                                 </div>
                                                 <div class="col-2">
@@ -132,7 +132,9 @@ if (empty($idterminator)) :
                                 $(`#inscrito-${idInscrito}`).innerHTML = 'No haz realizado esta evaluación';
                             } else {
                                 datos.forEach(registro => {
-                                    $(`#inscrito-${idInscrito}`).innerHTML = `Nota: ${registro.marcados} / ${registro.puntos_totales}`
+                                    $(`#inscrito-${idInscrito}`).innerHTML = `Nota: ${registro.marcados} / ${registro.puntos_totales}`;
+                                    $(`#link-${idInscrito}`).classList.add('disabled');
+                                    $(`#link-${idInscrito}`).innerText = 'Evaluación Realizada';
                                 });
                             }
                         })
