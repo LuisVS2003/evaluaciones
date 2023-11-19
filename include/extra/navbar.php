@@ -32,7 +32,7 @@ if (!$permitido) {
     ';
   exit();
 }
-
+$indice = ($_SESSION["idrol"] == 1) ? "indexdocente" : "index";
 ?>
 
 <!doctype html>
@@ -65,7 +65,7 @@ if (!$permitido) {
 <nav class="navbar navbar-expand-sm navbar-dark bg-secondary mb-3 fijado">
   <div class="container">
    
-    <a class="navbar-brand" href="./index.php">EVALUACIONES</a>
+    <a class="navbar-brand" href="./<?= $indice ?>.php">EVALUACIONES</a>
     <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
