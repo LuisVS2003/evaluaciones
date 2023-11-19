@@ -70,6 +70,7 @@ CREATE TABLE preguntas(
 	idpregunta		INT PRIMARY KEY AUTO_INCREMENT,
     idevaluacion	INT				NOT NULL,
     pregunta		TEXT        	NOT NULL,
+    puntos			TINYINT			NOT NULL,
     create_at		DATETIME	    DEFAULT NOW(),
     update_at		DATETIME	    NULL,
 	inactive_at		DATETIME	    NULL,

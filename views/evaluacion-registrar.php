@@ -39,7 +39,7 @@
             <div class="input-group mb-3">
               <label class="input-group-text" for="list-curso">Curso</label>
               <select class="form-select" id="list-curso" required>
-                <!-- <option value="1">1</option> -->
+                <option value="">Seleccione</option>
               </select>
             </div>
           </div>
@@ -50,6 +50,7 @@
         </div>
         <div class="row">
           <button class="col-3 btn btn-success" type="submit">Guardar Evaluación</button>
+          <button class="col-3 btn btn-success" type="reset">Reiniciar Datos</button>
         </div>
       </form>
       <div id="config">
@@ -111,14 +112,18 @@
         pregunta.dataset.idpregunta = `${i}`;
         pregunta.innerHTML = `
           <div class="row mb-3">
-            <div class="col-12">
+            <div class="col-10">
               <div class="input-group mb-3">
                 <label for="nom-pregunta-${i}" class="input-group-text">Pregunta N° ${i}</label>
                 <input type="text" class="form-control" id="nom-pregunta-${i}" required>
               </div>
             </div>
-            <div class="col-12">
-            
+            <div class="col-2">
+              <div class="input-group mb-3">
+                <label for="puntos-${i}" class="input-group-text">Puntos</label>
+                <input type="number" class="form-control" id="puntos-${i}" min="1" max="10" required>
+              </div>
+            </div>
             <div class="row mx-5" id="alternativas-render-${i}"></div>
             <div class="row justify-content-center">
               <button data-addalternativa="${i}" class="col-3 btn btn-warning agregar-alt" type="button">Agregar Alternativa</button>
@@ -226,6 +231,7 @@
             
             for(let i = 1; i <= cantidadPreguntas; i++){
               preguntasRegistrar(idEvaluacion, i);
+              console.log(idEvaluacion, i);
             }
           })
           .catch(e => {
@@ -236,11 +242,12 @@
       
       function preguntasRegistrar(idevaluacion, numeroPregunta){
         const nomPregunta = $(`#nom-pregunta-${numeroPregunta}`).value;
-
+        const puntos = $(`#puntos-${numeroPregunta}`).value;
         const parametros = new FormData();
         parametros.append('operacion', 'preguntasRegistrar');
         parametros.append('idevaluacion', idevaluacion);
         parametros.append('pregunta', nomPregunta);
+        parametros.append('puntos', puntos);
 
         fetch('../controllers/evaluaciones.controller.php', {
           method: 'POST',
@@ -311,18 +318,33 @@
         }
       }); */
 
+      function fechaValidar() {
+        var inicio = $("#inicio-evaluacion").value;
+        var fin = $("#fin-evaluacion").value;
+        console.log(inicio, fin);
+        if (inicio >= fin) {
+          $("#fin-evaluacion").setCustomValidity('La fecha de fin debe ser mayor que la fecha de inicio');
+        } else {
+          $("#fin-evaluacion").setCustomValidity('');
+        }
+      }
+
+      // Llamar a la función cuando se cambie el valor de los campos de fecha
+      $("#inicio-evaluacion").addEventListener('change', fechaValidar);
+      $("#fin-evaluacion").addEventListener('change', fechaValidar);
+
       $("#form-examen").addEventListener('submit', (event) => {
         event.preventDefault();
-
         if (confirm("¿Desea registrar la evaluación?")) {
           evaluacionRegistrar();
-          $("#form-examen").reset();
+          // $("#form-examen").reset(); //NO PONER ESTO - NO FUNCIONARA EL REGISTRO
         }
       });
 
       getCursos();
       preguntasRenderEntrada(contador);
       contador++;
+      fechaValidar();
     })
   </script>
 

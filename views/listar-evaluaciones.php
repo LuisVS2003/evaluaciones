@@ -78,6 +78,9 @@ if (empty($idterminator)) :
                                 nFila = 1;
 
                                 datos.forEach(registro => {
+                                    let fechaInicio = registro.fechainicio == null ? "Fecha no Definida" : registro.fechainicio;
+                                    let fechaFin = registro.fechafin == null ? "Fecha no Definida" : registro.fechafin;
+
                                     let nuevaFila = '';
                                     nuevaFila = `
                                         <div class="card mt-3">
@@ -85,7 +88,7 @@ if (empty($idterminator)) :
                                             <div class="card-body">
                                                 <h5 class="card-title">Autoevaluacion ${nFila}</h5>
                                                 <p class="card-text">Antes de revisar los materiales de la Tarea ${nFila}, revisa el contenido del Manual del Curso, para poder desarrollar las actividades.</p>
-                                                <a href="./listapreguntas.php?id=${registro.idevaluacion}" class="btn btn-primary">Rendir</a>
+                                                <a href="./listapreguntas.php?id=${registro.idevaluacion}&inscrito=${registro.idinscrito}" class="btn btn-primary">Rendir</a>
                                             </div>
                                         </div>
                                     `;

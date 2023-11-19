@@ -1,6 +1,6 @@
 <?php
-  $idEvaluacion = explode('=', $_SERVER['REQUEST_URI']);
-  $idEvaluacion = $idEvaluacion[1];
+  $idEvaluacion = $_GET['id'];
+  $idinscrito = $_GET['inscrito'];
 ?>
 
 <!doctype html>
@@ -23,7 +23,6 @@
     <div class="row justify-content-center">
       <div class="col-md-6">
         <h2 class="text-center mb-4">Evaluación de Preguntas</h2>
-
         <form method="POST" id="form-evaluacion">
           <ol>
 
@@ -67,7 +66,6 @@
           .then(respuesta => respuesta.json())
           .then(datos => {
             evaluacion.innerHTML = '';
-
             datos.forEach(registro => {
               let pregunta = '';
               pregunta = `
@@ -83,7 +81,6 @@
                   <div id="pregunta-${registro.idpregunta}"></div>
                 </section>
               `;
-
               evaluacion.innerHTML += pregunta;
               alternativasListar(registro.idpregunta);
             });
@@ -103,8 +100,6 @@
           .then(respuesta => respuesta.json())
           .then(datos => {
             const preguntaDiv = $(`#pregunta-${idPregunta}`);
-            console.log(datos);
-            
             datos.forEach(registro => {
               let alternativa = '';
               alternativa = `
@@ -122,7 +117,7 @@
       function respuestasRegistrar(marcado){
         const parametros = new FormData();
         parametros.append('operacion', 'respuestasRegistrar');
-        parametros.append('idinscrito', '1')
+        parametros.append('idinscrito', <?= $idinscrito ?>)
         parametros.append('idalternativa', marcado)
 
         fetch('../controllers/pregunta.controller.php', {
@@ -143,7 +138,6 @@
           let marcado = document.querySelectorAll('input[type="radio"]:checked');
           marcado.forEach(boton => {
             respuestasRegistrar(boton.dataset.idalternativa);
-            console.log(boton.dataset.idalternativa);
           });
         }
       });

@@ -69,11 +69,12 @@ class Evaluacion extends Conexion{
 
   public function preguntasRegistrar($datos = []){
     try {
-      $consulta = $this->conexion->prepare("CALL spu_preguntas_registrar(?, ?)");
+      $consulta = $this->conexion->prepare("CALL spu_preguntas_registrar(?,?,?)");
       $consulta->execute(
         array(
           $datos['idevaluacion'],
-          $datos['pregunta']
+          $datos['pregunta'],
+          $datos['puntos']
         )
       );
       return $consulta->fetch(PDO::FETCH_ASSOC);

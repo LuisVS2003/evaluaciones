@@ -62,14 +62,15 @@ END $$
 -- ##########################################################################################################################
 DELIMITER $$
 CREATE PROCEDURE spu_preguntas_registrar(
-	IN _idevaluacion INT,
-	IN _pregunta TEXT
+	IN _idevaluacion	INT,
+	IN _pregunta		TEXT,
+    IN _puntos			TINYINT
 )
 BEGIN
 	INSERT INTO preguntas
-		(idevaluacion, pregunta)
+		(idevaluacion, pregunta, puntos)
     VALUES
-		(_idevaluacion,  _pregunta);
+		(_idevaluacion,  _pregunta, _puntos);
     SELECT @@last_insert_id 'idpregunta';
 END $$
 

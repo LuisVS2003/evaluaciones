@@ -10,27 +10,47 @@ CALL spu_cursos_registrar('Electricidad Industrial');
 CALL spu_cursos_registrar('Mecánica Automotriz');
 CALL spu_cursos_registrar('Ing. de Software con IA');
 CALL spu_cursos_registrar('Soldadura Avanzada');
-CALL spu_cursos_registrar('Gestión de Proyectos');
+CALL spu_cursos_registrar('Gestión de Empresas');
 
 -- CALL spu_cursos_listar();
 
 -- ##########################################################################################################################
--- USUARIOS
-CALL spu_usuario_registrar(1, 'González', 'Juan', 'juan.gonzalez@example.com', 'clavejuan');
-CALL spu_usuario_registrar(2, 'Martínez', 'Ana', 'ana.martinez@example.com', 'claveana');
-CALL spu_usuario_registrar(2, 'Rodríguez', 'Pedro', 'pedro.rodriguez@example.com', 'clavepedro');
-CALL spu_usuario_registrar(2, 'Sánchez', 'Laura', 'laura.sanchez@example.com', 'clavelaura');
-CALL spu_usuario_registrar(2, 'Díaz', 'Carlos', 'carlos.diaz@example.com', 'clavecarlos');
+-- USUARIOS - CLAVE: senati123
+CALL spu_usuario_registrar(1, 'González', 'Juan', 'juan.gonzalez@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK');
+CALL spu_usuario_registrar(2, 'Martínez', 'Ana', 'ana.martinez@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK');
+CALL spu_usuario_registrar(2, 'Rodríguez', 'Pedro', 'pedro.rodriguez@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK');
+CALL spu_usuario_registrar(2, 'Sánchez', 'Laura', 'laura.sanchez@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK');
+CALL spu_usuario_registrar(2, 'Díaz', 'Carlos', 'carlos.diaz@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK');
 
 -- CALL spu_usuario_listar();
 
 -- ##########################################################################################################################
 -- EVALUACIONES
-CALL spu_evaluaciones_registrar(1, 'Evaluación 1 Electricidad Industrial', '2023-11-12 10:00:00', '2023-11-15 18:00:00');
-CALL spu_evaluaciones_registrar(1, 'Evaluación 2 Electricidad Industrial', '2023-11-13 10:00:00', '2023-11-16 18:00:00');
-CALL spu_evaluaciones_registrar(3, 'Evaluación 1 Ing. de Software con IA', '2023-11-14 10:00:00', '2023-11-17 18:00:00');
-CALL spu_evaluaciones_registrar(3, 'Evaluación 2 Ing. de Software con IA', '2023-11-15 10:00:00', '2023-11-17 18:00:00');
-CALL spu_evaluaciones_registrar(3, 'Evaluación 3 Ing. de Software con IA', '2023-11-16 10:00:00', '2023-11-18 18:00:00');
+-- Electricidad Industrial
+CALL spu_evaluaciones_registrar(1, 1, 'Prueba Diagnóstica', NULL, NULL);
+CALL spu_evaluaciones_registrar(1, 2, 'Examen Teórico', NULL, NULL);
+CALL spu_evaluaciones_registrar(1, 3, 'Proyecto Práctico', NULL, NULL);
+
+-- Mecánica Automotriz
+CALL spu_evaluaciones_registrar(2, 1, 'Prueba de Habilidades', NULL, NULL);
+CALL spu_evaluaciones_registrar(2, 2, 'Evaluación de Desempeño', NULL, NULL);
+CALL spu_evaluaciones_registrar(2, 3, 'Informe Técnico', NULL, NULL);
+
+-- Ing. de Software con IA
+CALL spu_evaluaciones_registrar(3, 1, 'Desarrollo de Proyecto', NULL, NULL);
+CALL spu_evaluaciones_registrar(3, 2, 'Revisión de Código', NULL, NULL);
+CALL spu_evaluaciones_registrar(3, 3, 'Presentación de IA', NULL, NULL);
+
+-- Soldadura Avanzada
+CALL spu_evaluaciones_registrar(4, 1, 'Soldadura de Precisión', NULL, NULL);
+CALL spu_evaluaciones_registrar(4, 2, 'Prueba de Resistencia', NULL, NULL);
+CALL spu_evaluaciones_registrar(4, 3, 'Proyecto de Soldadura', NULL, NULL);
+
+-- Gestión de Empresas
+CALL spu_evaluaciones_registrar(5, 1, 'Análisis Financiero', NULL, NULL);
+CALL spu_evaluaciones_registrar(5, 2, 'Presentación Ejecutiva', NULL, NULL);
+CALL spu_evaluaciones_registrar(5, 3, 'Estudio de Caso', NULL, NULL);
+
 
 -- CALL spu_evaluaciones_listar();
 
@@ -42,7 +62,7 @@ CALL spu_inscritos_registrar(3, 2, '2023-11-14 09:45:00', '2023-11-17 17:45:00')
 CALL spu_inscritos_registrar(1, 3, '2023-11-15 13:15:00', '2023-11-18 22:15:00');
 CALL spu_inscritos_registrar(2, 3, '2023-11-16 14:45:00', '2023-11-19 23:45:00');
 
-CALL spu_inscritos_listar();
+-- CALL spu_inscritos_listar();
 
 -- ##########################################################################################################################
 -- PREGUNTAS
@@ -56,7 +76,7 @@ CALL spu_preguntas_registrar(3, '¿Cuáles son los principios de la programació
 CALL spu_preguntas_registrar(3, '¿Qué significa JVM en el contexto de Java?');
 CALL spu_preguntas_registrar(3, '¿Cómo se declara una variable en Java?');
 
-CALL spu_preguntas_listar();
+-- CALL spu_preguntas_listar();
 
 -- ##########################################################################################################################
 -- ALTERNATIVAS
@@ -88,7 +108,5 @@ CALL spu_alternativas_registrar(9, 'True', 'N');
 CALL spu_alternativas_registrar(9, 'False', 'S');
 CALL spu_alternativas_registrar(9, 'Null', 'N');
 
+-- CALL spu_alternativas_listar();
 
-
-
-CALL spu_alternativas_listar();

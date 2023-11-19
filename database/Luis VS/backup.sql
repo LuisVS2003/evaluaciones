@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-11-2023 a las 19:34:05
+-- Tiempo de generación: 19-11-2023 a las 01:01:39
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -225,7 +225,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_listar_evaluaciones_x_curso` (I
         e.fechainicio,
         e.fechafin,
         i.idevaluacion,
-        i.idusuario
+        i.idusuario,
+        i.idinscrito
     FROM usuarios u
     JOIN roles r ON u.idrol = r.idrol
     LEFT JOIN inscritos i ON u.idusuario = i.idusuario
@@ -273,11 +274,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_preguntas_listar` ()   BEGIN
 	WHERE inactive_at IS NULL;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_preguntas_registrar` (IN `_idevaluacion` INT, IN `_pregunta` TEXT)   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_preguntas_registrar` (IN `_idevaluacion` INT, IN `_pregunta` TEXT, IN `_puntos` TINYINT)   BEGIN
 	INSERT INTO preguntas
-		(idevaluacion, pregunta)
+		(idevaluacion, pregunta, puntos)
     VALUES
-		(_idevaluacion,  _pregunta);
+		(_idevaluacion,  _pregunta, _puntos);
     SELECT @@last_insert_id 'idpregunta';
 END$$
 
@@ -455,7 +456,35 @@ INSERT INTO `alternativas` (`idalternativa`, `idpregunta`, `alternativa`, `escor
 (55, 33, 'Madrid', 'N', '2023-11-18 09:45:43', NULL, NULL),
 (56, 32, 'Neptuno ', 'N', '2023-11-18 09:45:43', NULL, NULL),
 (57, 33, 'París ', 'S', '2023-11-18 09:45:43', NULL, NULL),
-(58, 33, 'Roma', 'N', '2023-11-18 09:45:43', NULL, NULL);
+(58, 33, 'Roma', 'N', '2023-11-18 09:45:43', NULL, NULL),
+(59, 35, '', 'N', '2023-11-18 17:28:18', NULL, NULL),
+(60, 35, '', 'N', '2023-11-18 17:28:18', NULL, NULL),
+(61, 36, '', 'N', '2023-11-18 17:29:58', NULL, NULL),
+(62, 36, '', 'N', '2023-11-18 17:29:58', NULL, NULL),
+(63, 37, '', 'N', '2023-11-18 17:32:41', NULL, NULL),
+(64, 37, '', 'N', '2023-11-18 17:32:41', NULL, NULL),
+(65, 38, '', 'N', '2023-11-18 17:35:23', NULL, NULL),
+(66, 38, '', 'N', '2023-11-18 17:35:23', NULL, NULL),
+(67, 40, '', 'N', '2023-11-18 17:45:41', NULL, NULL),
+(68, 40, '', 'N', '2023-11-18 17:45:41', NULL, NULL),
+(69, 41, '', 'N', '2023-11-18 17:46:42', NULL, NULL),
+(70, 41, '', 'N', '2023-11-18 17:46:42', NULL, NULL),
+(71, 42, '', 'N', '2023-11-18 17:47:30', NULL, NULL),
+(72, 42, '', 'N', '2023-11-18 17:47:30', NULL, NULL),
+(73, 43, '', 'N', '2023-11-18 17:49:40', NULL, NULL),
+(74, 43, '', 'N', '2023-11-18 17:49:40', NULL, NULL),
+(75, 44, '', 'N', '2023-11-18 17:50:38', NULL, NULL),
+(76, 44, '', 'N', '2023-11-18 17:50:38', NULL, NULL),
+(77, 45, '', 'N', '2023-11-18 17:51:09', NULL, NULL),
+(78, 45, '', 'N', '2023-11-18 17:51:09', NULL, NULL),
+(79, 46, 'Alter 1', 'N', '2023-11-18 17:52:27', NULL, NULL),
+(80, 46, 'Alter 2', 'S', '2023-11-18 17:52:27', NULL, NULL),
+(81, 47, 'Alter 2', 'S', '2023-11-18 17:58:53', NULL, NULL),
+(82, 47, 'Alter 1', 'N', '2023-11-18 17:58:53', NULL, NULL),
+(83, 48, 'Hidrogeno', 'S', '2023-11-18 17:58:53', NULL, NULL),
+(84, 48, 'No se q poner', 'N', '2023-11-18 17:58:53', NULL, NULL),
+(85, 49, 'Alter 1', 'N', '2023-11-18 18:05:58', NULL, NULL),
+(86, 49, 'Alter 2', 'S', '2023-11-18 18:05:58', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -528,7 +557,21 @@ INSERT INTO `evaluaciones` (`idevaluacion`, `idcurso`, `idusuario`, `nombre_eval
 (22, 1, 1, 'Evaluacion V2', '2023-11-17 16:29:35', NULL, NULL, NULL, NULL),
 (23, 1, 1, 'Evaluacion Thunder V2', '2023-11-17 16:35:06', NULL, NULL, NULL, NULL),
 (24, 3, 1, 'Evaluación Vista V2', '2023-11-17 16:40:40', NULL, NULL, '2023-11-17 16:40:00', '2023-11-17 16:40:00'),
-(25, 3, 1, 'Testeo para las Respuestas', '2023-11-18 09:45:41', NULL, NULL, '2023-11-18 09:44:00', '2023-11-30 09:44:00');
+(25, 3, 1, 'Testeo para las Respuestas', '2023-11-18 09:45:41', NULL, NULL, '2023-11-18 09:44:00', '2023-11-30 09:44:00'),
+(26, 3, 1, 'Testeo para las Respuestas', '2023-11-18 17:28:16', NULL, NULL, '2023-11-18 17:25:00', '2023-11-18 17:25:00'),
+(27, 3, 1, 'Testeo para los puntos', '2023-11-18 17:29:56', NULL, NULL, '2023-11-18 17:29:00', '2023-11-18 17:29:00'),
+(28, 3, 1, 'Examen de Luis', '2023-11-18 17:32:40', NULL, NULL, '2023-11-18 17:31:00', '2023-11-18 17:31:00'),
+(29, 3, 1, 'Checkeo', '2023-11-18 17:33:54', NULL, NULL, '2023-11-18 17:33:00', '2023-11-18 17:33:00'),
+(30, 3, 1, 'Examen de Luis', '2023-11-18 17:35:22', NULL, NULL, '2023-11-18 17:35:00', '2023-11-18 17:35:00'),
+(31, 3, 1, 'Examen de Luis', '2023-11-18 17:45:40', NULL, NULL, '2023-11-18 17:45:00', '2023-11-18 17:45:00'),
+(32, 2, 1, 'Examen de Luis', '2023-11-18 17:46:41', NULL, NULL, '2023-11-18 17:46:00', '2023-11-18 17:46:00'),
+(33, 3, 1, 'Examen de Luis', '2023-11-18 17:47:29', NULL, NULL, '2023-11-18 17:47:00', '2023-11-18 17:47:00'),
+(34, 3, 1, 'Examen de Luis', '2023-11-18 17:49:39', NULL, NULL, '2023-11-18 17:49:00', '2023-11-18 17:49:00'),
+(35, 3, 1, 'Examen de Luis 2', '2023-11-18 17:50:37', NULL, NULL, '2023-11-18 17:50:00', '2023-11-18 17:50:00'),
+(36, 3, 1, 'Examen de Luis', '2023-11-18 17:51:08', NULL, NULL, '2023-11-18 17:50:00', '2023-11-18 17:50:00'),
+(37, 3, 1, 'Testeo para las Respuestas', '2023-11-18 17:52:26', NULL, NULL, '2023-11-18 17:52:00', '2023-11-18 17:52:00'),
+(38, 3, 1, 'Testeo Definitivo de Puntos', '2023-11-18 17:58:52', NULL, NULL, '2023-11-18 17:58:00', '2023-11-18 17:58:00'),
+(39, 3, 1, 'Ver fecha', '2023-11-18 18:05:55', NULL, NULL, '2023-11-30 18:05:00', '2023-11-18 18:05:00');
 
 -- --------------------------------------------------------
 
@@ -615,7 +658,23 @@ INSERT INTO `preguntas` (`idpregunta`, `idevaluacion`, `pregunta`, `create_at`, 
 (30, 24, '¿Cuál es el capital de Francia?', '2023-11-17 16:40:42', NULL, NULL, 4),
 (31, 25, '¿Cuáles son los dos tipos principales de energía renovable?', '2023-11-18 09:45:43', NULL, NULL, 0),
 (32, 25, '¿Cuál es la capital de Francia?', '2023-11-18 09:45:43', NULL, NULL, 0),
-(33, 25, '¿Cuáles son dos de los planetas del sistema solar con anillos?', '2023-11-18 09:45:43', NULL, NULL, 0);
+(33, 25, '¿Cuáles son dos de los planetas del sistema solar con anillos?', '2023-11-18 09:45:43', NULL, NULL, 0),
+(34, 1, 'Testeo de Puntos', '2023-11-18 17:17:48', NULL, NULL, 5),
+(35, 26, '', '2023-11-18 17:28:18', NULL, NULL, 0),
+(36, 27, '', '2023-11-18 17:29:58', NULL, NULL, 0),
+(37, 28, '', '2023-11-18 17:32:41', NULL, NULL, 0),
+(38, 30, '', '2023-11-18 17:35:23', NULL, NULL, 1),
+(39, 1, 'Testeo de Puntos 2', '2023-11-18 17:42:50', NULL, NULL, 5),
+(40, 31, '', '2023-11-18 17:45:41', NULL, NULL, 1),
+(41, 32, '', '2023-11-18 17:46:42', NULL, NULL, 1),
+(42, 33, '', '2023-11-18 17:47:30', NULL, NULL, 1),
+(43, 34, '', '2023-11-18 17:49:40', NULL, NULL, 1),
+(44, 35, '[object HTMLInputElement]', '2023-11-18 17:50:38', NULL, NULL, 1),
+(45, 36, '[object HTMLInputElement]', '2023-11-18 17:51:09', NULL, NULL, 1),
+(46, 37, '¿Cuál es el capital de Francia?', '2023-11-18 17:52:27', NULL, NULL, 1),
+(47, 38, '¿Cuáles son los dos tipos principales de energía renovable?', '2023-11-18 17:58:53', NULL, NULL, 10),
+(48, 38, '¿Cuál es el elemento químico representado por el símbolo \"H\"?', '2023-11-18 17:58:53', NULL, NULL, 10),
+(49, 39, '¿Cuál es el capital de Francia?', '2023-11-18 18:05:58', NULL, NULL, 10);
 
 -- --------------------------------------------------------
 
@@ -778,7 +837,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `alternativas`
 --
 ALTER TABLE `alternativas`
-  MODIFY `idalternativa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `idalternativa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
 -- AUTO_INCREMENT de la tabla `cursos`
@@ -790,7 +849,7 @@ ALTER TABLE `cursos`
 -- AUTO_INCREMENT de la tabla `evaluaciones`
 --
 ALTER TABLE `evaluaciones`
-  MODIFY `idevaluacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `idevaluacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT de la tabla `inscritos`
@@ -802,7 +861,7 @@ ALTER TABLE `inscritos`
 -- AUTO_INCREMENT de la tabla `preguntas`
 --
 ALTER TABLE `preguntas`
-  MODIFY `idpregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `idpregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT de la tabla `respuestas`

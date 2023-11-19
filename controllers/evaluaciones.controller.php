@@ -37,8 +37,9 @@ if (isset($_POST['operacion'])) {
 
     case 'preguntasRegistrar':
       $datos = [
-        'idevaluacion' => $_POST['idevaluacion'],
-        'pregunta'     => $_POST['pregunta']
+        'idevaluacion'  => $_POST['idevaluacion'],
+        'pregunta'      => $_POST['pregunta'],
+        'puntos'        => $_POST['puntos']
       ];
 
       echo json_encode($evaluacion->preguntasRegistrar($datos));
