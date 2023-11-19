@@ -23,12 +23,42 @@ class Inscritos extends Conexion{
 
   public function inscritosRegistrar($datos = []){
     try {
-      $consulta = $this->conexion->prepare("CALL spu_inscritos_registrar(?, ?, ?, ?)");
+      $consulta = $this->conexion->prepare("CALL spu_inscritos_registrar(?, ?)");
       $consulta->execute(
         array(
           $datos['idusuario'],
+          $datos['idevaluacion']
+        )
+      );
+      return $consulta->fetch(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function actualizar_fecha_inicio($datos = []){
+    try {
+      $consulta = $this->conexion->prepare("CALL spu_actualizar_fecha_inicio(?,?,?)");
+      $consulta->execute(
+        array(
+          $datos['idinscrito'],
           $datos['idevaluacion'],
-          $datos['fechainicio'],
+          $datos['fechainicio']
+        )
+      );
+      return $consulta->fetch(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function actualizar_fecha_fin($datos = []){
+    try {
+      $consulta = $this->conexion->prepare("CALL spu_actualizar_fecha_fin(?,?,?)");
+      $consulta->execute(
+        array(
+          $datos['idinscrito'],
+          $datos['idevaluacion'],
           $datos['fechafin']
         )
       );

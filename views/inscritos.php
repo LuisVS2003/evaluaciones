@@ -188,8 +188,6 @@
         parametros.append("operacion", "registrar");
         parametros.append("idusuario", idUsuario);
         parametros.append("idevaluacion", idEvaluacion);
-        parametros.append("fechainicio", '');
-        parametros.append("fechafin", '');
 
         fetch('../controllers/inscritos.controller.php', {
             method: 'POST',

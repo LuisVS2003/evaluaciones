@@ -54,6 +54,71 @@
       const $ = id => document.querySelector(id);
       const evaluacion = $("#form-evaluacion ol");
 
+      function obtenerFechaActual() {
+          const ahora = new Date();
+          const año = ahora.getFullYear();
+          const mes = agregarCero(ahora.getMonth() + 1);
+          const dia = agregarCero(ahora.getDate());
+          const horas = agregarCero(ahora.getHours());
+          const minutos = agregarCero(ahora.getMinutes());
+          const segundos = agregarCero(ahora.getSeconds());
+
+          return `${año}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
+        }
+        function agregarCero(numero) {
+            return numero < 10 ? '0' + numero : numero;
+        }
+        
+        //console.log(fechaActual);
+      // -------------------------------------------------------------------
+
+      function EvaluacionEmpieza(){
+        const parametros = new FormData();
+        const fechaActual = obtenerFechaActual();
+        
+        parametros.append('operacion','actualizar_fecha_inicio_evaluacion');
+        parametros.append('idinscrito',<?= $idinscrito ?>);
+        parametros.append('idevaluacion',<?= $idEvaluacion ?>);
+        parametros.append('fechainicio', fechaActual);
+
+        fetch('../controllers/inscritos.controller.php',{
+          method: 'POST',
+          body:parametros
+        })
+          .then(respuesta =>respuesta.json())
+          .then( data => {
+            console.log("hola");           
+          })
+          .catch(e =>{
+            console.error(e);
+          });
+
+      }
+
+      function EvaluacionTermina(){
+        const parametros = new FormData();
+        const fechaActual = obtenerFechaActual();
+        
+        parametros.append('operacion','actualizar_fecha_fin_evaluacion');
+        parametros.append('idinscrito',<?= $idinscrito ?>);
+        parametros.append('idevaluacion',<?= $idEvaluacion ?>);
+        parametros.append('fechafin', fechaActual);
+
+        fetch('../controllers/inscritos.controller.php',{
+          method: 'POST',
+          body:parametros
+        })
+          .then(respuesta =>respuesta.json())
+          .then( data => {
+            console.log("hola");           
+          })
+          .catch(e =>{
+            console.error(e);
+          });
+
+      }
+
+
       function preguntasListar(){
         const parametros = new FormData();
         parametros.append('operacion', 'preguntasListar');
@@ -84,6 +149,7 @@
               evaluacion.innerHTML += pregunta;
               alternativasListar(registro.idpregunta);
             });
+            
           })
           .catch(e => console.error(e));
       }
@@ -135,6 +201,7 @@
         event.preventDefault();
         
         if (confirm("¿Deseas enviar las respuestas?")) {
+          EvaluacionTermina();
           let marcado = document.querySelectorAll('input[type="radio"]:checked');
           marcado.forEach(boton => {
             respuestasRegistrar(boton.dataset.idalternativa);
@@ -149,6 +216,7 @@
       
       
       preguntasListar();
+      EvaluacionEmpieza();
     })
   </script>
 </body>
