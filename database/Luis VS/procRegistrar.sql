@@ -107,3 +107,4 @@ BEGIN
 	SELECT @@last_insert_id 'idrespuesta';
 END $$
 
+select * from usuarios

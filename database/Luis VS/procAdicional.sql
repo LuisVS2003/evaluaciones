@@ -85,7 +85,7 @@ CREATE PROCEDURE spu_respuestas_marcadas(IN _idinscrito INT)
 BEGIN
 	SELECT
 		INS.idinscrito,
-		SUM(CASE WHEN ALT.escorrecto = 'S' THEN PRG.puntos ELSE 0 END) AS 'puntos_correctos',
+		SUM(CASE WHEN ALT.escorrecto = 'S' THEN PRG.puntos ELSE 0 END) AS 'marcados',
 		SUM(CASE WHEN (ALT.escorrecto = 'N' OR ALT.escorrecto = 'S') THEN PRG.puntos ELSE 0 END) AS 'puntos_totales'
 	FROM respuestas RPT
 		INNER JOIN inscritos INS ON INS.idinscrito = RPT.idinscrito
