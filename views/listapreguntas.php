@@ -1,6 +1,7 @@
 <?php
   $idEvaluacion = $_GET['id'];
   $idinscrito = $_GET['inscrito'];
+  $idusuario = $_GET['idu'];
 ?>
 
 <!doctype html>
@@ -206,13 +207,17 @@
           marcado.forEach(boton => {
             respuestasRegistrar(boton.dataset.idalternativa);
           });
+          notificar('info','Evaluacion enviada','Ahora ya puedes ver tu nota',3);
+          setTimeout(function(){
+            window.location.href = './listar-evaluaciones.php?id=<?= $idEvaluacion ?>&idu=<?= $idusuario?>';
+          },3000);
         }
       });
 
       // Mostrar advertencia si quiere ir a la pagina anterior con la flecha del navegador, solo funciona si ha marcado al menos 1
-//       window.onbeforeunload = () => {
-//   return '¿Estás seguro de que deseas salir de esta página? Los cambios que realizaste podrían no guardarse.';
-// };
+      // window.onbeforeunload = () => {
+      //   return '¿Estás seguro de que deseas salir de esta página? Los cambios que realizaste podrían no guardarse.';
+      // };
       
       
       preguntasListar();

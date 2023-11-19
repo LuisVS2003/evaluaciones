@@ -43,66 +43,67 @@ if (isset($_SESSION['idusuario'])) {
   </script>
 
   <script>
-    document.addEventListener("DOMContentLoaded",()=>{
+    document.addEventListener("DOMContentLoaded", () => {
       const card = document.querySelector("#card-evaluaciones");
 
-      function $(id){
-        return document.querySelector(id)
+      function $(id) {
+        return document.querySelector(id);
       }
 
-      function listarEvaluaciones(){
+      function listarEvaluaciones() {
         const parametros = new FormData();
-        parametros.append("operacion","listarCurso");
-        parametros.append("idusuario",<?php echo $idUsuarioSesion; ?>)
+        parametros.append("operacion", "listarCurso");
+        parametros.append("idusuario", <?php echo $idUsuarioSesion; ?>);
 
-        fetch(`../controllers/formulario.controller.php`,{
+        fetch(`../controllers/formulario.controller.php`, {
           method: "POST",
-          body: parametros
+          body: parametros,
         })
-          .then(respuesta =>respuesta.json())
-          .then(datosRecibidos =>{
-            //para verufucar si los datos llegaron
+          .then((respuesta) => respuesta.json())
+          .then((datosRecibidos) => {
             console.log(datosRecibidos);
-            if(datosRecibidos.length == 0){
-              $("#card-evaluaciones").innerHTML = `<h1>Pronto tendremos más novedades</h1>`; 
-              
-            }else{
-              $("#card-evaluaciones").innerHTML = ``;
-              datosRecibidos.forEach(element => {
-                const p = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
 
-                const numeroAleatorio = Math.floor(Math.random() * 5 )+ 1;
-                const rutaImagen = `../images/cursos/${numeroAleatorio}.jpg`;
-                //Renderizado
-                const nuevoItem = `
-                  <div class="col-4 mb-3">
-                    <div class="card" style="width: 100%;" heigh="100%">
-                      <img src="${rutaImagen}" class="card-img-top" alt="" width="100%" height="300px">
-                      <div class="card-body">
-                        <p>2023-PIAD-${p}-TEC-NRC_...</p>
-                        <h5 class="card-title">${element.curso}</h5>
-                        <p>Abrir</p>
-                        <hr>
-                        <div class="d-grid">
-                          <a href="./listar-evaluaciones.php?id=${element.idcurso}&idu=${element.idusuario}" class="btn btn-sm btn-primary">Ver evaluaciones</a>
+            if (datosRecibidos.length === 0) {
+              $("#card-evaluaciones").innerHTML = `<h1>No tienes cursos pendientes</h1>`;
+            } else {
+              $("#card-evaluaciones").innerHTML = ``;
+              datosRecibidos.forEach((element) => {
+                if (element.idcurso === null) {
+                  $("#card-evaluaciones").innerHTML = `<h1>No tienes cursos pendientes</h1>`;
+                } else {
+                  const p = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
+                  const numeroAleatorio = Math.floor(Math.random() * 5) + 1;
+                  const rutaImagen = `../images/cursos/${numeroAleatorio}.jpg`;
+
+                  const nuevoItem = `
+                    <div class="col-4 mb-3">
+                      <div class="card" style="width: 100%;" height="100%">
+                        <img src="${rutaImagen}" class="card-img-top" alt="" width="100%" height="300px">
+                        <div class="card-body">
+                          <p>2023-PIAD-${p}-TEC-NRC_...</p>
+                          <h5 class="card-title">${element.curso}</h5>
+                          <p>Abrir</p>
+                          <hr>
+                          <div class="d-grid">
+                            <a href="./listar-evaluaciones.php?id=${element.idcurso}&idu=${element.idusuario}" class="btn btn-sm btn-primary">Ver evaluaciones</a>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
                   `;
                   $("#card-evaluaciones").innerHTML += nuevoItem;
+                }
               });
             }
           })
-          .catch(e=>{
-            console.error(e)
-          })
+          .catch((e) => {
+            console.error(e);
+          });
       }
 
       listarEvaluaciones();
-
-
-    })
+    });
   </script>
+
 </body>
 </html>
