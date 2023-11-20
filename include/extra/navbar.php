@@ -74,9 +74,10 @@ $indice = ($_SESSION["idrol"] == 1) ? "indexdocente" : "index";
       <?php
           foreach($permisos[$_SESSION["idrol"]] as $permiso){
               if($permiso != "index" && $permiso != "indexdocente" ){
+                $text = str_replace("-", " ", $permiso);
                 echo "
-                <li class='nav-item'>
-                  <a class='nav-link' href='./{$permiso}.php'>$permiso</a>
+                <li class='nav-item mx-3'>
+                  <a class='nav-link' href='./{$permiso}.php'>$text</a>
                 </li>
               ";
             }
@@ -90,35 +91,10 @@ $indice = ($_SESSION["idrol"] == 1) ? "indexdocente" : "index";
           <?= $_SESSION["apellidos"] ?>
           - <?= $_SESSION["rol"] ?>
         </a>
-        <!-- <li class="nav-item dropdown">
-          <div class="dropdown-menu" aria-labelledby="dropdownId">
-            <a class="dropdown-item" href="../controllers/usuario.controller.php?operacion=destroy">Cerrar Sessión</a> -->
-            <!-- <a class="dropdown-item" href="cambiar-pass.php">Cambiar contraseña</a> -->
-            <!-- <a class="dropdown-item" href="reporte3.php">Reporte</a> -->
-          <!-- </div>
-        </li>-->
         <a href="../../controllers/usuario.controller.php?operacion=destroy"><button class="btn btn-warning">Salir <i class="bi bi-box-arrow-right"></i></button></a>
       </ul>
     </div>
   </div>
 </nav>
-
-
-<?php
-
-  $url = $_SERVER['REQUEST_URI'];
-  $arregloURL = explode("/", $url);
-  $vistaActual = $arregloURL[count($arregloURL)-1];
-
-
-
-
-
-
-
-
-
-?>
-
 </body>
 </html>
