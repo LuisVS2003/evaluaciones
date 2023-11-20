@@ -1,5 +1,5 @@
 <?php
- require_once "../../include/extra/navbar.php";
+  require_once '../../include/extra/navbar.php';
 
 ?>
 
@@ -8,33 +8,6 @@
 <!-- Estilos de Bootstrap -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
 
-<style>
-
-  #guardar{
-    position: fixed;
-    bottom: 19vh;
-    left: 20px;
-    z-index: 3;
-    width: 10vw;
-  }
-
-  #agregar-prg{
-    position: fixed;
-    bottom: 12vh;
-    left: 20px;
-    z-index: 2;
-    width: 10vw;
-  }
-
-  #quitar-prg{
-    position: fixed;
-    bottom: 5vh;
-    left: 20px;
-    z-index: 2;
-    width: 10vw;
-  }
-
-</style>
 
 <div class="container">
   <div class="row justify-content-center">
@@ -75,14 +48,13 @@
         <div id="pregunta-render">
 
         </div>
-        <div class="row">
-          <button class="btn btn-success" type="submit" id="guardar">Guardar Evaluación</button>
-          <!-- <button class="col-3 btn btn-success" type="reset">Reiniciar Datos</button> -->
+        <div class="row mb-3">
+          <button class="col-3 btn btn-success" type="submit">Guardar Evaluación</button>
         </div>
       </form>
       <div id="config">
-        <button class="btn btn-primary agregar" id="agregar-prg">Agregar Pregunta</button>
-        <button class="btn btn-danger quitar" id="quitar-prg">Quitar Pregunta</button>
+        <button class="col-3 btn btn-primary agregar">Agregar</button>
+        <button class="col-3 btn btn-danger quitar">Quitar</button>
       </div>
     </div>
   </div>
@@ -153,10 +125,9 @@
             </div>
             <div class="row mx-5" id="alternativas-render-${i}"></div>
             <div class="row justify-content-center">
-              <button data-addalternativa="${i}" class="col-3 btn btn-warning agregar-alt me-3" type="button "><i class="bi bi-plus-circle"></i> Agregar Alternativa</button>
-              <button data-dropalternativa="${i}" class="col-3 btn btn-danger quitar-alt me-3" type="button "><i class="bi bi-dash-circle"></i> Quitar Alternativa</button>
+              <button data-addalternativa="${i}" class="col-3 btn btn-warning agregar-alt" type="button">Agregar Alternativa</button>
+              <button data-dropalternativa="${i}" class="col-3 btn btn-danger quitar-alt" type="button">Quitar Alternativa</button>
             </div>
-            <hr class="mt-3">
           </div>
         `;
 
@@ -195,7 +166,7 @@
           <div class="row">
             <div class="input-group mb-3">
               <div class="input-group-text">
-                <input class="form-check-input mt-0" type="checkbox" data-escorrecto="nom-alternativa-${numPregunta}-${numAlternativa}" id="check-${numPregunta}-${numAlternativa}">
+                <input class="form-check-input mt-0" type="radio" data-escorrecto="nom-alternativa-${numPregunta}-${numAlternativa}" id="check-${numPregunta}-${numAlternativa}" name="altern-${numPregunta}" required>
               </div>
               <input type="text" class="form-control" id="nom-alternativa-${numPregunta}-${numAlternativa}" required>
             </div>
@@ -206,10 +177,10 @@
         alternativasContainer.appendChild(section);
       }
 
-      function quitarUltimaAlternativa(i) {
+/*       function quitarUltimaAlternativa(i) {
         const ultimaAlternativa = $(`#alternativas-render-${i}`).lastElementChild;
         $(`#alternativas-render-${i}`).removeChild(ultimaAlternativa);
-      }
+      } */
 
       function quitarUltimaAlternativa(i) {
         const nAlternativas = $(`#alternativas-render-${i}`);
@@ -259,7 +230,7 @@
             
             for(let i = 1; i <= cantidadPreguntas; i++){
               preguntasRegistrar(idEvaluacion, i);
-              console.log(idEvaluacion, i);
+              // console.log(idEvaluacion, i);
             }
           })
           .catch(e => {
@@ -284,12 +255,14 @@
           .then(respuesta => respuesta.json())
           .then(datos => {
             // console.log(datos);
-            let numeroAlternativa = $(`#alternativas-render-${numeroPregunta}`).children.length;
-            for(let i = 1; i <= numeroAlternativa; i++){
-              const altCorrecta = ($(`#check-${numeroPregunta}-${i}`).checked) ? 'S' : 'N';
-              alternativasRegistrar(datos.idpregunta, i, altCorrecta, contadorRegistro);
-            }
-            
+            let = numeroAlternativa = 2;
+            numeroAlternativa = $(`#alternativas-render-${numeroPregunta}`).children.length;
+
+              for(let i = 1; i <= numeroAlternativa; i++){
+                const altCorrecta = ($(`#check-${numeroPregunta}-${i}`).checked) ? 'S' : 'N';
+                alternativasRegistrar(datos.idpregunta, i, altCorrecta, contadorRegistro);
+                // console.log(datos.idpregunta, i, altCorrecta, contadorRegistro);
+              }
             contadorRegistro++;
           })
           .catch(e => {
@@ -298,8 +271,8 @@
       }
 
       function alternativasRegistrar(idPregunta, idAlt, escorrecto, nPregunta){
-        const alternativa = $(`#nom-alternativa-${nPregunta}-${idAlt}`).value;
-        // console.log(alternativa);
+        const alternativa = ($(`#nom-alternativa-${nPregunta}-${idAlt}`).value != null) ? $(`#nom-alternativa-${nPregunta}-${idAlt}`).value : 'Tuvimos Problemas';
+        // console.log(idPregunta, idAlt, escorrecto, nPregunta, alternativa);
 
         const parametros = new FormData();
         parametros.append('operacion', 'alternativasRegistrar');
@@ -349,7 +322,7 @@
       function fechaValidar() {
         var inicio = $("#inicio-evaluacion").value;
         var fin = $("#fin-evaluacion").value;
-        console.log(inicio, fin);
+        // console.log(inicio, fin);
         if (inicio >= fin) {
           $("#fin-evaluacion").setCustomValidity('La fecha de fin debe ser mayor que la fecha de inicio');
         } else {
@@ -373,14 +346,6 @@
       preguntasRenderEntrada(contador);
       contador++;
       fechaValidar();
-
-      
-
-        /* PARAMETROS SOLO TEXT */
-        var solotext = ["nom-evaluacion"];
-        for (var i = 0; i < solotext.length; i++) {
-            document.getElementById(solotext[i]).setAttribute("onkeypress", "return /[a-z A-ZñÑ]/g.test(event.key)")
-        }
     })
   </script>
 
