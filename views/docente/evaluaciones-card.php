@@ -203,6 +203,7 @@
           })
             .then(respuesta => respuesta.json())
             .then(datos => {
+              console.log(datos);
               $(`#nota-${idInscrito}`).innerHTML = '';
               if (datos.length == 0) {
                   $(`#nota-${idInscrito}`).innerHTML = ' --- ';
