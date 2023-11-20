@@ -70,7 +70,7 @@ if (isset($_SESSION['idusuario'])) {
               } else {
                 const p = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
                 const numeroAleatorio = Math.floor(Math.random() * 5) + 1;
-                const rutaImagen = `../images/cursos/${numeroAleatorio}.jpg`;
+                const rutaImagen = `../../images/cursos/${element.curso}.jpg`;
 
                 const nuevoItem = `
                   <div class="col-4 mb-3">
