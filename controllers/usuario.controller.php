@@ -50,9 +50,9 @@ if(isset($_POST['operacion'])){
         'apellidos' => $_POST['apellidos'],
         'nombres' => $_POST['nombres'],
         'correo' => $_POST['correo'],
-        'claveacceso' => $_POST['claveacceso']
+        'claveacceso' => password_hash($_POST['claveacceso'], PASSWORD_BCRYPT)
       ];
-      $datosEnviar['claveacceso'] = password_hash($datosEnviar['claveacceso'], PASSWORD_BCRYPT);
+       
 
       echo json_encode($usuario->registrarUsuario($datosEnviar));
       break;

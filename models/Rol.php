@@ -1,23 +1,28 @@
-<? 
+<?php
 
 require_once 'Conexion.php';
 
 class Rol extends Conexion{
-  private $conexion;
+  private $rol;
 
-  // Instancia de la conexcion
   public function __CONSTRUCT(){
-    $this->conexion = parent::getConexion();
+    $this->rol = parent::getConexion();
   }
 
-  public function listar(){
+  
+
+  public function listarRoles(){
     try {
-      $consulta = $this->conexion->prepare("Falta la base de datos");
+      $consulta = $this->rol->prepare("CALL spu_roles_listar()");
       $consulta->execute();
       return $consulta->fetchAll(PDO::FETCH_ASSOC);
-    } 
-    catch (Exception $e) {
-      die ($e->getMessage());
+    }
+    catch(Exception $e){
+      die($e->getMessage());
     }
   }
+
+
 }
+
+  

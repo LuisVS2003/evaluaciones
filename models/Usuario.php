@@ -26,7 +26,7 @@ class Usuario extends Conexion{
 
   public function registrarUsuario($datos = []){
     try {
-      $consulta = $this->conexion->prepare("CALL spu_registrar_usuario(?, ?, ?, ?, ?)");
+      $consulta = $this->conexion->prepare("CALL spu_usuario_registrar(?, ?, ?, ?, ?)");
       $consulta->execute(
         array(
           $datos['idrol'],

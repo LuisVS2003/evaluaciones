@@ -1,6 +1,6 @@
 <?php
 
-require_once '../models/Conexion.php';
+require_once 'Conexion.php';
 
 class Restablecer extends Conexion{
     private $conexion;
