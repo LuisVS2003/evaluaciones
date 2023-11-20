@@ -11,7 +11,8 @@ require_once '../models/Restablecer.php';
 //Generamos un numero aleatorio.
 $tokens = random_int(100000, 999999);
 
-require_once 'PHPMailer.php';
+require_once './PHPMailer.php';
+
 
   
 
@@ -35,5 +36,6 @@ if (isset($_POST['operacion'])) {
 
   }
 }
+
 
 

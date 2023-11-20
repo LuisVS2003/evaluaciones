@@ -1,7 +1,7 @@
 <?php
 require '../vendor/autoload.php';
 
-
+//require './EnviarTokens.php';
 
 // function enviarMail($emailDestino = "", $asunto = "", $mensaje = ""){
 
@@ -13,12 +13,13 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 //Load Composer's autoloader
-require '../vendor/autoload.php';
+//require '../vendor/autoload.php';
 
 //Create an instance; passing `true` enables exceptions
 
 //Requerimiento:
 
+require './EnviarTokens.php';
 
 //$tokens = random_int(100000,999999);
 
