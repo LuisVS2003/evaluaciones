@@ -1,6 +1,6 @@
 use evaluaciones;
 
-select * from usuarios;
+select * from evaluaciones;
 select * from roles;
 
 DELIMITER $$

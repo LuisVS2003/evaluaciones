@@ -1,13 +1,40 @@
+USE evaluaciones;
+-- ROLES
+INSERT INTO roles(rol) VALUES ('Docente'),('Estudiante');
+
+-- CALL spu_roles_listar();
+
+-- ##########################################################################################################################
+-- CURSOS
+CALL spu_cursos_registrar('Electricidad Industrial');
+CALL spu_cursos_registrar('Mecánica Automotriz');
+CALL spu_cursos_registrar('Ing. de Software con IA');
+CALL spu_cursos_registrar('Soldadura Avanzada');
+CALL spu_cursos_registrar('Gestión de Empresas');
+
+-- CALL spu_cursos_listar();
+
+-- ##########################################################################################################################
+-- USUARIOS - CLAVE: senati123
+CALL spu_usuario_registrar(1, 'González', 'Juan', 'juan.gonzalez@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK');
+CALL spu_usuario_registrar(2, 'Martínez', 'Ana', 'ana.martinez@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK');
+CALL spu_usuario_registrar(2, 'Rodríguez', 'Pedro', 'pedro.rodriguez@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK');
+CALL spu_usuario_registrar(2, 'Sánchez', 'Laura', 'laura.sanchez@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK');
+CALL spu_usuario_registrar(2, 'Díaz', 'Carlos', 'carlos.diaz@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK');
 
 -- EVALUACIONES
-CALL spu_evaluaciones_registrar(1, 'Fundamentos Eléctricos Industriales', '2023-11-12 10:00:00', '2023-11-15 18:00:00');
-CALL spu_evaluaciones_registrar(2, 'Mantenimiento Automotriz', '2023-11-16 09:00:00', '2023-11-18 16:00:00');
-CALL spu_evaluaciones_registrar(3, 'Desarrollo de Software con Inteligencia Artificial', '2023-11-19 14:00:00', '2023-11-21 20:00:00');
-CALL spu_evaluaciones_registrar(4, 'Técnicas Avanzadas de Soldadura:', '2023-11-22 11:00:00', '2023-11-24 18:00:00');
-CALL spu_evaluaciones_registrar(5, 'Evaluación de Gestión Avanzada de Proyectos:', '2023-11-25 13:00:00', '2023-11-27 17:00:00');
+CALL spu_evaluaciones_registrar(1, 2,'Fundamentos Eléctricos Industriales',  NULL, NULL);
+CALL spu_evaluaciones_registrar(2, 3,'Mantenimiento Automotriz',  NULL, NULL);
+CALL spu_evaluaciones_registrar(3, 4,'Desarrollo de Software con Inteligencia Artificial',  NULL, NULL);
+CALL spu_evaluaciones_registrar(4, 5,'Técnicas Avanzadas de Soldadura',  NULL, NULL);
+CALL spu_evaluaciones_registrar(5, 5,'Gestión Avanzada de Proyectos',  NULL, NULL);
 
-
-
+select * from usuarios;
+-- INSCRITOS
+CALL spu_inscritos_registrar(2, 1, '2023-11-12 10:00:00', '2023-11-15 18:00:00');
+CALL spu_inscritos_registrar(3, 1, '2023-11-13 11:30:00', '2023-11-16 20:30:00');
+CALL spu_inscritos_registrar(4, 2, '2023-11-14 09:45:00', '2023-11-17 17:45:00');
+CALL spu_inscritos_registrar(5, 3, '2023-11-15 13:15:00', '2023-11-18 22:15:00');
 
 -- PREGUNTAS Electricidad Industrial
 CALL spu_preguntas_registrar(1, '¿Cuáles son los principios fundamentales de la electricidad industrial?');
@@ -47,7 +74,7 @@ CALL spu_preguntas_registrar(5, '¿Cuál es la diferencia entre gestión de proy
 -- ALTERNATIVAS Electricidad Industrial
 CALL spu_alternativas_registrar(1, 'Ley de Newton', 'N');
 CALL spu_alternativas_registrar(1, 'Ley de Ohm', 'S');
-CALL spu_alternativas_registrar(1, 'Principio de Arquímedes', 'S');
+CALL spu_alternativas_registrar(1, 'Principio de Arquímedes', 'N');
 CALL spu_alternativas_registrar(2, 'Generadores solares', 'N');
 CALL spu_alternativas_registrar(2, 'Centrales nucleares', 'N');
 CALL spu_alternativas_registrar(2, 'Centrales eléctricas', 'S');
@@ -130,9 +157,26 @@ CALL spu_alternativas_registrar(25, 'Ignorar el rendimiento del equipo', 'N');
 CALL spu_alternativas_registrar(25, 'Recompensas aleatorias', 'N');
 
 
+select * from evaluaciones;
+DELETE FROM roles;
+ALTER TABLE roles AUTO_INCREMENT 1;
 
+DELETE FROM usuarios;
+ALTER TABLE usuarios AUTO_INCREMENT 1;
+DELETE FROM evaluaciones;
+ALTER TABLE evaluaciones AUTO_INCREMENT 1;
+DELETE FROM preguntas;
+ALTER TABLE preguntas AUTO_INCREMENT 1;
+DELETE FROM alternativas;
+ALTER TABLE alternativas AUTO_INCREMENT 1;
+DELETE FROM respuestas;
+ALTER TABLE respuestas AUTO_INCREMENT 1;
+DELETE FROM inscritos;
+ALTER TABLE inscritos AUTO_INCREMENT 1;
+DELETE FROM cursos;
+ALTER TABLE  cursos AUTO_INCREMENT 1;
 
-
-
+-- Volver a activar la restricción de clave externa
+SET foreign_key_checks = 1;
 
 

@@ -86,7 +86,7 @@ if (isset($_SESSION['idusuario'])) {
                     </div>
                   `;
                   $("#card-evaluaciones").innerHTML += nuevoItem;
-                }
+                
               });
             }
           })
@@ -97,6 +97,7 @@ if (isset($_SESSION['idusuario'])) {
 
       listarEvaluaciones();
     });
+  
   </script>
 
 </body>

@@ -345,6 +345,14 @@
       preguntasRenderEntrada(contador);
       contador++;
       fechaValidar();
+
+      
+
+        /* PARAMETROS SOLO TEXT */
+        var solotext = ["nom-evaluacion"];
+        for (var i = 0; i < solotext.length; i++) {
+            document.getElementById(solotext[i]).setAttribute("onkeypress", "return /[a-z A-ZñÑ]/g.test(event.key)")
+        }
     })
   </script>
 
