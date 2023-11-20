@@ -2,6 +2,8 @@
 
 require_once '../models/Evaluacion.php';
 
+require_once 'filtro.php';
+
 if (isset($_POST['operacion'])) {
   $evaluacion = new Evaluacion();
 
@@ -27,7 +29,7 @@ if (isset($_POST['operacion'])) {
       $datos = [
         'idcurso'           => $_POST['idcurso'],
         'idusuario'         => $_POST['idusuario'],
-        'nombre_evaluacion' => $_POST['nombre_evaluacion'],
+        'nombre_evaluacion' => filtrarMejorado($_POST['nombre_evaluacion']),
         'fechainicio'       => $_POST['fechainicio'],
         'fechafin'          => $_POST['fechafin']
       ];
@@ -38,8 +40,8 @@ if (isset($_POST['operacion'])) {
     case 'preguntasRegistrar':
       $datos = [
         'idevaluacion'  => $_POST['idevaluacion'],
-        'pregunta'      => $_POST['pregunta'],
-        'puntos'        => $_POST['puntos']
+        'pregunta'      => filtrarMejorado($_POST['pregunta']),
+        'puntos'        => filtrarMejorado($_POST['puntos'])
       ];
 
       echo json_encode($evaluacion->preguntasRegistrar($datos));
@@ -48,7 +50,7 @@ if (isset($_POST['operacion'])) {
     case 'alternativasRegistrar':
       $datos = [
         'idpregunta' => $_POST['idpregunta'],
-        'alternativa' => $_POST['alternativa'],
+        'alternativa' => filtrarMejorado($_POST['alternativa']),
         'escorrecto' => $_POST['escorrecto']
       ];
 
