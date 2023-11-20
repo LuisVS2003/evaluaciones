@@ -78,7 +78,7 @@
               if(data.acceso == true){
                 bienvenida(`¡Inicio de Sesión Exitoso!`);
                 setTimeout(function(){
-                  window.location.href = './include/extra/redireccionar.php';
+                  window.location.href = './views/';
                 },2000);               
               }else{
                 notificar('error','Acceso denegado','Vuelva a intentarlo',2);

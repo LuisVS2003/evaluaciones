@@ -91,7 +91,7 @@ BEGIN
     SELECT @@last_insert_id 'idusuario';
 END $$
 
--- CALL spu_usuario_registrar('2', 'Villegas Salazar', 'Luis', 'villegasalazar08@gmail.com', '$2y$10$agTIMGR8DG68EJM9qzCxm.AefDUj4wEGJawA6JZB6w9LhUvrYqomm');
+-- CALL spu_usuario_registrar('1', 'Villegas Salazar', 'Luis', 'villegasalazar08@gmail.com', '$2y$10$agTIMGR8DG68EJM9qzCxm.AefDUj4wEGJawA6JZB6w9LhUvrYqomm');
 
 -- ##########################################################################################################################
 DELIMITER $$
@@ -107,4 +107,4 @@ BEGIN
 	SELECT @@last_insert_id 'idrespuesta';
 END $$
 
-select * from usuarios
+select * from alternativas

@@ -8,6 +8,33 @@
 <!-- Estilos de Bootstrap -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
 
+<style>
+
+  #guardar{
+    position: fixed;
+    bottom: 19vh;
+    left: 20px;
+    z-index: 3;
+    width: 10vw;
+  }
+
+  #agregar-prg{
+    position: fixed;
+    bottom: 12vh;
+    left: 20px;
+    z-index: 2;
+    width: 10vw;
+  }
+
+  #quitar-prg{
+    position: fixed;
+    bottom: 5vh;
+    left: 20px;
+    z-index: 2;
+    width: 10vw;
+  }
+
+</style>
 
 <div class="container">
   <div class="row justify-content-center">
@@ -49,13 +76,13 @@
 
         </div>
         <div class="row">
-          <button class="col-3 btn btn-success" type="submit">Guardar Evaluación</button>
-          <button class="col-3 btn btn-success" type="reset">Reiniciar Datos</button>
+          <button class="btn btn-success" type="submit" id="guardar">Guardar Evaluación</button>
+          <!-- <button class="col-3 btn btn-success" type="reset">Reiniciar Datos</button> -->
         </div>
       </form>
       <div id="config">
-        <button class="col-3 btn btn-primary agregar">Agregar</button>
-        <button class="col-3 btn btn-danger quitar">Quitar</button>
+        <button class="btn btn-primary agregar" id="agregar-prg">Agregar Pregunta</button>
+        <button class="btn btn-danger quitar" id="quitar-prg">Quitar Pregunta</button>
       </div>
     </div>
   </div>
