@@ -212,6 +212,7 @@
               notificar('info','Evaluacion enviada','Ahora ya puedes ver tu nota',3);
               setTimeout(function(){
                 window.location.href = './listar-evaluaciones.php?id=<?= $idEvaluacion ?>&idu=<?= $idusuario?>';
+                //window.location.href = './listar-evaluaciones.php?id=<?= $idEvaluacion ?>&idu=<?= $idusuario?>';
               },3000);
 
             }
