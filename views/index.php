@@ -8,5 +8,5 @@ if ($_SESSION['idrol'] == 1) {
 } elseif ($_SESSION['idrol'] == 2) {
   header("Location: ./estudiante/index.php");
 } else {
-  echo "<h1>ERROR</h1>";
+  header("Location: ../");
 }

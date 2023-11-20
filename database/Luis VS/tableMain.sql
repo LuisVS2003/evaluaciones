@@ -105,3 +105,4 @@ CREATE TABLE respuestas(
 	CONSTRAINT fk_idalternativa_resp FOREIGN KEY (idalternativa) REFERENCES alternativas (idalternativa)
 )ENGINE = INNODB;
 
+select * from usuarios;
