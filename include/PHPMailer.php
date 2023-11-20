@@ -72,6 +72,6 @@ function enviarEmail($correo,$tokens){
   
 }
 
-$resultado = enviarEmail('efrainqn16@gmail.com','123456');
+$resultado = enviarEmail($correo,$tokens);
 
 
