@@ -1,0 +1,46 @@
+.nav-item {
+    text-transform: uppercase;
+  }
+
+  .navbar-brand {
+    font-weight: bold;
+  }
+
+  .navbar-toggler-icon {
+    background-color: #fff; /* Color del icono del botón de navegación */
+  }
+
+  .navbar-nav {
+    align-items: center;
+  }
+
+  .navbar-brand,
+  .navbar-nav a {
+    color: #fff; /* Color del texto en la barra de navegación */
+  }
+
+  .navbar-nav a:hover {
+    color: #ffc107; /* Cambiar color al pasar el ratón sobre los enlaces */
+  }
+
+  .navbar-toggler {
+    border: none; /* Eliminar borde del botón de navegación en pantallas pequeñas */
+  }
+
+  .navbar-toggler:focus {
+    outline: none; /* Eliminar contorno al hacer clic en el botón de navegación */
+  }
+
+  .user-icon {
+    margin-right: 5px; /* Espaciado entre el ícono del usuario y el texto */
+  }
+
+  .user-info {
+    font-size: 0.9rem; /* Tamaño de fuente de la información del usuario */
+  }
+
+  .nav-item{
+    text-transform: uppercase;
+  }
+
+  

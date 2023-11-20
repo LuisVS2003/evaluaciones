@@ -50,11 +50,13 @@ $indice = ($_SESSION["idrol"] == 1) ? "indexdocente" : "index";
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-  <link rel="icon" type="image/png"  href="../images/icon-web.png">
+  <link rel="icon" type="image/png"  href="../../images/icon-web.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  
   
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+  <link rel="stylesheet" href="style.css">
 
   <style>
     .nav-item{
@@ -65,7 +67,7 @@ $indice = ($_SESSION["idrol"] == 1) ? "indexdocente" : "index";
 </head>
 <body>
   
-<nav class="navbar navbar-expand-sm navbar-dark bg-secondary mb-3 fijado">
+<nav class="navbar navbar-expand-sm navbar-dark bg-success mb-3 fijado">
   <div class="container">
    
     <a class="navbar-brand" href="./<?= $indice ?>.php">EVALUACIONES</a>
@@ -90,6 +92,7 @@ $indice = ($_SESSION["idrol"] == 1) ? "indexdocente" : "index";
       </ul>
       <ul class="navbar-nav">
         <a class="nav-link" href="#" id="dropdownId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="bi bi-person"></i>
           <?= $_SESSION["nombres"] ?>
           <?= $_SESSION["apellidos"] ?>
           - <?= $_SESSION["rol"] ?>
