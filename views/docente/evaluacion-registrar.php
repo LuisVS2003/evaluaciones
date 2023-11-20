@@ -153,9 +153,10 @@
             </div>
             <div class="row mx-5" id="alternativas-render-${i}"></div>
             <div class="row justify-content-center">
-              <button data-addalternativa="${i}" class="col-3 btn btn-warning agregar-alt" type="button">Agregar Alternativa</button>
-              <button data-dropalternativa="${i}" class="col-3 btn btn-danger quitar-alt" type="button">Quitar Alternativa</button>
+              <button data-addalternativa="${i}" class="col-3 btn btn-warning agregar-alt me-3" type="button "><i class="bi bi-plus-circle"></i> Agregar Alternativa</button>
+              <button data-dropalternativa="${i}" class="col-3 btn btn-danger quitar-alt me-3" type="button "><i class="bi bi-dash-circle"></i> Quitar Alternativa</button>
             </div>
+            <hr class="mt-3">
           </div>
         `;
 
