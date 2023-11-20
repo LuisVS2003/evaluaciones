@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-11-2023 a las 06:27:47
+-- Tiempo de generación: 20-11-2023 a las 04:53:42
 -- Versión del servidor: 10.4.24-MariaDB
 -- Versión de PHP: 8.1.6
 
@@ -80,6 +80,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_buscar_correo` (IN `_correo` VA
     FROM usuarios
     WHERE correo = _correo;
 END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_buscar_inscrito` (IN `_idusuario` INT, IN `_idevaluacion` INT)   begin
+	select * from inscritos
+    where idusuario = _idusuario and idevaluacion = _idevaluacion;
+end$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_buscar_token` (IN `_correo` VARCHAR(90), IN `_token` VARCHAR(6))   BEGIN
     SELECT *
@@ -320,15 +325,16 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_respuestas_marcadas` (IN `_idinscrito` INT)   BEGIN
 	SELECT
-		RPT.idrespuesta, INS.idinscrito,
-        ALT.idalternativa, ALT.idpregunta, ALT.escorrecto,
-        PRG.puntos
-    FROM respuestas RPT
+		INS.idinscrito,
+		SUM(CASE WHEN ALT.escorrecto = 'S' THEN PRG.puntos ELSE 0 END) AS 'marcados',
+		SUM(CASE WHEN (ALT.escorrecto = 'N' OR ALT.escorrecto = 'S') THEN PRG.puntos ELSE 0 END) AS 'puntos_totales'
+	FROM respuestas RPT
 		INNER JOIN inscritos INS ON INS.idinscrito = RPT.idinscrito
-        INNER JOIN alternativas ALT ON ALT.idalternativa = RPT.idalternativa
-        INNER JOIN preguntas PRG ON PRG.idpregunta = ALT.idpregunta
-	WHERE 	RPT.idinscrito = _idinscrito AND
-			ALT.escorrecto = 'S';
+		INNER JOIN alternativas ALT ON ALT.idalternativa = RPT.idalternativa
+		INNER JOIN preguntas PRG ON PRG.idpregunta = ALT.idpregunta
+	WHERE
+		RPT.idinscrito = _idinscrito
+	GROUP BY INS.idinscrito;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_respuestas_registrar` (IN `_idinscrito` INT, IN `_idalternativa` INT)   BEGIN
@@ -411,92 +417,81 @@ CREATE TABLE `alternativas` (
 --
 
 INSERT INTO `alternativas` (`idalternativa`, `idpregunta`, `alternativa`, `escorrecto`, `create_at`, `update_at`, `inactive_at`) VALUES
-(1, 1, 'Corriente', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(2, 1, 'Resistencia', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(3, 1, 'Voltaje', 'S', '2023-11-12 09:07:26', NULL, NULL),
-(4, 2, 'Condensador', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(5, 2, 'Resistor', 'S', '2023-11-12 09:07:26', NULL, NULL),
-(6, 2, 'Inductor', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(7, 3, 'Amperio', 'S', '2023-11-12 09:07:26', NULL, NULL),
-(8, 3, 'Ohmio', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(9, 3, 'Voltio', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(10, 4, 'Gasolina', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(11, 4, 'Diesel', 'S', '2023-11-12 09:07:26', NULL, NULL),
-(12, 4, 'Etanol', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(13, 5, 'Propulsor', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(14, 5, 'Frenos', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(15, 5, 'Escape', 'S', '2023-11-12 09:07:26', NULL, NULL),
-(16, 6, 'Herencia', 'S', '2023-11-12 09:07:26', NULL, NULL),
-(17, 6, 'Polimorfismo', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(18, 6, 'Encapsulamiento', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(19, 7, 'Java Virtual Machine', 'S', '2023-11-12 09:07:26', NULL, NULL),
-(20, 7, 'Java Virtual Memory', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(21, 7, 'Java Variable Method', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(22, 8, 'int x = 10;', 'S', '2023-11-12 09:07:26', NULL, NULL),
-(23, 8, 'String name = \"John\";', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(24, 8, 'boolean flag = true;', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(25, 9, 'True', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(26, 9, 'False', 'S', '2023-11-12 09:07:26', NULL, NULL),
-(27, 9, 'Null', 'N', '2023-11-12 09:07:26', NULL, NULL),
-(28, 10, 'A Test Thunder', 'N', '2023-11-13 09:30:08', NULL, NULL),
-(29, 10, 'B Test Thunder', 'S', '2023-11-13 09:30:19', NULL, NULL),
-(30, 11, 'p', 'S', '2023-11-15 12:51:00', NULL, NULL),
-(31, 11, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
-(32, 11, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
-(33, 12, 'p', 'S', '2023-11-15 12:51:00', NULL, NULL),
-(34, 12, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
-(35, 13, 'p', 'S', '2023-11-15 12:51:00', NULL, NULL),
-(36, 13, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
-(37, 13, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
-(38, 14, 'p', 'S', '2023-11-15 12:51:00', NULL, NULL),
-(39, 14, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
-(40, 14, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
-(41, 12, 'p', 'N', '2023-11-15 12:51:00', NULL, NULL),
-(42, 28, 'Alter 1', 'N', '2023-11-16 19:13:06', NULL, NULL),
-(43, 28, 'Alter 2', 'S', '2023-11-16 19:13:06', NULL, NULL),
-(44, 28, 'Alter 3', 'N', '2023-11-16 19:13:06', NULL, NULL),
-(45, 29, 'Hidrogeno', 'S', '2023-11-16 19:13:06', NULL, NULL),
-(46, 29, 'No se q poner', 'N', '2023-11-16 19:13:06', NULL, NULL),
-(47, 30, 'Europa', 'N', '2023-11-17 16:40:42', NULL, NULL),
-(48, 30, 'Paris', 'S', '2023-11-17 16:40:42', NULL, NULL),
-(49, 31, 'Solar ', 'S', '2023-11-18 09:45:43', NULL, NULL),
-(50, 31, 'Eólica ', 'S', '2023-11-18 09:45:43', NULL, NULL),
-(51, 31, 'Nuclear', 'N', '2023-11-18 09:45:43', NULL, NULL),
-(52, 32, 'Júpiter', 'N', '2023-11-18 09:45:43', NULL, NULL),
-(53, 31, 'Petróleo', 'N', '2023-11-18 09:45:43', NULL, NULL),
-(54, 32, 'Saturno ', 'S', '2023-11-18 09:45:43', NULL, NULL),
-(55, 33, 'Madrid', 'N', '2023-11-18 09:45:43', NULL, NULL),
-(56, 32, 'Neptuno ', 'N', '2023-11-18 09:45:43', NULL, NULL),
-(57, 33, 'París ', 'S', '2023-11-18 09:45:43', NULL, NULL),
-(58, 33, 'Roma', 'N', '2023-11-18 09:45:43', NULL, NULL),
-(59, 35, '', 'N', '2023-11-18 17:28:18', NULL, NULL),
-(60, 35, '', 'N', '2023-11-18 17:28:18', NULL, NULL),
-(61, 36, '', 'N', '2023-11-18 17:29:58', NULL, NULL),
-(62, 36, '', 'N', '2023-11-18 17:29:58', NULL, NULL),
-(63, 37, '', 'N', '2023-11-18 17:32:41', NULL, NULL),
-(64, 37, '', 'N', '2023-11-18 17:32:41', NULL, NULL),
-(65, 38, '', 'N', '2023-11-18 17:35:23', NULL, NULL),
-(66, 38, '', 'N', '2023-11-18 17:35:23', NULL, NULL),
-(67, 40, '', 'N', '2023-11-18 17:45:41', NULL, NULL),
-(68, 40, '', 'N', '2023-11-18 17:45:41', NULL, NULL),
-(69, 41, '', 'N', '2023-11-18 17:46:42', NULL, NULL),
-(70, 41, '', 'N', '2023-11-18 17:46:42', NULL, NULL),
-(71, 42, '', 'N', '2023-11-18 17:47:30', NULL, NULL),
-(72, 42, '', 'N', '2023-11-18 17:47:30', NULL, NULL),
-(73, 43, '', 'N', '2023-11-18 17:49:40', NULL, NULL),
-(74, 43, '', 'N', '2023-11-18 17:49:40', NULL, NULL),
-(75, 44, '', 'N', '2023-11-18 17:50:38', NULL, NULL),
-(76, 44, '', 'N', '2023-11-18 17:50:38', NULL, NULL),
-(77, 45, '', 'N', '2023-11-18 17:51:09', NULL, NULL),
-(78, 45, '', 'N', '2023-11-18 17:51:09', NULL, NULL),
-(79, 46, 'Alter 1', 'N', '2023-11-18 17:52:27', NULL, NULL),
-(80, 46, 'Alter 2', 'S', '2023-11-18 17:52:27', NULL, NULL),
-(81, 47, 'Alter 2', 'S', '2023-11-18 17:58:53', NULL, NULL),
-(82, 47, 'Alter 1', 'N', '2023-11-18 17:58:53', NULL, NULL),
-(83, 48, 'Hidrogeno', 'S', '2023-11-18 17:58:53', NULL, NULL),
-(84, 48, 'No se q poner', 'N', '2023-11-18 17:58:53', NULL, NULL),
-(85, 49, 'Alter 1', 'N', '2023-11-18 18:05:58', NULL, NULL),
-(86, 49, 'Alter 2', 'S', '2023-11-18 18:05:58', NULL, NULL);
+(1, 1, 'Principio de Arquímedes', 'S', '2023-11-19 19:09:35', NULL, NULL),
+(2, 2, 'Generadores solares', 'N', '2023-11-19 19:09:35', NULL, NULL),
+(3, 1, 'Ley de Newton', 'N', '2023-11-19 19:09:35', NULL, NULL),
+(4, 2, 'Centrales eléctricas', 'S', '2023-11-19 19:09:35', NULL, NULL),
+(5, 4, 'Relación entre masa y energía', 'S', '2023-11-19 19:09:35', NULL, NULL),
+(6, 4, 'Relación entre masa y efolio', 'N', '2023-11-19 19:09:35', NULL, NULL),
+(7, 4, 'Principio de conservación de la carga', 'N', '2023-11-19 19:09:35', NULL, NULL),
+(8, 3, 'Conectores USB', 'N', '2023-11-19 19:09:35', NULL, NULL),
+(9, 2, 'Centrales nucleares', 'N', '2023-11-19 19:09:35', NULL, NULL),
+(10, 1, 'Ley de Ohm', 'N', '2023-11-19 19:09:35', NULL, NULL),
+(11, 5, 'Potencia = Corriente × Voltaje', 'S', '2023-11-19 19:09:35', NULL, NULL),
+(12, 3, 'Relés térmicos', 'S', '2023-11-19 19:09:35', NULL, NULL),
+(13, 5, 'Potencia = Masa × Aceleración', 'N', '2023-11-19 19:09:35', NULL, NULL),
+(14, 3, 'Tubos de vacío', 'N', '2023-11-19 19:09:35', NULL, NULL),
+(15, 5, 'Potencia = Tensión × Resistencia', 'N', '2023-11-19 19:09:35', NULL, NULL),
+(16, 8, 'Sistema de escape', 'N', '2023-11-19 19:13:05', NULL, NULL),
+(17, 8, 'Frenos de disco y pastillas de freno', 'S', '2023-11-19 19:13:05', NULL, NULL),
+(18, 8, 'Cinturones de seguridad', 'N', '2023-11-19 19:13:05', NULL, NULL),
+(19, 7, 'Proceso de combustión en el motor', 'S', '2023-11-19 19:13:05', NULL, NULL),
+(20, 7, 'Ciclo lunar', 'N', '2023-11-19 19:13:05', NULL, NULL),
+(21, 6, 'Lectura de hoja de vida del vehículo', 'N', '2023-11-19 19:13:05', NULL, NULL),
+(22, 7, 'Mecanismos de dirección', 'N', '2023-11-19 19:13:05', NULL, NULL),
+(23, 9, 'Drenaje de aceite usado y reemplazo de filtro', 'S', '2023-11-19 19:13:05', NULL, NULL),
+(24, 9, 'Cambio de neumáticos', 'N', '2023-11-19 19:13:05', NULL, NULL),
+(25, 10, 'Equipos de alineación láser', 'S', '2023-11-19 19:13:05', NULL, NULL),
+(26, 10, 'Martillo y destornillador', 'N', '2023-11-19 19:13:05', NULL, NULL),
+(27, 6, 'Pruebas de velocidad máxima', 'N', '2023-11-19 19:13:05', NULL, NULL),
+(28, 6, 'Análisis de vibraciones', 'S', '2023-11-19 19:13:05', NULL, NULL),
+(29, 10, 'Herramientas de jardín', 'N', '2023-11-19 19:13:05', NULL, NULL),
+(30, 9, 'Pintura exterior', 'N', '2023-11-19 19:13:05', NULL, NULL),
+(31, 11, 'Diseño gráfico', 'N', '2023-11-19 19:18:36', NULL, NULL),
+(32, 11, 'Gestión de recursos humanos', 'N', '2023-11-19 19:18:36', NULL, NULL),
+(33, 11, 'Automatización de tareas de desarrollo', 'S', '2023-11-19 19:18:36', NULL, NULL),
+(34, 12, 'Proceso de enseñanza-aprendizaje automático', 'S', '2023-11-19 19:18:36', NULL, NULL),
+(35, 13, 'Ética en el uso de datos de usuario', 'S', '2023-11-19 19:18:36', NULL, NULL),
+(36, 13, 'Publicidad agresiva', 'N', '2023-11-19 19:18:36', NULL, NULL),
+(37, 12, 'Estudio de mercado', 'N', '2023-11-19 19:18:36', NULL, NULL),
+(38, 15, 'Experiencia en tecnologías específicas', 'S', '2023-11-19 19:18:36', NULL, NULL),
+(39, 12, 'Reclutamiento de personal', 'N', '2023-11-19 19:18:36', NULL, NULL),
+(40, 15, 'Habilidades culinarias', 'N', '2023-11-19 19:18:36', NULL, NULL),
+(41, 15, 'Conocimiento de pintura abstracta', 'N', '2023-11-19 19:18:36', NULL, NULL),
+(42, 14, 'Fases de iniciación, planificación, ejecución, monitoreo y cierre', 'S', '2023-11-19 19:18:36', NULL, NULL),
+(43, 14, 'Ciclo de vida de una mariposa', 'N', '2023-11-19 19:18:36', NULL, NULL),
+(44, 13, 'Desarrollo de productos de belleza', 'N', '2023-11-19 19:18:36', NULL, NULL),
+(45, 14, 'Pasos para hacer un pastel', 'N', '2023-11-19 19:18:36', NULL, NULL),
+(46, 16, 'Soldadura MIG y TIG', 'S', '2023-11-19 19:22:42', NULL, NULL),
+(47, 18, 'Principio de arco eléctrico', 'S', '2023-11-19 19:22:42', NULL, NULL),
+(48, 16, 'Soldadura de plástico', 'N', '2023-11-19 19:22:42', NULL, NULL),
+(49, 16, 'Soldadura por puntos', 'N', '2023-11-19 19:22:42', NULL, NULL),
+(50, 18, 'Principio de gravedad', 'N', '2023-11-19 19:22:42', NULL, NULL),
+(51, 18, 'Principio de levitación magnética', 'N', '2023-11-19 19:22:42', NULL, NULL),
+(52, 19, 'Industria automotriz', 'S', '2023-11-19 19:22:42', NULL, NULL),
+(53, 20, 'Inspección radiográfica', 'S', '2023-11-19 19:22:42', NULL, NULL),
+(54, 19, 'Industria textil', 'N', '2023-11-19 19:22:42', NULL, NULL),
+(55, 20, 'Inspección visual con ojos cerrados', 'N', '2023-11-19 19:22:42', NULL, NULL),
+(56, 20, 'Inspección por olfato', 'N', '2023-11-19 19:22:42', NULL, NULL),
+(57, 17, 'Realizar la soldadura sin protección', 'N', '2023-11-19 19:22:42', NULL, NULL),
+(58, 17, 'Uso de equipo de protección personal', 'S', '2023-11-19 19:22:42', NULL, NULL),
+(59, 17, 'Cargar materiales sin precauciones', 'N', '2023-11-19 19:22:42', NULL, NULL),
+(60, 19, 'Industria alimentaria', 'N', '2023-11-19 19:22:42', NULL, NULL),
+(61, 21, 'Exclusión de objetivos', 'N', '2023-11-19 19:26:35', NULL, NULL),
+(62, 21, 'Definición clara de objetivos', 'S', '2023-11-19 19:26:35', NULL, NULL),
+(63, 21, 'Inclusión de objetivos ambiguos', 'N', '2023-11-19 19:26:35', NULL, NULL),
+(64, 22, 'Identificación y clasificación de riesgos', 'S', '2023-11-19 19:26:35', NULL, NULL),
+(65, 22, 'Celebrar riesgos', 'N', '2023-11-19 19:26:35', NULL, NULL),
+(66, 22, 'Ignorar la identificación de riesgos', 'N', '2023-11-19 19:26:35', NULL, NULL),
+(67, 25, 'Adaptabilidad y flexibilidad', 'N', '2023-11-19 19:26:35', NULL, NULL),
+(68, 25, 'Resistencia al cambio\'', 'S', '2023-11-19 19:26:35', NULL, NULL),
+(69, 24, 'Pruebas A/B en desarrollo de software', 'S', '2023-11-19 19:26:35', NULL, NULL),
+(70, 25, 'Igualdad de enfoque', 'N', '2023-11-19 19:26:35', NULL, NULL),
+(71, 24, 'Pruebas de velocidad de carrera', 'N', '2023-11-19 19:26:35', NULL, NULL),
+(72, 24, 'Pruebas de resistencia física', 'N', '2023-11-19 19:26:35', NULL, NULL),
+(73, 23, 'Evaluación continua del rendimiento', 'N', '2023-11-19 19:26:35', NULL, NULL),
+(74, 23, 'Ignorar el rendimiento del equipo', 'S', '2023-11-19 19:26:35', NULL, NULL),
+(75, 23, 'Recompensas aleatorias', 'N', '2023-11-19 19:26:35', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -517,11 +512,11 @@ CREATE TABLE `cursos` (
 --
 
 INSERT INTO `cursos` (`idcurso`, `curso`, `create_at`, `update_at`, `inactive_at`) VALUES
-(1, 'Electricidad Industrial', '2023-11-12 08:48:46', NULL, NULL),
-(2, 'Mecánica Automotriz', '2023-11-12 08:48:46', NULL, NULL),
-(3, 'Ing. de Software con IA', '2023-11-12 08:48:46', NULL, NULL),
-(4, 'Soldadura Avanzada', '2023-11-12 08:48:46', NULL, NULL),
-(5, 'Gestión de Proyectos', '2023-11-12 08:48:46', NULL, NULL);
+(1, 'Electricidad Industrial', '2023-11-19 18:57:01', NULL, NULL),
+(2, 'Mecánica Automotriz', '2023-11-19 18:57:01', NULL, NULL),
+(3, 'Ing. de Software con IA', '2023-11-19 18:57:01', NULL, NULL),
+(4, 'Soldadura Avanzada', '2023-11-19 18:57:01', NULL, NULL),
+(5, 'Gestión de Empresas', '2023-11-19 18:57:01', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -546,44 +541,11 @@ CREATE TABLE `evaluaciones` (
 --
 
 INSERT INTO `evaluaciones` (`idevaluacion`, `idcurso`, `idusuario`, `nombre_evaluacion`, `create_at`, `update_at`, `inactive_at`, `fechainicio`, `fechafin`) VALUES
-(1, 1, 1, 'Evaluación 1 Electricidad Industrial', '2023-11-12 08:48:46', NULL, NULL, NULL, NULL),
-(2, 1, 1, 'Evaluación 2 Electricidad Industrial', '2023-11-12 08:48:46', NULL, NULL, NULL, NULL),
-(3, 3, 1, 'Evaluación 1 Ing. de Software con IA', '2023-11-12 08:48:46', NULL, NULL, NULL, NULL),
-(4, 3, 1, 'Evaluación 2 Ing. de Software con IA', '2023-11-12 08:48:46', NULL, NULL, NULL, NULL),
-(5, 3, 1, 'Evaluación 3 Ing. de Software con IA', '2023-11-12 08:48:46', NULL, NULL, NULL, NULL),
-(7, 1, 1, 'Test Thunder', '2023-11-13 09:26:57', NULL, NULL, '2023-11-12 10:00:00', '2023-11-22 10:00:00'),
-(8, 1, 1, 'Nuevo Examen', '2023-11-15 12:51:00', NULL, NULL, '2023-11-15 12:50:00', '2023-11-16 12:50:00'),
-(9, 3, 1, 'Examen de Luis', '2023-11-16 18:44:22', NULL, NULL, '2023-11-16 18:43:00', '2023-11-16 18:43:00'),
-(10, 3, 1, 'Examen de Luis', '2023-11-16 18:48:51', NULL, NULL, '2023-11-16 18:48:00', '2023-11-30 18:48:00'),
-(11, 3, 1, 'Examen de Luis 2', '2023-11-16 18:50:24', NULL, NULL, '2023-11-16 18:50:00', '2023-11-16 18:50:00'),
-(12, 3, 1, 'Test Alternativas', '2023-11-16 19:00:22', NULL, NULL, '2023-11-16 18:59:00', '2023-11-29 18:59:00'),
-(13, 3, 1, 'Test Alternativas 2', '2023-11-16 19:01:20', NULL, NULL, '2023-11-16 19:01:00', '2023-11-16 19:01:00'),
-(14, 3, 1, 'Test Alternativas 3', '2023-11-16 19:02:09', NULL, NULL, '2023-11-16 19:01:00', '2023-11-16 19:01:00'),
-(15, 3, 1, 'Test Alternativas 2', '2023-11-16 19:04:38', NULL, NULL, '2023-11-16 19:04:00', '2023-11-30 19:04:00'),
-(16, 3, 1, 'Examen de Luis', '2023-11-16 19:05:38', NULL, NULL, '2023-11-16 19:05:00', '2023-11-16 19:05:00'),
-(17, 3, 1, 'Test Alternativas 3', '2023-11-16 19:06:35', NULL, NULL, '2023-11-30 19:06:00', '2023-12-09 19:06:00'),
-(18, 3, 1, 'Examen de Luis', '2023-11-16 19:07:44', NULL, NULL, '2023-11-16 19:07:00', '2023-11-30 19:07:00'),
-(19, 3, 1, 'Examen de Luis 2', '2023-11-16 19:10:15', NULL, NULL, '2023-11-16 19:09:00', '2023-11-16 19:09:00'),
-(20, 3, 1, 'Examen de Luis', '2023-11-16 19:11:08', NULL, NULL, '2023-11-16 19:10:00', '2023-11-16 19:10:00'),
-(21, 4, 1, 'Examen Premium', '2023-11-16 19:13:05', NULL, NULL, '2023-11-16 19:12:00', '2023-11-30 19:12:00'),
-(22, 1, 1, 'Evaluacion V2', '2023-11-17 16:29:35', NULL, NULL, NULL, NULL),
-(23, 1, 1, 'Evaluacion Thunder V2', '2023-11-17 16:35:06', NULL, NULL, NULL, NULL),
-(24, 3, 1, 'Evaluación Vista V2', '2023-11-17 16:40:40', NULL, NULL, '2023-11-17 16:40:00', '2023-11-17 16:40:00'),
-(25, 3, 1, 'Testeo para las Respuestas', '2023-11-18 09:45:41', NULL, NULL, '2023-11-18 09:44:00', '2023-11-30 09:44:00'),
-(26, 3, 1, 'Testeo para las Respuestas', '2023-11-18 17:28:16', NULL, NULL, '2023-11-18 17:25:00', '2023-11-18 17:25:00'),
-(27, 3, 1, 'Testeo para los puntos', '2023-11-18 17:29:56', NULL, NULL, '2023-11-18 17:29:00', '2023-11-18 17:29:00'),
-(28, 3, 1, 'Examen de Luis', '2023-11-18 17:32:40', NULL, NULL, '2023-11-18 17:31:00', '2023-11-18 17:31:00'),
-(29, 3, 1, 'Checkeo', '2023-11-18 17:33:54', NULL, NULL, '2023-11-18 17:33:00', '2023-11-18 17:33:00'),
-(30, 3, 1, 'Examen de Luis', '2023-11-18 17:35:22', NULL, NULL, '2023-11-18 17:35:00', '2023-11-18 17:35:00'),
-(31, 3, 1, 'Examen de Luis', '2023-11-18 17:45:40', NULL, NULL, '2023-11-18 17:45:00', '2023-11-18 17:45:00'),
-(32, 2, 1, 'Examen de Luis', '2023-11-18 17:46:41', NULL, NULL, '2023-11-18 17:46:00', '2023-11-18 17:46:00'),
-(33, 3, 1, 'Examen de Luis', '2023-11-18 17:47:29', NULL, NULL, '2023-11-18 17:47:00', '2023-11-18 17:47:00'),
-(34, 3, 1, 'Examen de Luis', '2023-11-18 17:49:39', NULL, NULL, '2023-11-18 17:49:00', '2023-11-18 17:49:00'),
-(35, 3, 1, 'Examen de Luis 2', '2023-11-18 17:50:37', NULL, NULL, '2023-11-18 17:50:00', '2023-11-18 17:50:00'),
-(36, 3, 1, 'Examen de Luis', '2023-11-18 17:51:08', NULL, NULL, '2023-11-18 17:50:00', '2023-11-18 17:50:00'),
-(37, 3, 1, 'Testeo para las Respuestas', '2023-11-18 17:52:26', NULL, NULL, '2023-11-18 17:52:00', '2023-11-18 17:52:00'),
-(38, 3, 1, 'Testeo Definitivo de Puntos', '2023-11-18 17:58:52', NULL, NULL, '2023-11-18 17:58:00', '2023-11-18 17:58:00'),
-(39, 3, 1, 'Ver fecha', '2023-11-18 18:05:55', NULL, NULL, '2023-11-30 18:05:00', '2023-11-18 18:05:00');
+(1, 1, 1, 'Fundamentos Eléctricos Industriales', '2023-11-19 19:09:34', NULL, NULL, '2023-11-19 19:06:00', '2023-11-22 19:06:00'),
+(2, 2, 1, 'Mantenimiento Automotriz', '2023-11-19 19:13:04', NULL, NULL, '2023-11-20 19:10:00', '2023-11-21 19:10:00'),
+(3, 3, 1, 'Desarrollo de Software con Inteligencia Artificial', '2023-11-19 19:18:35', NULL, NULL, '2023-11-21 19:13:00', '2023-11-22 19:13:00'),
+(4, 4, 1, 'Técnicas Avanzadas de Soldadura', '2023-11-19 19:22:41', NULL, NULL, '2023-11-20 19:19:00', '2023-11-23 19:19:00'),
+(5, 5, 1, 'Gestión Avanzada de Proyectos', '2023-11-19 19:26:35', NULL, NULL, '2023-11-20 19:23:00', '2023-11-24 19:23:00');
 
 -- --------------------------------------------------------
 
@@ -604,19 +566,7 @@ CREATE TABLE `inscritos` (
 --
 
 INSERT INTO `inscritos` (`idinscrito`, `idusuario`, `idevaluacion`, `fechainicio`, `fechafin`) VALUES
-(1, 1, 1, NULL, NULL),
-(2, 2, 1, NULL, NULL),
-(3, 3, 2, NULL, NULL),
-(4, 1, 3, NULL, NULL),
-(5, 2, 3, NULL, NULL),
-(6, 2, 3, NULL, NULL),
-(7, 2, 4, NULL, NULL),
-(8, 2, 4, NULL, NULL),
-(9, 2, 7, NULL, NULL),
-(10, 2, 8, NULL, NULL),
-(11, 2, 21, NULL, NULL),
-(12, 2, 5, NULL, NULL),
-(13, 3, 21, '2023-11-19 00:26:21', '2023-11-19 00:26:50');
+(1, 2, 1, '2023-11-19 19:27:21', '2023-11-19 19:27:33');
 
 -- --------------------------------------------------------
 
@@ -639,55 +589,31 @@ CREATE TABLE `preguntas` (
 --
 
 INSERT INTO `preguntas` (`idpregunta`, `idevaluacion`, `pregunta`, `create_at`, `update_at`, `inactive_at`, `puntos`) VALUES
-(1, 1, '¿Cuál es el concepto clave en Electricidad Industrial?', '2023-11-12 08:59:09', NULL, NULL, 4),
-(2, 1, '¿Cómo se llama el componente que almacena energía en un circuito eléctrico?', '2023-11-12 08:59:09', NULL, NULL, 4),
-(3, 1, '¿Cuál es la unidad de medida de la corriente eléctrica?', '2023-11-12 08:59:09', NULL, NULL, 4),
-(4, 2, '¿Cuáles son los componentes esenciales de un sistema de escape en un automóvil?', '2023-11-12 08:59:09', NULL, NULL, 4),
-(5, 2, '¿Qué tipo de combustible utiliza un motor diésel?', '2023-11-12 08:59:09', NULL, NULL, 4),
-(6, 2, '¿Cuál es la función principal del sistema de frenos en un automóvil?', '2023-11-12 08:59:09', NULL, NULL, 4),
-(7, 3, '¿Cuáles son los principios de la programación orientada a objetos?', '2023-11-12 08:59:09', NULL, NULL, 4),
-(8, 3, '¿Qué significa JVM en el contexto de Java?', '2023-11-12 08:59:09', NULL, NULL, 4),
-(9, 3, '¿Cómo se declara una variable en Java?', '2023-11-12 08:59:09', NULL, NULL, 4),
-(10, 7, 'Pregunta Test Thunder', '2023-11-13 09:28:49', NULL, NULL, 4),
-(11, 8, 'p', '2023-11-15 12:51:00', NULL, NULL, 4),
-(12, 8, 'p', '2023-11-15 12:51:00', NULL, NULL, 4),
-(13, 8, 'p', '2023-11-15 12:51:00', NULL, NULL, 4),
-(14, 8, 'p', '2023-11-15 12:51:00', NULL, NULL, 4),
-(15, 9, '¿Cuál es el capital de Francia?', '2023-11-16 18:44:24', NULL, NULL, 4),
-(16, 9, '¿Cuál es el elemento químico representado por el símbolo \"H\"?', '2023-11-16 18:44:24', NULL, NULL, 4),
-(17, 11, '¿Cuál es el capital de Francia?', '2023-11-16 18:50:26', NULL, NULL, 4),
-(18, 12, '¿Cuál es el capital de Francia?', '2023-11-16 19:00:24', NULL, NULL, 4),
-(19, 13, '¿Cuál es el capital de Francia?', '2023-11-16 19:01:21', NULL, NULL, 4),
-(20, 14, '¿Cuál es el capital de Francia?', '2023-11-16 19:02:11', NULL, NULL, 4),
-(21, 14, '¿Cuál es el elemento químico representado por el símbolo \"H\"?', '2023-11-16 19:02:11', NULL, NULL, 4),
-(22, 15, '¿Cuál es el capital de Francia?', '2023-11-16 19:04:39', NULL, NULL, 4),
-(23, 16, '¿Cuál es el capital de Francia?', '2023-11-16 19:05:39', NULL, NULL, 4),
-(24, 17, '¿Cuál es el capital de Francia?', '2023-11-16 19:06:37', NULL, NULL, 4),
-(25, 18, '¿Cuál es el capital de Francia?', '2023-11-16 19:07:45', NULL, NULL, 4),
-(26, 19, '¿Cuál es el capital de Francia?', '2023-11-16 19:10:16', NULL, NULL, 4),
-(27, 20, '¿Cuál es el capital de Francia?', '2023-11-16 19:11:09', NULL, NULL, 4),
-(28, 21, '¿Cuál es el capital de Francia?', '2023-11-16 19:13:06', NULL, NULL, 4),
-(29, 21, '¿Cuál es el elemento químico representado por el símbolo \"H\"?', '2023-11-16 19:13:06', NULL, NULL, 4),
-(30, 24, '¿Cuál es el capital de Francia?', '2023-11-17 16:40:42', NULL, NULL, 4),
-(31, 25, '¿Cuáles son los dos tipos principales de energía renovable?', '2023-11-18 09:45:43', NULL, NULL, 0),
-(32, 25, '¿Cuál es la capital de Francia?', '2023-11-18 09:45:43', NULL, NULL, 0),
-(33, 25, '¿Cuáles son dos de los planetas del sistema solar con anillos?', '2023-11-18 09:45:43', NULL, NULL, 0),
-(34, 1, 'Testeo de Puntos', '2023-11-18 17:17:48', NULL, NULL, 5),
-(35, 26, '', '2023-11-18 17:28:18', NULL, NULL, 0),
-(36, 27, '', '2023-11-18 17:29:58', NULL, NULL, 0),
-(37, 28, '', '2023-11-18 17:32:41', NULL, NULL, 0),
-(38, 30, '', '2023-11-18 17:35:23', NULL, NULL, 1),
-(39, 1, 'Testeo de Puntos 2', '2023-11-18 17:42:50', NULL, NULL, 5),
-(40, 31, '', '2023-11-18 17:45:41', NULL, NULL, 1),
-(41, 32, '', '2023-11-18 17:46:42', NULL, NULL, 1),
-(42, 33, '', '2023-11-18 17:47:30', NULL, NULL, 1),
-(43, 34, '', '2023-11-18 17:49:40', NULL, NULL, 1),
-(44, 35, '[object HTMLInputElement]', '2023-11-18 17:50:38', NULL, NULL, 1),
-(45, 36, '[object HTMLInputElement]', '2023-11-18 17:51:09', NULL, NULL, 1),
-(46, 37, '¿Cuál es el capital de Francia?', '2023-11-18 17:52:27', NULL, NULL, 1),
-(47, 38, '¿Cuáles son los dos tipos principales de energía renovable?', '2023-11-18 17:58:53', NULL, NULL, 10),
-(48, 38, '¿Cuál es el elemento químico representado por el símbolo \"H\"?', '2023-11-18 17:58:53', NULL, NULL, 10),
-(49, 39, '¿Cuál es el capital de Francia?', '2023-11-18 18:05:58', NULL, NULL, 10);
+(1, 1, '¿Cómo se generan y distribuyen energía en entornos industriales?', '2023-11-19 19:09:35', NULL, NULL, 4),
+(2, 1, '¿Cuáles son los principales componentes de un panel eléctrico industrial?', '2023-11-19 19:09:35', NULL, NULL, 4),
+(3, 1, '¿Cómo se calcula la potencia en un sistema eléctrico industrial?', '2023-11-19 19:09:35', NULL, NULL, 4),
+(4, 1, 'Explique la ley de Ohm y su aplicación en sistemas eléctricos industriales.', '2023-11-19 19:09:35', NULL, NULL, 4),
+(5, 1, '¿Cuáles son los principios fundamentales de la electricidad industrial?', '2023-11-19 19:09:35', NULL, NULL, 4),
+(6, 2, '¿Cuáles son los componentes clave de un sistema de frenos automotrices?', '2023-11-19 19:13:05', NULL, NULL, 4),
+(7, 2, '¿Cuáles son los métodos de diagnóstico de fallas en sistemas de suspensión automotriz?', '2023-11-19 19:13:05', NULL, NULL, 4),
+(8, 2, 'Explique el ciclo de trabajo de un motor de combustión interna.', '2023-11-19 19:13:05', NULL, NULL, 4),
+(9, 2, '¿Cómo se realiza la alineación de ruedas en vehículos?', '2023-11-19 19:13:05', NULL, NULL, 4),
+(10, 2, 'Describa el proceso de cambio de aceite y su importancia en el mantenimiento automotriz.', '2023-11-19 19:13:05', NULL, NULL, 4),
+(11, 3, 'Explique el concepto de aprendizaje automático y su aplicación en la ingeniería de software.', '2023-11-19 19:18:36', NULL, NULL, 4),
+(12, 3, '¿Qué papel juega la inteligencia artificial en el desarrollo de software?', '2023-11-19 19:18:36', NULL, NULL, 4),
+(13, 3, '¿Cómo se implementan los algoritmos de inteligencia artificial en aplicaciones de software?', '2023-11-19 19:18:36', NULL, NULL, 4),
+(14, 3, '¿Cuáles son los desafíos éticos asociados con el uso de la inteligencia artificial en el desarrollo de software?', '2023-11-19 19:18:36', NULL, NULL, 4),
+(15, 3, 'Describa el ciclo de vida típico de un proyecto de desarrollo de software.', '2023-11-19 19:18:36', NULL, NULL, 4),
+(16, 4, '¿Cuáles son los diferentes tipos de soldadura utilizados en aplicaciones industriales avanzadas?', '2023-11-19 19:22:42', NULL, NULL, 4),
+(17, 4, '¿Cuáles son las precauciones de seguridad clave en el proceso de soldadura?', '2023-11-19 19:22:42', NULL, NULL, 4),
+(18, 4, '¿Cómo se realiza la inspección de soldaduras para garantizar la calidad?', '2023-11-19 19:22:42', NULL, NULL, 4),
+(19, 4, 'Describa las aplicaciones de la soldadura láser en la industria.', '2023-11-19 19:22:42', NULL, NULL, 4),
+(20, 4, 'Explique los principios detrás de la soldadura por arco eléctrico.', '2023-11-19 19:22:42', NULL, NULL, 4),
+(21, 5, '¿Cuáles son las fases clave en el ciclo de vida de un proyecto?', '2023-11-19 19:26:35', NULL, NULL, 4),
+(22, 5, 'Explique la importancia de la identificación y gestión de riesgos en la gestión de proyectos.', '2023-11-19 19:26:35', NULL, NULL, 4),
+(23, 5, 'Describa las características de un buen líder de proyecto.', '2023-11-19 19:26:35', NULL, NULL, 4),
+(24, 5, '¿Cómo se determina el camino crítico en un diagrama de Gantt?', '2023-11-19 19:26:35', NULL, NULL, 4),
+(25, 5, '¿Cuál es la diferencia entre gestión de proyectos tradicional y ágil?', '2023-11-19 19:26:35', NULL, NULL, 4);
 
 -- --------------------------------------------------------
 
@@ -709,23 +635,11 @@ CREATE TABLE `respuestas` (
 --
 
 INSERT INTO `respuestas` (`idrespuesta`, `idinscrito`, `idalternativa`, `create_at`, `update_at`, `inactive_at`) VALUES
-(1, 1, 3, '2023-11-18 09:12:58', NULL, NULL),
-(2, 1, 5, '2023-11-18 09:12:58', NULL, NULL),
-(3, 1, 8, '2023-11-18 09:12:58', NULL, NULL),
-(4, 2, 2, '2023-11-18 09:32:40', NULL, NULL),
-(5, 2, 4, '2023-11-18 09:32:40', NULL, NULL),
-(6, 2, 7, '2023-11-18 09:32:40', NULL, NULL),
-(7, 1, 1, '2023-11-18 12:02:14', NULL, NULL),
-(8, 1, 1, '2023-11-18 12:08:55', NULL, NULL),
-(9, 1, 7, '2023-11-18 12:44:52', NULL, NULL),
-(10, 1, 4, '2023-11-18 12:44:52', NULL, NULL),
-(11, 1, 3, '2023-11-18 12:44:52', NULL, NULL),
-(12, 1, 2, '2023-11-18 12:47:13', NULL, NULL),
-(13, 1, 7, '2023-11-18 12:47:13', NULL, NULL),
-(14, 1, 5, '2023-11-18 12:47:13', NULL, NULL),
-(15, 1, 1, '2023-11-18 12:49:03', NULL, NULL),
-(16, 1, 7, '2023-11-18 12:49:03', NULL, NULL),
-(17, 1, 4, '2023-11-18 12:49:03', NULL, NULL);
+(1, 1, 11, '2023-11-19 19:27:33', NULL, NULL),
+(2, 1, 1, '2023-11-19 19:27:33', NULL, NULL),
+(3, 1, 2, '2023-11-19 19:27:33', NULL, NULL),
+(4, 1, 7, '2023-11-19 19:27:33', NULL, NULL),
+(5, 1, 8, '2023-11-19 19:27:33', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -746,8 +660,8 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`idrol`, `rol`, `create_at`, `update_at`, `inactive_at`) VALUES
-(1, 'Docente', '2023-11-12 08:48:46', NULL, NULL),
-(2, 'Estudiante', '2023-11-12 08:48:46', NULL, NULL);
+(1, 'Docente', '2023-11-19 18:56:07', NULL, NULL),
+(2, 'Estudiante', '2023-11-19 18:56:07', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -775,11 +689,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`idusuario`, `idrol`, `apellidos`, `nombres`, `correo`, `claveacceso`, `token`, `token_estado`, `create_at`, `update_at`, `inactive_at`, `fechatoken`) VALUES
-(1, 1, 'González', 'Juan', 'juan.gonzalez@example.com', '$2y$10$hbzZihcSrLuQxZvnfmqYCu9z0gEMU2JnaGmjqPkfwpuuxf5un8ejS', NULL, NULL, '2023-11-12 08:48:46', NULL, NULL, NULL),
-(2, 2, 'Martínez', 'Ana', 'ana.martinez@example.com', '$2y$10$hbzZihcSrLuQxZvnfmqYCu9z0gEMU2JnaGmjqPkfwpuuxf5un8ejS', NULL, NULL, '2023-11-12 08:48:46', NULL, NULL, NULL),
-(3, 2, 'Rodríguez', 'Pedro', 'pedro.rodriguez@example.com', '$2y$10$hbzZihcSrLuQxZvnfmqYCu9z0gEMU2JnaGmjqPkfwpuuxf5un8ejS', NULL, NULL, '2023-11-12 08:48:46', NULL, NULL, NULL),
-(4, 2, 'Sánchez', 'Laura', 'laura.sanchez@example.com', '$2y$10$hbzZihcSrLuQxZvnfmqYCu9z0gEMU2JnaGmjqPkfwpuuxf5un8ejS', NULL, NULL, '2023-11-12 08:48:46', NULL, NULL, NULL),
-(5, 2, 'Díaz', 'Carlos', 'carlos.diaz@example.com', '$2y$10$hbzZihcSrLuQxZvnfmqYCu9z0gEMU2JnaGmjqPkfwpuuxf5un8ejS', NULL, NULL, '2023-11-12 08:48:46', NULL, NULL, NULL);
+(1, 1, 'González', 'Juan', 'juan.gonzalez@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK', NULL, NULL, '2023-11-19 18:57:08', NULL, NULL, NULL),
+(2, 2, 'Martínez', 'Ana', 'ana.martinez@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK', NULL, NULL, '2023-11-19 18:57:08', NULL, NULL, NULL),
+(3, 2, 'Rodríguez', 'Pedro', 'pedro.rodriguez@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK', NULL, NULL, '2023-11-19 18:57:08', NULL, NULL, NULL),
+(4, 2, 'Sánchez', 'Laura', 'laura.sanchez@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK', NULL, NULL, '2023-11-19 18:57:08', NULL, NULL, NULL),
+(5, 2, 'Díaz', 'Carlos', 'carlos.diaz@example.com', '$2y$10$052NLfLkVPtuY1L/L2vO..lO0yQMGegGYTAsydOePeE014wYUCPAK', NULL, NULL, '2023-11-19 18:57:08', NULL, NULL, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -850,7 +764,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `alternativas`
 --
 ALTER TABLE `alternativas`
-  MODIFY `idalternativa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
+  MODIFY `idalternativa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- AUTO_INCREMENT de la tabla `cursos`
@@ -862,25 +776,25 @@ ALTER TABLE `cursos`
 -- AUTO_INCREMENT de la tabla `evaluaciones`
 --
 ALTER TABLE `evaluaciones`
-  MODIFY `idevaluacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `idevaluacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `inscritos`
 --
 ALTER TABLE `inscritos`
-  MODIFY `idinscrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `idinscrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `preguntas`
 --
 ALTER TABLE `preguntas`
-  MODIFY `idpregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `idpregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `respuestas`
 --
 ALTER TABLE `respuestas`
-  MODIFY `idrespuesta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `idrespuesta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
