@@ -49,9 +49,9 @@ if(isset($_POST['operacion'])){
     case 'registrar':
       $datosEnviar = [
         'idrol' => $_POST['idrol'],
-        'apellidos' => filtrarMejorado($_POST['apellidos']),
-        'nombres' => filtrarMejorado($_POST['nombres']),
-        'correo' => filtrarMejorado($_POST['correo']),
+        'apellidos' => filtroPremium($_POST['apellidos']),
+        'nombres' => filtroPremium($_POST['nombres']),
+        'correo' => filtroPremium($_POST['correo']),
         'claveacceso' => password_hash($_POST['claveacceso'], PASSWORD_BCRYPT)
       ];
        

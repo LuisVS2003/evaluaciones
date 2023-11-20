@@ -1,6 +1,6 @@
 <?php	
 
-  $texto = "<script>while(true){alert('Has sido hackeado')}</script>";
+  // $texto = "<script>while(true){alert('Has sido hackeado')}</script>";
 
     
 
@@ -15,8 +15,8 @@
     return htmlspecialchars($cadenaEntrada, ENT_QUOTES, 'UTF-8');
   }
 
-  $textoFiltrado = filtroPremium($texto);
-  echo $textoFiltrado;
+  // $textoFiltrado = filtroPremium($texto);
+  // echo $textoFiltrado;
 
   
 ?>
