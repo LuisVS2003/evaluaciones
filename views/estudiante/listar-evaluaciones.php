@@ -38,6 +38,7 @@ if (empty($idterminator)) :
 
                 </div>
             </div>
+            <a href="./index.php" class="btn btn-danger mt-3"> Volver</a>
         </div>
 
         <?php
