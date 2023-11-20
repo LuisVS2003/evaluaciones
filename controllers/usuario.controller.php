@@ -3,6 +3,8 @@ session_start();
 // require_once '../models/Email.php';
 require_once '../models/Usuario.php';
 
+require_once 'filtro.php';
+
 if(isset($_POST['operacion'])){
   $usuario = new Usuario();
 
@@ -47,9 +49,9 @@ if(isset($_POST['operacion'])){
     case 'registrar':
       $datosEnviar = [
         'idrol' => $_POST['idrol'],
-        'apellidos' => $_POST['apellidos'],
-        'nombres' => $_POST['nombres'],
-        'correo' => $_POST['correo'],
+        'apellidos' => filtrarMejorado($_POST['apellidos']),
+        'nombres' => filtrarMejorado($_POST['nombres']),
+        'correo' => filtrarMejorado($_POST['correo']),
         'claveacceso' => password_hash($_POST['claveacceso'], PASSWORD_BCRYPT)
       ];
        
