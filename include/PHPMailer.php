@@ -1,5 +1,5 @@
 <?php
-require '../include/EnviarTokens.php';
+require '../vendor/autoload.php';
 
 
 
@@ -34,7 +34,7 @@ function enviarEmail($correo,$tokens){
       $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through => SOPORTE
       $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
       $mail->Username   = 'senati.appstore@gmail.com';                     //SMTP username
-      $mail->Password   = 'phofceqvbyvlyjdd';                               //SMTP password
+      $mail->Password   = 'fzxzvkrnphozzgez';                               //SMTP password
       $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
       $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
   
@@ -72,6 +72,6 @@ function enviarEmail($correo,$tokens){
   
 }
 
-$resultado = enviarEmail($correo,$tokens);
+$resultado = enviarEmail('efrainqn16@gmail.com','123456');
 
 
