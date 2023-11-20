@@ -135,12 +135,12 @@
             datos.forEach(registro => {
               let pregunta = '';
               pregunta = `
-                <section class="mb-4">
+                <section class="mb-4 bg-light p-4 border border-4 rounded">
                   <div class="row">
-                    <div class="col-md-10">
+                    <div class="col-md-9">
                       <li>${registro.pregunta}</li>
                       </div>
-                      <div class="col-md-2">
+                      <div class="col-md-3 text-end">
                         <strong>${registro.puntos} PUNTOS</strong>
                     </div>
                   </div>
