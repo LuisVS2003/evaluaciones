@@ -217,6 +217,34 @@ select * from inscritos;
 
 
 
+DELIMITER $$
+drop PROCEDURE spu_inscritos_listar()
+BEGIN
+	SELECT 
+		INS.idinscrito, INS.idevaluacion,
+        EVA.nombre_evaluacion,
+        CONCAT(USR.apellidos, ", ", USR.nombres) 'nombre_completo',
+        INS.fechainicio, INS.fechafin
+	FROM inscritos INS
+        INNER JOIN usuarios USR ON USR.idusuario = INS.idusuario
+        INNER JOIN evaluaciones EVA ON EVA.idevaluacion = INS.idevaluacion;
+END $$
+
+
+DELIMITER $$
+CREATE PROCEDURE spu_inscritos_listar()
+BEGIN
+    SELECT 
+        INS.idinscrito,
+        INS.idevaluacion,
+        EVA.nombre_evaluacion,
+        CONCAT(USR.apellidos, ", ", USR.nombres) AS nombre_completo,
+        IFNULL(INS.fechainicio, 'Pendiente') AS fechainicio,
+        IFNULL(INS.fechafin, 'Pendiente') AS fechafin
+    FROM inscritos INS
+    INNER JOIN usuarios USR ON USR.idusuario = INS.idusuario
+    INNER JOIN evaluaciones EVA ON EVA.idevaluacion = INS.idevaluacion;
+END $$
 
 
 
