@@ -209,7 +209,7 @@ begin
     where idusuario = _idusuario and idevaluacion = _idevaluacion;
 end$$
 
-call spu_buscar_inscrito(2,3);
+call spu_buscar_inscrito(2,1);
 
 
 select * from inscritos;
