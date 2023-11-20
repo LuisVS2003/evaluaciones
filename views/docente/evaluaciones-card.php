@@ -130,8 +130,8 @@
                         <td>${registro.apellidos}</td>
                         <td>${registro.nombres}</td>
                         <td>
-                          <button type="button" class="btn btn-outline-primary"
-                            href="#" class="ver-info" data-bs-toggle="modal" data-bs-target="#infoModal"
+                          <button type="button" class="btn btn-outline-primary ver-info"
+                            href="#" data-bs-toggle="modal" data-bs-target="#infoModal"
                             data-info="${registro.idusuario}">Ver Evaluaciones</button>
                         </td>
                     </tr>
@@ -144,10 +144,7 @@
                     $("#form-evaluaciones").innerHTML = '<h3>No hay inscritos en este curso</h3>';
                 }
 
-                if (datos.length > 0) {
-                idUsuarioGlobal = datos[0].idusuario;
-                }
-                listarModal();
+
 
                 })
                 .catch(e => {
@@ -219,9 +216,19 @@
             .catch(e => console.error(e));
         }
 
+        $("#form-evaluaciones").addEventListener("click", event => {
+            if (event.target.classList.contains("ver-info")) {
+                idUsuarioGlobal = event.target.getAttribute("data-info");
+                listarModal();
+            }
+        });
+
+
+
         listarEvaluaciones();
 
 
+        
         
 
         })
