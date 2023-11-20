@@ -32,7 +32,7 @@ function notificar(icon,titulo, mensaje, tiempo){
 
 
   function mostrarPregunta(titulo, mensaje) {
-  return Swal.fire({
+    return Swal.fire({
       title: titulo,
       text: mensaje,
       icon: 'question',
@@ -41,8 +41,7 @@ function notificar(icon,titulo, mensaje, tiempo){
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#2E86C1',
       cancelButtonColor: '#797D7F',
-      footer: 'Sistema Evaluaciones  - 2023'
-    }).then((result) => {
-      return result;
+      footer: 'Sistema Evaluaciones - 2023'
     });
   }
+  

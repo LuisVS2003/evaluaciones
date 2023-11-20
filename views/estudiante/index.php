@@ -60,22 +60,24 @@ if (isset($_SESSION['idusuario'])) {
           .then(respuesta =>respuesta.json())
           .then(datosRecibidos =>{
             // console.log(datosRecibidos);
-            if(datosRecibidos.length == 0){
-              $("#card-evaluaciones").innerHTML = `<h1>Pronto tendremos más novedades</h1>`; 
-              
-            }else{
-              $("#card-evaluaciones").innerHTML = ``;
-              datosRecibidos.forEach(element => {
+            if (datosRecibidos.length === 0) {
+            $("#card-evaluaciones").innerHTML = `<h1>No tienes cursos pendientes</h1>`;
+          } else {
+            $("#card-evaluaciones").innerHTML = ``;
+            datosRecibidos.forEach((element) => {
+              if (element.idcurso === null) {
+                $("#card-evaluaciones").innerHTML = `<h1>No tienes cursos pendientes</h1>`;
+              } else {
                 const p = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
+                const numeroAleatorio = Math.floor(Math.random() * 5) + 1;
+                const rutaImagen = `../images/cursos/${numeroAleatorio}.jpg`;
 
-                const rutaImagen = `../../images/cursos/${element.curso}.jpg`;
-                //Renderizado
                 const nuevoItem = `
                   <div class="col-4 mb-3">
-                    <div class="card" style="width: 100%;" heigh="100%">
+                    <div class="card" style="width: 100%;" height="100%">
                       <img src="${rutaImagen}" class="card-img-top" alt="" width="100%" height="300px">
                       <div class="card-body">
-                        <p>2023-PIAD-${p}-TEC-NRC_${p}</p>
+                        <p>2023-PIAD-${p}-TEC-NRC_...</p>
                         <h5 class="card-title">${element.curso}</h5>
                         <p>Abrir</p>
                         <hr>
@@ -84,12 +86,13 @@ if (isset($_SESSION['idusuario'])) {
                         </div>
                       </div>
                     </div>
-                  `;
-                  $("#card-evaluaciones").innerHTML += nuevoItem;
-                
-              });
-            }
-          })
+                  </div>
+                `;
+                $("#card-evaluaciones").innerHTML += nuevoItem;
+              }
+            });
+          }
+        })
           .catch((e) => {
             console.error(e);
           });

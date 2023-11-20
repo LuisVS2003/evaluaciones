@@ -79,6 +79,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
     integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
   </script>
+  <script src="../../javascript/sweetalert.js"></script>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -127,7 +128,7 @@
           .then(respuesta => respuesta.json())
           .then(datos =>{
             if(datos.idusuario > 0){
-              alert(`Usuario registrado con el ID: ${datos.idusuario}`)
+              //alert(`Usuario registrado con el ID: ${datos.idusuario}`)
               $("#form-usuario").reset();
             }
           })
@@ -139,10 +140,14 @@
       // EVENTOS
       $("#form-usuario").addEventListener("submit", (event) => {
         event.preventDefault();
+        mostrarPregunta("Registrar", "¿Está seguro de registrar este usuario?")
+          .then((result) => { 
+            if (result.isConfirmed) {
+              userRegister();
+              notificar('success','Usuario registrado','Usuario registrado con el ID: ${datos.idusuario}',3);
+            }
 
-        if(confirm("¿Está seguro de registrar?")){
-          userRegister();
-        }
+        });
       });
 
       getRol();

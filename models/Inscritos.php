@@ -67,6 +67,21 @@ class Inscritos extends Conexion{
       die($e->getMessage());
     }
   }
-
-
+  //------------------------------------------------------------------------------------
+  public function buscar_inscrito($datos = []){
+    try {
+      $consulta = $this->conexion->prepare("CALL spu_buscar_inscrito(?,?)");
+      $consulta->execute(
+        array(
+          $datos['idusuario'],
+          $datos['idevaluacion']
+        )
+        );
+        return $consulta->fetch(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+  
+  //------------------------------------------------------------------------------------
 }

@@ -52,6 +52,9 @@ $indice = ($_SESSION["idrol"] == 1) ? "indexdocente" : "index";
 
   <link rel="icon" type="image/png"  href="../images/icon-web.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
   <style>
     .nav-item{

@@ -35,6 +35,15 @@ if (isset($_POST['operacion'])){
         ];
         echo json_encode($inscritos->actualizar_fecha_fin($datos));
         break;
-  }
+        //------------------------------------------------------------------------------------
+      case 'buscar_inscrito':
+        $datos = [
+          'idusuario'     => $_POST['idusuario'],
+          'idevaluacion'  => $_POST['idevaluacion']
+        ];
+        echo json_encode($inscritos->buscar_inscrito($datos));
+        break;
+        //------------------------------------------------------------------------------------
+      }
 
 }

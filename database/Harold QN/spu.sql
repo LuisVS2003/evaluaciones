@@ -196,8 +196,23 @@ END $$
 
 call spu_actualizar_fecha_fin(13,21,now());
 
-select * from inscritos;
+use evaluaciones;
+select * from usuarios;
+-- ------------------------------------------------------------------------------------------------------------------
+delimiter $$
+create procedure spu_buscar_inscrito(
+in _idusuario int,
+in _idevaluacion int
+)
+begin
+	select * from inscritos
+    where idusuario = _idusuario and idevaluacion = _idevaluacion;
+end$$
 
+call spu_buscar_inscrito(2,3);
+
+
+select * from inscritos;
 
 
 

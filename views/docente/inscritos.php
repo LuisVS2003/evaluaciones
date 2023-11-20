@@ -74,6 +74,7 @@
   </script>
   <!-- SweetAlert -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="../../javascript/sweetalert.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       function $(id){
@@ -201,10 +202,38 @@
             .catch(e => console.error(e));
 
         // Mostrar mensaje de éxito
-        alert('Inscrito registrado correctamente.');
+        //alert('Inscrito registrado correctamente.');
+        notificar("success","Inscrito","Inscrito registrado correctamente",3)
 
         // Limpiar el formulario después de registrar
         $("#form-inscrito").reset();
+      }
+
+      function buscarSiEstaInscrito(){
+        // Obtener valores de los selects
+        const idUsuario = $("#get-usuario").value;
+        const idEvaluacion = $("#get-evaluacion").value;
+
+        const parametros = new FormData();
+        parametros.append("operacion", "buscar_inscrito");
+        parametros.append("idusuario", idUsuario);
+        parametros.append("idevaluacion", idEvaluacion);
+
+        fetch('../../controllers/inscritos.controller.php', {
+            method: 'POST',
+            body: parametros
+        })
+          .then(respuesta => respuesta.json())
+          .then(datosRecibidos =>{
+            console.log(datosRecibidos);
+            if(datosRecibidos === false) {
+              inscritoRegistrar();
+            }else{
+              notificar("info","Inscrito","El usuario ya se encuentra inscrito a la evalaucion",3)
+            }
+          })
+          .catch(e =>console.error(e));
+
       }
 
         // Funciones de carga automática
@@ -217,7 +246,7 @@
         $("#form-inscrito").addEventListener("submit", (event) => {
             // Evitar que la página se recargue
             event.preventDefault();
-            inscritoRegistrar();
+            buscarSiEstaInscrito();
         });
 
       });
