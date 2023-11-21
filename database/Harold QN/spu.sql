@@ -14,7 +14,7 @@ BEGIN
 	WHERE rol.rol = 'Estudiante';
 END $$
 
-call spu_listar_usuario_estudinate()
+
 
 DELIMITER $$
 CREATE PROCEDURE spu_login (IN _correo VARCHAR(90))
@@ -30,11 +30,6 @@ BEGIN
 	FROM usuarios usu INNER JOIN roles r ON usu.idrol = r.idrol
     WHERE correo = _correo AND usu.inactive_at IS NULL;
 END $$
-
-call spu_login('juan.gonzalez@example.com')
-
-
-
 
 
 DELIMITER $$
@@ -54,21 +49,6 @@ BEGIN
 		c.curso;
 END $$
 
-select * from alternativas;
-
-use evaluaciones;
--- --------------------------------------------
-SELECT u.nombres, u.apellidos, c.curso, e.fechainicio, e.fechafin
-FROM usuarios u
-JOIN roles r ON u.idrol = r.idrol
-JOIN inscritos i ON u.idusuario = i.idusuario
-JOIN evaluaciones e ON i.idevaluacion = e.idevaluacion
-JOIN cursos c ON e.idcurso = c.idcurso
-WHERE r.idrol = 2;
--------------------------------------------------------
-CALL spu_evaluaciones_estudiante_listar(2);
-
-select * from evaluaciones;
 
 
 DELIMITER $$
@@ -89,7 +69,7 @@ BEGIN
     GROUP BY u.nombres, c.curso;
 END $$
 
-call spu_rendir_poruser(2);
+
 
 -- --------------------------------------------------------------------------------------
 -- PROCEDIMIENTO PARA LISTAR EVALAUCIONES POR EL CURSO Y EL USUARIO
@@ -114,13 +94,6 @@ BEGIN
     LEFT JOIN cursos c ON e.idcurso = c.idcurso
     WHERE r.idrol = 2 AND u.idusuario = p_idusuario AND c.idcurso = p_idcurso;
 END $$
-select * from cursos;
-call spu_listar_evaluaciones_x_curso(2,3)
-
-select * from  evaluaciones;
--- ----------------------------------------------------------------------
--- 16/11 09:00
-
 
 DELIMITER $$
 CREATE PROCEDURE spu_obtener_evaluaciones_curso(IN _campo INT)
@@ -133,9 +106,7 @@ BEGIN
 END $$
 CALL spu_obtener_evaluaciones_curso(1);
 
-select * from inscritos;
 
-select * from evaluaciones;
 -- --------------------------------------------------------------------
 DELIMITER $$
 CREATE PROCEDURE spu_usuario_listar_evaluaciones_x_curso(IN _idcurso VARCHAR(20))
@@ -151,10 +122,7 @@ BEGIN
 END$$
 call spu_usuario_listar_evaluaciones_x_curso(1);
 
-select * from cursos;
-select * from evaluaciones;
-select * from usuarios;
-select * from inscritos;
+
 -- ------------------------------------------------------------------
 -- Procedmiento de luis actualizado
 DELIMITER $$
@@ -170,8 +138,7 @@ BEGIN
     SELECT @@last_insert_id 'idinscrito';
 END $$
 
-UPDATE inscritos
-    SET fechainicio = NULL;
+
 -- -------------------------------------------------------------------------------------------------------
 -- 
 DELIMITER $$
@@ -184,7 +151,6 @@ END $$
 
 call spu_actualizar_fecha_inicio(13,21,now());
 
-select * from inscritos;
 -- ------------------------------------------------------------------------------------------------------------------
 DELIMITER $$
 CREATE PROCEDURE spu_actualizar_fecha_fin(in _idinscrito int,IN _idevaluacion INT, IN _fechafin DATETIME)
@@ -196,8 +162,7 @@ END $$
 
 call spu_actualizar_fecha_fin(13,21,now());
 
-use evaluaciones;
-select * from usuarios;
+
 -- ------------------------------------------------------------------------------------------------------------------
 delimiter $$
 create procedure spu_buscar_inscrito(
@@ -209,10 +174,7 @@ begin
     where idusuario = _idusuario and idevaluacion = _idevaluacion;
 end$$
 
-call spu_buscar_inscrito(2,1);
 
-
-select * from inscritos;
 
 
 
