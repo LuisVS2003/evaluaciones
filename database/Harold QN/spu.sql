@@ -14,8 +14,6 @@ BEGIN
 	WHERE rol.rol = 'Estudiante';
 END $$
 
-
-
 DELIMITER $$
 CREATE PROCEDURE spu_login (IN _correo VARCHAR(90))
 BEGIN
@@ -48,8 +46,6 @@ BEGIN
 	GROUP BY
 		c.curso;
 END $$
-
-
 
 DELIMITER $$
 create PROCEDURE spu_rendir_poruser(IN p_idusuario INT)
@@ -123,8 +119,6 @@ END$$
 call spu_usuario_listar_evaluaciones_x_curso(1);
 
 
--- ------------------------------------------------------------------
--- Procedmiento de luis actualizado
 DELIMITER $$
 CREATE PROCEDURE spu_inscritos_registrar(
 	IN _idusuario		INT,
@@ -173,17 +167,3 @@ begin
 	select * from inscritos
     where idusuario = _idusuario and idevaluacion = _idevaluacion;
 end$$
-
-
-
-
-
-
-
-
-
-
-
-
-
-

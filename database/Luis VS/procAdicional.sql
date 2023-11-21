@@ -1,7 +1,7 @@
 use evaluaciones;
-DELIMITER $$
 
 -- Con esto recuperamos los datos del usuario para mostrarlos en en navbar 
+DELIMITER $$
 CREATE PROCEDURE spu_login (IN _correo VARCHAR(90))
 BEGIN
 	SELECT 
@@ -30,7 +30,6 @@ BEGIN
     WHERE INS.idusuario = _idusuario;
 END $$
 
--- CALL spu_evaluaciones_estudiante_listar(2)
 
 -- ##########################################################################################################################
 DELIMITER $$
@@ -46,11 +45,7 @@ BEGIN
     WHERE EVA.idevaluacion = _idevaluacion;
 END $$
 
-SELECT * FROM usuarios;
-SELECT * FROM evaluaciones;
-select * from preguntas;
-select * from alternativas
--- CALL spu_evaluaciones_preguntas_listar(3)
+
 
 -- ##########################################################################################################################
 DELIMITER $$
@@ -126,15 +121,9 @@ BEGIN
 			inactive_at IS NULL;
 END $$
 
--- CALL spu_preguntas_alternativas(2);
 
 -- ##########################################################################################################################
-select * from inscritos
 
-
-
--- ##########################################################################################################################
--- Testeo - Luis
 DELIMITER $$
 CREATE PROCEDURE spu_evaluaciones_docente_listar(
 	IN _iddocente	INT,

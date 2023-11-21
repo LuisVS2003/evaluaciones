@@ -26,10 +26,7 @@ BEGIN
     WHERE inactive_at IS NULL;
 END $$
 
--- CALL spu_cursos_listar();
-select * from evaluaciones;
-select * from preguntas;
-select * from alternativas;
+
 -- ##########################################################################################################################
 DELIMITER $$
 CREATE PROCEDURE spu_evaluaciones_listar()
@@ -44,7 +41,6 @@ BEGIN
 	WHERE EVA.inactive_at IS NULL;
 END $$
 
--- CALL spu_evaluaciones_listar();
 
 -- ##########################################################################################################################
 DELIMITER $$
