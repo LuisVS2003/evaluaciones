@@ -33,16 +33,5 @@ END $$
 CALL spu_evaluaciones_preguntas_listar(15);
 
 
-DELIMITER $$
-CREATE PROCEDURE spu_nota_actualizar(
-	IN _idevaluacion INT,
-	IN _nota		TINYINT
-)
-BEGIN
-	UPDATE evaluaciones
-		SET nota = _nota
-    WHERE idevaluacion = _idevaluacion;
-END $$
 
-CALL spu_nota_actualizar(15, 20)
 
