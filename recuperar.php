@@ -93,7 +93,7 @@
           .then(respuesta => respuesta.json())
           .then(data => {
             if (data.idusuario > 0) {
-              notificar('success', 'Se encontro el Correo', `Por favor verificar el token en su correo: ${data.correo}`, 3);
+              notificar('success', 'Se encontró el Correo', `Por favor verificar el token en su correo: ${data.correo}`, 3);
               registraTokens();
               $("#correo").setAttribute("readonly", "true");
 
@@ -199,7 +199,7 @@
 
                 }
                 }else{
-                notificar('warning','No se encontro','No encontrado en la base de datos',2)
+                notificar('warning','No se encontró','No encontrado en la base de datos',2)
                 }
             })
             .catch(e =>{
